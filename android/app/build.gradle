@@ -56,7 +56,7 @@ react {
 
 
 project.ext.vectoricons = [
-    iconFontNames: [ 'MaterialCommunityIcons.ttf' ] // Specify font files
+    iconFontNames: [ 'MaterialCommunityIcons.ttf', 'Ionicons.ttf' ] // Specify font files
 ]
 
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")

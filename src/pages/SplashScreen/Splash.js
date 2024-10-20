@@ -95,7 +95,7 @@ const Splash = ({ navigation }) => {
 
     const navigateToHome = () => {
         const timer = setTimeout(() => {
-            navigation.replace('Home');
+            navigation.replace('TabMenu');
         }, 3000);
         return () => clearTimeout(timer);
     };
