@@ -4,7 +4,7 @@ import { SafeAreaView, StyleSheet, View, Image, Text, TouchableOpacity, Button }
 function Home() {
   return (
     <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>HOME SCREEN</Text>
+      <Text>Home Screen</Text>
     </SafeAreaView>
   )
 }
