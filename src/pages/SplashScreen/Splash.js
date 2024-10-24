@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        backgroundColor: '#fff'
     },
     imageContainer: {
         height: Dimensions.get('window').height / 2,
