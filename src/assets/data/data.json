@@ -1,0 +1,305 @@
+{
+    "cities": [
+        {
+            "cityId": "06-TR",
+            "cityName": "Ankara",
+            "stations": [
+                {
+                    "stationId": "stop-141",
+                    "stationsName": "Özdilek Durağı",
+                    "stationsLocation": "x1,y1"
+                },
+                {
+                    "stationsId": "stop-142",
+                    "stationsName": "Köroğlu Durağı",
+                    "stationsLocation": "x2,y2"
+                }
+            ],
+            "routes":[
+                {
+                    "routeId":"14route1",
+                    "routeName": "14a",
+                    "routeLine": "Organize Sanayi-Otogar",
+                    "routeStations": ["Köroğlu Durağı","Özdilek Durağı"],
+                    "routeStart": ["x2,y2"],
+                    "routeStop": ["x1,y1"]    
+                }
+            ],
+            "populerPlaces": [
+                {
+                    "populerName": "Abant",
+                    "description": "lalallaallalal"
+                },
+                {
+                    "populerName": "Gölcük",
+                    "description": "lalallaallalal"
+                },
+                {
+                    "populerName": "Yedigöller",
+                    "description": "lalallaallalal"
+                }
+            ],
+            "cardReloadPoints": [
+                {
+                    "pointName": "point1",
+                    "location": "x1,y1"
+                },
+                {
+                    "pointName": "point2",
+                    "location": "x2,y2"
+                }
+            ]
+        },
+        {
+            "cityId": "14-TR",
+            "cityName": "Bolu",
+            "stations": [
+                {
+                    "stationId": "stop-141",
+                    "stationsName": "Özdilek Durağı",
+                    "stationsLocation": "x1,y1"
+                },
+                {
+                    "stationsId": "stop-142",
+                    "stationsName": "Köroğlu Durağı",
+                    "stationsLocation": "x2,y2"
+                }
+            ],
+            "routes":[
+                {
+                    "routeId":"14route1",
+                    "routeName": "14a",
+                    "routeLine": "Organize Sanayi-Otogar",
+                    "routeStations": ["Köroğlu Durağı","Özdilek Durağı"],
+                    "routeStart": ["x2,y2"],
+                    "routeStop": ["x1,y1"]    
+                }
+            ],
+            "populerPlaces": [
+                {
+                    "populerName": "Abant",
+                    "description": "lalallaallalal"
+                },
+                {
+                    "populerName": "Gölcük",
+                    "description": "lalallaallalal"
+                },
+                {
+                    "populerName": "Yedigöller",
+                    "description": "lalallaallalal"
+                }
+            ],
+            "cardReloadPoints": [
+                {
+                    "pointName": "point1",
+                    "location": "x1,y1"
+                },
+                {
+                    "pointName": "point2",
+                    "location": "x2,y2"
+                }
+            ]
+        },
+        {
+            "cityId": "25-TR",
+            "cityName": "Erzurum",
+            "stations": [
+                {
+                    "stationId": "stop-141",
+                    "stationsName": "Özdilek Durağı",
+                    "stationsLocation": "x1,y1"
+                },
+                {
+                    "stationsId": "stop-142",
+                    "stationsName": "Köroğlu Durağı",
+                    "stationsLocation": "x2,y2"
+                }
+            ],
+            "routes":[
+                {
+                    "routeId":"14route1",
+                    "routeName": "14a",
+                    "routeLine": "Organize Sanayi-Otogar",
+                    "routeStations": ["Köroğlu Durağı","Özdilek Durağı"],
+                    "routeStart": ["x2,y2"],
+                    "routeStop": ["x1,y1"]    
+                }
+            ],
+            "populerPlaces": [
+                {
+                    "populerName": "Abant",
+                    "description": "lalallaallalal"
+                },
+                {
+                    "populerName": "Gölcük",
+                    "description": "lalallaallalal"
+                },
+                {
+                    "populerName": "Yedigöller",
+                    "description": "lalallaallalal"
+                }
+            ],
+            "cardReloadPoints": [
+                {
+                    "pointName": "point1",
+                    "location": "x1,y1"
+                },
+                {
+                    "pointName": "point2",
+                    "location": "x2,y2"
+                }
+            ]
+        },
+        {
+            "cityId": "34-TR",
+            "cityName": "İstanbul",
+            "stations": [
+                {
+                    "stationId": "stop-141",
+                    "stationsName": "Özdilek Durağı",
+                    "stationsLocation": "x1,y1"
+                },
+                {
+                    "stationsId": "stop-142",
+                    "stationsName": "Köroğlu Durağı",
+                    "stationsLocation": "x2,y2"
+                }
+            ],
+            "routes":[
+                {
+                    "routeId":"14route1",
+                    "routeName": "14a",
+                    "routeLine": "Organize Sanayi-Otogar",
+                    "routeStations": ["Köroğlu Durağı","Özdilek Durağı"],
+                    "routeStart": ["x2,y2"],
+                    "routeStop": ["x1,y1"]    
+                }
+            ],
+            "populerPlaces": [
+                {
+                    "populerName": "Abant",
+                    "description": "lalallaallalal"
+                },
+                {
+                    "populerName": "Gölcük",
+                    "description": "lalallaallalal"
+                },
+                {
+                    "populerName": "Yedigöller",
+                    "description": "lalallaallalal"
+                }
+            ],
+            "cardReloadPoints": [
+                {
+                    "pointName": "point1",
+                    "location": "x1,y1"
+                },
+                {
+                    "pointName": "point2",
+                    "location": "x2,y2"
+                }
+            ]
+        },
+        {
+            "cityId": "54-TR",
+            "cityName": "Sakarya",
+            "stations": [
+                {
+                    "stationId": "stop-541",
+                    "stationsName": "Kyk Durağı",
+                    "stationsLocation": "x1,y1"
+                },
+                {
+                    "stationsId": "stop-542",
+                    "stationsName": "Yurtlar Bölgesi Durağı",
+                    "stationsLocation": "x2,y2"
+                }
+            ],
+            "routes":[
+                {
+                    "routeId":"route541",
+                    "routeName": "14a",
+                    "routeLine": "Organize Sanayi-Otogar",
+                    "routeStations": ["Köroğlu Durağı","Özdilek Durağı"],
+                    "routeStart": ["x2,y2"],
+                    "routeStop": ["x1,y1"]    
+                }
+            ],
+            "populerPlaces": [
+                {
+                    "populerName": "Gölpark",
+                    "description": "lalallaallalal"
+                },
+                {
+                    "populerName": "Gölya",
+                    "description": "lalallaallalal"
+                },
+                {
+                    "populerName": "Poyrazlar Gölü",
+                    "description": "lalallaallalal"
+                }
+            ],
+            "cardReloadPoints": [
+                {
+                    "pointName": "point1",
+                    "location": "x1,y1"
+                },
+                {
+                    "pointName": "point2",
+                    "location": "x2,y2"
+                }
+            ]
+        },
+        {
+            "cityId": "68-TR",
+            "cityName": "Aksaray",
+            "stations": [
+                {
+                    "stationId": "stop-141",
+                    "stationsName": "Özdilek Durağı",
+                    "stationsLocation": "x1,y1"
+                },
+                {
+                    "stationsId": "stop-142",
+                    "stationsName": "Köroğlu Durağı",
+                    "stationsLocation": "x2,y2"
+                }
+            ],
+            "routes":[
+                {
+                    "routeId":"14route1",
+                    "routeName": "14a",
+                    "routeLine": "Organize Sanayi-Otogar",
+                    "routeStations": ["Köroğlu Durağı","Özdilek Durağı"],
+                    "routeStart": ["x2,y2"],
+                    "routeStop": ["x1,y1"]    
+                }
+            ],
+            "populerPlaces": [
+                {
+                    "populerName": "Abant",
+                    "description": "lalallaallalal"
+                },
+                {
+                    "populerName": "Gölcük",
+                    "description": "lalallaallalal"
+                },
+                {
+                    "populerName": "Yedigöller",
+                    "description": "lalallaallalal"
+                }
+            ],
+            "cardReloadPoints": [
+                {
+                    "pointName": "point1",
+                    "location": "x1,y1"
+                },
+                {
+                    "pointName": "point2",
+                    "location": "x2,y2"
+                }
+            ]
+        }
+        
+    ]
+}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Modal, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, SafeAreaView } from 'react-native';
 import styles from './ModalAlert.style';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
