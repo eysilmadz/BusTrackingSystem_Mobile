@@ -24,7 +24,9 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 
-const TabMenu = () => {
+const TabMenu = ({route}) => {
+  const paramValue = route.params?.city;
+  console.log("tab menu params",route.params);
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -61,7 +63,7 @@ const TabMenu = () => {
 
         },
       })}>
-      <Tab.Screen name="Home" component={Home} options={{ headerShown: false, tabBarShowLabel: false, }} />
+      <Tab.Screen name="Home" component={Home} initialParams={{ city: paramValue }} options={{ headerShown: false, tabBarShowLabel: false, }} />
       <Tab.Screen name="Map" component={Map} options={{ headerShown: false, tabBarShowLabel: false }} />
       <Tab.Screen name="Favourites" component={Favourites} options={{ headerShown: false, tabBarShowLabel: false }} />
       <Tab.Screen name="Cards" component={Cards} options={{ headerShown: false, tabBarShowLabel: false }} />
@@ -108,7 +110,9 @@ const CustomHeader = ({ navigation, route }) => {
   );
 };
 
-const DrawerMenu = () => {
+const DrawerMenu = ({route}) => {
+  const paramValue = route.params?.city;
+  console.log("drawer",paramValue)
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
@@ -141,11 +145,11 @@ const DrawerMenu = () => {
             </View>
           );
         },
-        drawerActiveTintColor: '#222222', // Focused olduğunda hem ikon hem yazı siyah
-        drawerInactiveTintColor: '#888888', // Focused değilken gri
+        drawerActiveTintColor: '#222222', 
+        drawerInactiveTintColor: '#888888', 
       })}
     >
-      <Drawer.Screen name='HomeTab' component={TabMenu} options={{ drawerItemStyle: { display: 'none' } }} />
+      <Drawer.Screen name='HomeTab' component={TabMenu} initialParams={{ city: route.params?.city }} options={{ drawerItemStyle: { display: 'none' } }} />
       <Drawer.Screen name="LostItemReport" component={LostItemReport} />
       <Drawer.Screen name="ContactAndFeedback" component={ContactAndFeedback} />
       <Drawer.Screen name="FrequentlyAskedQuestions" component={FrequentlyAskedQuestions} />

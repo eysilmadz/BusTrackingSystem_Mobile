@@ -1,192 +1,86 @@
 {
     "cities": [
         {
-            "cityId": "06-TR",
-            "cityName": "Ankara",
-            "stations": [
-                {
-                    "stationId": "stop-141",
-                    "stationsName": "Özdilek Durağı",
-                    "stationsLocation": "x1,y1"
-                },
-                {
-                    "stationsId": "stop-142",
-                    "stationsName": "Köroğlu Durağı",
-                    "stationsLocation": "x2,y2"
-                }
-            ],
-            "routes":[
-                {
-                    "routeId":"14route1",
-                    "routeName": "14a",
-                    "routeLine": "Organize Sanayi-Otogar",
-                    "routeStations": ["Köroğlu Durağı","Özdilek Durağı"],
-                    "routeStart": ["x2,y2"],
-                    "routeStop": ["x1,y1"]    
-                }
-            ],
-            "populerPlaces": [
-                {
-                    "populerName": "Abant",
-                    "description": "lalallaallalal"
-                },
-                {
-                    "populerName": "Gölcük",
-                    "description": "lalallaallalal"
-                },
-                {
-                    "populerName": "Yedigöller",
-                    "description": "lalallaallalal"
-                }
-            ],
-            "cardReloadPoints": [
-                {
-                    "pointName": "point1",
-                    "location": "x1,y1"
-                },
-                {
-                    "pointName": "point2",
-                    "location": "x2,y2"
-                }
-            ]
-        },
-        {
-            "cityId": "14-TR",
-            "cityName": "Bolu",
-            "stations": [
-                {
-                    "stationId": "stop-141",
-                    "stationsName": "Özdilek Durağı",
-                    "stationsLocation": "x1,y1"
-                },
-                {
-                    "stationsId": "stop-142",
-                    "stationsName": "Köroğlu Durağı",
-                    "stationsLocation": "x2,y2"
-                }
-            ],
-            "routes":[
-                {
-                    "routeId":"14route1",
-                    "routeName": "14a",
-                    "routeLine": "Organize Sanayi-Otogar",
-                    "routeStations": ["Köroğlu Durağı","Özdilek Durağı"],
-                    "routeStart": ["x2,y2"],
-                    "routeStop": ["x1,y1"]    
-                }
-            ],
-            "populerPlaces": [
-                {
-                    "populerName": "Abant",
-                    "description": "lalallaallalal"
-                },
-                {
-                    "populerName": "Gölcük",
-                    "description": "lalallaallalal"
-                },
-                {
-                    "populerName": "Yedigöller",
-                    "description": "lalallaallalal"
-                }
-            ],
-            "cardReloadPoints": [
-                {
-                    "pointName": "point1",
-                    "location": "x1,y1"
-                },
-                {
-                    "pointName": "point2",
-                    "location": "x2,y2"
-                }
-            ]
-        },
-        {
             "cityId": "25-TR",
             "cityName": "Erzurum",
             "stations": [
                 {
-                    "stationId": "stop-141",
-                    "stationsName": "Özdilek Durağı",
+                    "stationId": "stop-541",
+                    "stationsName": "Kyk Durağı",
                     "stationsLocation": "x1,y1"
                 },
                 {
-                    "stationsId": "stop-142",
-                    "stationsName": "Köroğlu Durağı",
+                    "stationsId": "stop-542",
+                    "stationsName": "Yurtlar Bölgesi Durağı",
                     "stationsLocation": "x2,y2"
                 }
             ],
             "routes":[
                 {
-                    "routeId":"14route1",
-                    "routeName": "14a",
-                    "routeLine": "Organize Sanayi-Otogar",
-                    "routeStations": ["Köroğlu Durağı","Özdilek Durağı"],
+                    "routeId":"route-B3",
+                    "routeName": "B3",
+                    "routeLine": "Havuzbaşı - Dadaşkent",
+                    "routeStations": ["KENT MEYDANI" , "KUDÜS CAD." , "ÇARK CAD." , "SANAYİ CAD." , "M.YAZICIOĞLU CAD." , "KENAN SOFUOĞLU CAD." , "N.FAZIL CAD." , "ÜNİVERSİTE CAD." , "KAMPÜS"],
                     "routeStart": ["x2,y2"],
                     "routeStop": ["x1,y1"]    
                 }
             ],
             "populerPlaces": [
                 {
-                    "populerName": "Abant",
-                    "description": "lalallaallalal"
+                    "populerName": "Yakutiye Medresesi",
+                    "description": "Erzurum'un tarihi medreselerinden biri olup Selçuklu dönemine aittir."
                 },
                 {
-                    "populerName": "Gölcük",
-                    "description": "lalallaallalal"
+                    "populerName": "Aziziye Tabyaları",
+                    "description": "1877-1878 Osmanlı-Rus Savaşı'nda büyük savunma gösterilen tarihi tabyalar."
                 },
                 {
-                    "populerName": "Yedigöller",
-                    "description": "lalallaallalal"
-                }
-            ],
-            "cardReloadPoints": [
-                {
-                    "pointName": "point1",
-                    "location": "x1,y1"
+                    "populerName": "Lala Mustafa Paşa Camisi",
+                    "description": "Erzurum'da Osmanlı dönemi camilerinden biridir."
                 },
                 {
-                    "pointName": "point2",
-                    "location": "x2,y2"
-                }
-            ]
-        },
-        {
-            "cityId": "34-TR",
-            "cityName": "İstanbul",
-            "stations": [
-                {
-                    "stationId": "stop-141",
-                    "stationsName": "Özdilek Durağı",
-                    "stationsLocation": "x1,y1"
+                    "populerName": "Çifte Minareli Medrese",
+                    "description": "Erzurum'un simgelerinden biri olan Selçuklu dönemi medresesi."
                 },
                 {
-                    "stationsId": "stop-142",
-                    "stationsName": "Köroğlu Durağı",
-                    "stationsLocation": "x2,y2"
-                }
-            ],
-            "routes":[
-                {
-                    "routeId":"14route1",
-                    "routeName": "14a",
-                    "routeLine": "Organize Sanayi-Otogar",
-                    "routeStations": ["Köroğlu Durağı","Özdilek Durağı"],
-                    "routeStart": ["x2,y2"],
-                    "routeStop": ["x1,y1"]    
-                }
-            ],
-            "populerPlaces": [
-                {
-                    "populerName": "Abant",
-                    "description": "lalallaallalal"
+                    "populerName": "Üç Gümbetler",
+                    "description": "Selçuklu döneminden kalma tarihi mezar yapıları."
                 },
                 {
-                    "populerName": "Gölcük",
-                    "description": "lalallaallalal"
+                    "populerName": "Palandöken Kayak Merkezi",
+                    "description": "Türkiye'nin en popüler kayak merkezlerinden biri."
                 },
                 {
-                    "populerName": "Yedigöller",
-                    "description": "lalallaallalal"
+                    "populerName": "Tortum Şelalesi",
+                    "description": "Türkiye'nin en büyük şelalelerinden biri olan doğal güzellik."
+                },
+                {
+                    "populerName": "Tarihi Erzurum Evleri",
+                    "description": "Osmanlı mimarisinin izlerini taşıyan tarihi Erzurum evleri."
+                },
+                {
+                    "populerName": "Erzurum Kalesi",
+                    "description": "Erzurum'un merkezinde yer alan Bizans dönemi kalesi."
+                },
+                {
+                    "populerName": "Tortum Gölü",
+                    "description": "Erzurum'un doğusunda bulunan doğal bir göl."
+                },
+                {
+                    "populerName": "Narman Peribacaları",
+                    "description": "Kırmızı kaya oluşumlarıyla ünlü doğal peribacaları."
+                },
+                {
+                    "populerName": "Erzurum Atatürk Evi Müzesi",
+                    "description": "Atatürk'ün Erzurum Kongresi sırasında kaldığı ev, müzeye dönüştürülmüştür."
+                },
+                {
+                    "populerName": "Abdurrahman Gazi Türbesi",
+                    "description": "Erzurum'un maneviyatı yüksek ziyaret yerlerinden biri."
+                },
+                {
+                    "populerName": "İspir Yedigöller",
+                    "description": "Erzurum'un doğa harikalarından biri olan yedi göller bölgesi."
                 }
             ],
             "cardReloadPoints": [
@@ -217,76 +111,70 @@
             ],
             "routes":[
                 {
-                    "routeId":"route541",
-                    "routeName": "14a",
-                    "routeLine": "Organize Sanayi-Otogar",
-                    "routeStations": ["Köroğlu Durağı","Özdilek Durağı"],
+                    "routeId":"route-26",
+                    "routeName": "26",
+                    "routeLine": "Kent Meydanı - Kampüs",
+                    "routeStations": ["KENT MEYDANI" , "KUDÜS CAD." , "ÇARK CAD." , "SANAYİ CAD." , "M.YAZICIOĞLU CAD." , "KENAN SOFUOĞLU CAD." , "N.FAZIL CAD." , "ÜNİVERSİTE CAD." , "KAMPÜS"],
                     "routeStart": ["x2,y2"],
                     "routeStop": ["x1,y1"]    
                 }
             ],
             "populerPlaces": [
-                {
-                    "populerName": "Gölpark",
-                    "description": "lalallaallalal"
-                },
-                {
-                    "populerName": "Gölya",
-                    "description": "lalallaallalal"
-                },
                 {
                     "populerName": "Poyrazlar Gölü",
-                    "description": "lalallaallalal"
-                }
-            ],
-            "cardReloadPoints": [
-                {
-                    "pointName": "point1",
-                    "location": "x1,y1"
+                    "description": "Doğayla iç içe piknik ve yürüyüş alanları sunan bir göl."
                 },
                 {
-                    "pointName": "point2",
-                    "location": "x2,y2"
-                }
-            ]
-        },
-        {
-            "cityId": "68-TR",
-            "cityName": "Aksaray",
-            "stations": [
-                {
-                    "stationId": "stop-141",
-                    "stationsName": "Özdilek Durağı",
-                    "stationsLocation": "x1,y1"
+                    "populerName": "Sakarya Müzesi",
+                    "description": "Bölgenin tarihi ve kültürel zenginliklerini sergileyen müze."
                 },
                 {
-                    "stationsId": "stop-142",
-                    "stationsName": "Köroğlu Durağı",
-                    "stationsLocation": "x2,y2"
-                }
-            ],
-            "routes":[
-                {
-                    "routeId":"14route1",
-                    "routeName": "14a",
-                    "routeLine": "Organize Sanayi-Otogar",
-                    "routeStations": ["Köroğlu Durağı","Özdilek Durağı"],
-                    "routeStart": ["x2,y2"],
-                    "routeStop": ["x1,y1"]    
-                }
-            ],
-            "populerPlaces": [
-                {
-                    "populerName": "Abant",
-                    "description": "lalallaallalal"
+                    "populerName": "Sakarya Kent Park",
+                    "description": "Şehir içinde geniş yeşil alanlara sahip park."
                 },
                 {
-                    "populerName": "Gölcük",
-                    "description": "lalallaallalal"
+                    "populerName": "Arifiye Gölya Tabiat Parkı",
+                    "description": "Doğal güzellikleriyle ünlü, tabiat parkı olarak korunan alan."
                 },
                 {
-                    "populerName": "Yedigöller",
-                    "description": "lalallaallalal"
+                    "populerName": "Sakarya Park",
+                    "description": "Dinlenme, yürüyüş ve açık hava etkinlikleri için ideal park."
+                },
+                {
+                    "populerName": "Sakarya İl Ormanı Tabiat Parkı",
+                    "description": "Doğa yürüyüşü ve piknik alanları ile ünlü koruma alanı."
+                },
+                {
+                    "populerName": "Çark Caddesi",
+                    "description": "Sakarya'nın en işlek alışveriş ve yeme-içme caddelerinden biri."
+                },
+                {
+                    "populerName": "Sapanca Gölü",
+                    "description": "Doğa manzarası ve çevresinde yürüyüş yolları ile ünlü göl."
+                },
+                {
+                    "populerName": "Maden Deresi",
+                    "description": "Doğal şelaleleri ve yürüyüş parkurları ile ünlü dere."
+                },
+                {
+                    "populerName": "Acarlar Longozu",
+                    "description": "Türkiye'nin nadir longoz ormanlarından biri, flora ve faunasıyla ünlü."
+                },
+                {
+                    "populerName": "Justinianos Köprüsü",
+                    "description": "Bizans dönemine ait tarihi köprü."
+                },
+                {
+                    "populerName": "Karasu Sahil Parkı",
+                    "description": "Deniz kenarında yürüyüş ve dinlenme alanı sunan park."
+                },
+                {
+                    "populerName": "Serdivan Gölpark",
+                    "description": "Sapanca Gölü manzarasına sahip popüler dinlenme noktası."
+                },
+                {
+                    "populerName": "Karagöl Yaylası",
+                    "description": "Doğa severler için kamp ve yürüyüş alanları sunan yayla."
                 }
             ],
             "cardReloadPoints": [
@@ -300,6 +188,5 @@
                 }
             ]
         }
-        
     ]
 }

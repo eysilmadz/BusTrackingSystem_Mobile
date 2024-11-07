@@ -5,7 +5,7 @@ import styles from './Dropdown.style';
 import axios from 'axios';
 import { API_URL } from '@env';
 
-const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen }) => {
+const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySelect, selectedCity, disabled, onCityInputClear, selectedRoute, setSelectedRoute }) => {
 
     const [data, setData] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -14,23 +14,37 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen }) => {
 
     useEffect(() => {
         fetchData();
-    }, []);
+        if (dataType === "cities" && selectedCity && selectedCity !== "N/A") {
+            setInputValue(selectedCity);
+        } else if (dataType === "routes" && !selectedCity) {
+            setSelectedRoute(null);
+            setInputValue('');
+        }
+    }, [selectedCity]);
 
     const fetchData = async () => {
         try {
             const response = await axios.get(`${API_URL}/cities`);
-            const cityNames = response.data.map(city => city.cityName);
-            setData(cityNames);
-            console.log(cityNames);
+            if (dataType === "cities") {
+                const cityNames = response.data.map(city => city.cityName);
+                setData(cityNames);
+            }
+            else if (dataType === "routes" && selectedCity) {
+                const city = response.data.find(city => city.cityName === selectedCity);
+                const route = city ? city.routes.map(route => `${route.routeName}-${route.routeLine}`) : [];
+                setData(route);
+            }
         } catch (error) {
             console.log("error", error);
         }
     };
 
     const toggleDropdown = () => {
-        setIsOpen(!isOpen);
-        if (inputRef.current) {
-            inputRef.current.focus();
+        if (!disabled) {
+            setIsOpen(!isOpen);
+            if (inputRef.current) {
+                inputRef.current.focus();
+            }
         }
     };
 
@@ -38,6 +52,11 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen }) => {
         setSelectedItem(item);
         setInputValue(item);
         setIsOpen(false);
+        if (dataType === "cities" && onCitySelect) {
+            onCitySelect(item); 
+        } else if (dataType === "routes" && setSelectedRoute) {
+            setSelectedRoute(item);
+        }
     };
 
     const handleSearch = (text) => {
@@ -53,12 +72,16 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen }) => {
         } else {
             setIsOpen(false);
             fetchData();
+            if (dataType === "cities" && onCityInputClear) {
+                onCityInputClear(); 
+            }
         }
+
     };
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.dropdown} onPress={toggleDropdown}>
+            <TouchableOpacity style={[styles.dropdown, disabled && { opacity: 0.5 }]} onPress={toggleDropdown} disabled={disabled}>
                 <TextInput
                     ref={inputRef}
                     onFocus={toggleDropdown}
@@ -66,13 +89,14 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen }) => {
                     style={styles.selectedText}
                     onChangeText={handleSearch}
                     value={inputValue}
+                    editable={!disabled}
                 />
                 <Icon name={iconName} size={24} color="#363636" style={styles.icon} />
             </TouchableOpacity>
             {isOpen && (
                 <FlatList
                     data={data}
-                    keyExtractor={(index) => index.toString()}
+                    keyExtractor={(item, index) => index.toString()}
                     style={styles.dropdownList}
                     renderItem={({ item }) => (
                         <TouchableOpacity

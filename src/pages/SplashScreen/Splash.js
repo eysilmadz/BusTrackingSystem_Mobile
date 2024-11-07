@@ -3,26 +3,28 @@ import { SafeAreaView, Image, StyleSheet, Dimensions, Linking, Alert, Permission
 import NetInfo from "@react-native-community/netinfo";
 import Geolocation from "react-native-geolocation-service";
 import { check, PERMISSIONS, request, RESULTS } from "react-native-permissions";
-
+import axios from 'axios';
+import { API_URL } from '@env';
 import ModalAlert from "../../components/ModalAlert";
 
 const Splash = ({ navigation }) => {
 
     const [isConnected, setIsConnected] = useState(true);
     const [modalVisible, setModalVisible] = useState(false);
+    const [locationCity, setLocationCity] = useState(null); 
 
-    const showAlert = () => {
-        setModalVisible(true);
-    };
+    const showAlert = () => setModalVisible(true);
 
-    const hideAlert = () => {
-        setModalVisible(false);
-    };
+    const hideAlert = () => setModalVisible(false);
 
     useEffect(() => {
+
+
         const unsubscribe = NetInfo.addEventListener(state => {
             setIsConnected(state.isConnected);
 
+            
+          
             if (!state.isConnected) {
                 showAlert();
             } else {
@@ -34,7 +36,14 @@ const Splash = ({ navigation }) => {
             unsubscribe();
         };
 
+        
+
     }, [navigation]);
+
+    useEffect(() => {
+        if(locationCity != null)
+        navigateToHome();
+    },[locationCity])
 
     const openSettings = () => { //ayarlar sayfasına yönlendirme
         if (Platform.OS === 'android') {
@@ -68,34 +77,50 @@ const Splash = ({ navigation }) => {
                     getLocation();
                 }
                 else {
-                    navigateToHome();
+                    setLocationCity("N/A")
                 }
             }
             else {
-                navigateToHome();
+                setLocationCity("N/A");
             }
         } catch (error) {
             console.warn(error);
         }
     }
 
-    getLocation = () => {
+    const getLocation = () => {
         Geolocation.getCurrentPosition(
             (position) => {
                 console.log("Konum Bilgisi: ", position);
-                navigateToHome();
+                fetchCityData(position.coords.latitude, position.coords.longitude);
+                //navigateToHome();
             },
             (error) => {
                 console.log(error.code, error.message);
-                navigateToHome();
+                setLocationCity("N/A");
             },
             { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
         );
     };
 
+    const fetchCityData = async (latitude, longitude) => {
+        // Fetch city based on coordinates using an API (You can use any geolocation API)
+        try {
+            const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
+            const data = await response.json();
+            const city = data.principalSubdivision;
+            setLocationCity(city);
+            console.log(city)
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const navigateToHome = () => {
         const timer = setTimeout(() => {
-            navigation.replace('DrawerMenu');
+            navigation.navigate('DrawerMenu',{
+                city: locationCity,
+        });
         }, 3000);
         return () => clearTimeout(timer);
     };
