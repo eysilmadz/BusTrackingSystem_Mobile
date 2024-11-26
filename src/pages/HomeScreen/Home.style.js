@@ -6,6 +6,7 @@ export default StyleSheet.create({
         backgroundColor: '#ffffff',
         alignItems: "center",
         //justifyContent: "center"
-      },
+      }
+      
 })
 

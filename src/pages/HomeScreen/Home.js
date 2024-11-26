@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, TouchableWithoutFeedback, View } from "react-native";
+import { SafeAreaView, TouchableOpacity, TouchableWithoutFeedback, View, Text } from "react-native";
 import Dropdown from "../../components/Dropdown";
 import styles from './Home.style';
+import Slider from "../../components/Slider";
 
 function Home({ route }) {
   const { city } = route.params;
@@ -50,6 +51,10 @@ function Home({ route }) {
             selectedRoute={selectedRoute}
             setSelectedRoute={setSelectedRoute}
           />
+        </View>
+        
+        <View>
+          <Slider/>
         </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>

@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import Icon from 'react-native-vector-icons/Ionicons';
 import 'react-native-gesture-handler';
 import './gesture-handler';
@@ -24,12 +25,13 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 
-const TabMenu = ({route}) => {
+const TabMenu = ({ route }) => {
   const paramValue = route.params?.city;
-  console.log("tab menu params",route.params);
+  console.log("tab menu params", route.params);
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
+        //tabBarHideOnKeyboard: true,
         tabBarStyle: {
           height: Dimensions.get('window').height / 13.2,
         },
@@ -45,20 +47,22 @@ const TabMenu = ({route}) => {
             iconName = focused ? 'card' : 'card-outline';
           }
           return (
-            <View style={{ alignItems: 'center' }}>
-              <Icon name={iconName} size={size} color={focused ? '#222222' : color} />
-              {focused && (
-                <View
-                  style={{
-                    height: 6,
-                    width: 6,
-                    backgroundColor: '#222222',
-                    borderRadius: 3,
-                    marginTop: 4,
-                  }}
-                />
-              )}
-            </View>
+            <KeyboardProvider>
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                <Icon name={iconName} size={size} color={focused ? '#222222' : color} />
+                {focused && (
+                  <View
+                    style={{
+                      height: 6,
+                      width: 6,
+                      backgroundColor: '#222222',
+                      borderRadius: 3,
+                      marginTop: 4,
+                    }}
+                  />
+                )}
+              </View>
+            </KeyboardProvider>
           );
 
         },
@@ -110,9 +114,9 @@ const CustomHeader = ({ navigation, route }) => {
   );
 };
 
-const DrawerMenu = ({route}) => {
+const DrawerMenu = ({ route }) => {
   const paramValue = route.params?.city;
-  console.log("drawer",paramValue)
+  console.log("drawer", paramValue)
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
@@ -145,8 +149,8 @@ const DrawerMenu = ({route}) => {
             </View>
           );
         },
-        drawerActiveTintColor: '#222222', 
-        drawerInactiveTintColor: '#888888', 
+        drawerActiveTintColor: '#222222',
+        drawerInactiveTintColor: '#888888',
       })}
     >
       <Drawer.Screen name='HomeTab' component={TabMenu} initialParams={{ city: route.params?.city }} options={{ drawerItemStyle: { display: 'none' } }} />
