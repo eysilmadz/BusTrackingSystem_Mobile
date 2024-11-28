@@ -10,15 +10,15 @@ export default StyleSheet.create({
         height: Dimensions.get("window").height / 3.2,
         borderRadius: 20,
         marginHorizontal: 10,
-        overflow: "hidden", // Görselin taşmasını engeller
-        position: "relative", // Metni görselin üzerine yerleştirmek için
+        overflow: "hidden", 
+        position: "relative", 
     },
     image: {
-        width: "100%", // Kartın tamamını kapla
+        width: "100%", 
         height: "100%",
         resizeMode: "cover",
-        opacity: 0.6, // Transparan efekt
-        position: "absolute", // Metnin arka planı olarak kullan
+        opacity: 0.6, 
+        position: "absolute", 
     },
     text: {
         fontSize: 15,
@@ -26,6 +26,6 @@ export default StyleSheet.create({
         color: "#fff",
         textAlign: "center",
         textShadowRadius: 3,
-        zIndex: 1, // Metni görselin üstüne getir
+        zIndex: 1,
     },
 });
