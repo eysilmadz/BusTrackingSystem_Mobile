@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView, TouchableOpacity, TouchableWithoutFeedback, View, Text } from "react-native";
 import Dropdown from "../../components/Dropdown";
+import MenuButton from "../../components/MenuButton";
 import styles from './Home.style';
 import Slider from "../../components/Slider";
 
@@ -11,8 +12,14 @@ function Home({ route }) {
   const [selectedCity, setSelectedCity] = useState(null);
   const [selectedRoute, setSelectedRoute] = useState(null);
 
+  const logo = [
+    { id: "1", image: require("../../assets/images/bus.png"), text: "Hatlar" },
+    { id: "2", image: require("../../assets/images/card.png"), text: "Dolum Noktaları" },
+    { id: "3", image: require("../../assets/images/location.png"), text: "Nasıl Giderim?" }
+  ]
+
   useEffect(() => {
-    if (city != "N/A") {
+    if (city != "N/A" || city != "California") {
       setSelectedCity(city)
     }
   }, [])
@@ -52,9 +59,13 @@ function Home({ route }) {
             setSelectedRoute={setSelectedRoute}
           />
         </View>
-        
-        <View>
-          <Slider/>
+        <View style={styles.placesContainer}>
+          <Slider selectedCity={selectedCity} />
+        </View>
+        <View style={styles.menuContainer}>
+          {logo.map(item => (
+            <MenuButton key={item.id} image={item.image} text={item.text}/>
+          ))}
         </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>

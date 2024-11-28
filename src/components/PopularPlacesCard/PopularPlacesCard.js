@@ -1,11 +1,12 @@
 import React from "react";
-import { View, Image } from "react-native";
+import { View, Image, Text } from "react-native";
 import styles from './PopularPlacesCard.style';
 
-const PopularPlacesCard = ({image}) => {
+const PopularPlacesCard = ({ image, name }) => {
   return (
     <View style={styles.container}>
-        <Image source={image} style={styles.image}/>
+      <Image source={{ uri: image }} style={styles.image}/>
+      <Text style={styles.text}>{name}</Text>
     </View>
   )
 }

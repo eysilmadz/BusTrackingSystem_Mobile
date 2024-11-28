@@ -28,14 +28,16 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
             if (dataType === "cities") {
                 const cityNames = response.data.map(city => city.cityName);
                 setData(cityNames);
+                console.log("cityName " ,cityNames)
             }
             else if (dataType === "routes" && selectedCity) {
                 const city = response.data.find(city => city.cityName === selectedCity);
                 const route = city ? city.routes.map(route => `${route.routeName}-${route.routeLine}`) : [];
                 setData(route);
             }
+            
         } catch (error) {
-            console.log("error", error);
+            console.log("errorDropdown", error);
         }
     };
 

@@ -28,59 +28,28 @@
             "populerPlaces": [
                 {
                     "populerName": "Yakutiye Medresesi",
-                    "description": "Erzurum'un tarihi medreselerinden biri olup Selçuklu dönemine aittir."
-                },
-                {
-                    "populerName": "Aziziye Tabyaları",
-                    "description": "1877-1878 Osmanlı-Rus Savaşı'nda büyük savunma gösterilen tarihi tabyalar."
-                },
-                {
-                    "populerName": "Lala Mustafa Paşa Camisi",
-                    "description": "Erzurum'da Osmanlı dönemi camilerinden biridir."
+                    "description": "Erzurum'un tarihi medreselerinden biri olup Selçuklu dönemine aittir.",
+                    "image": "https://i.imgur.com/UFEk5Hf.jpg"
                 },
                 {
                     "populerName": "Çifte Minareli Medrese",
-                    "description": "Erzurum'un simgelerinden biri olan Selçuklu dönemi medresesi."
-                },
-                {
-                    "populerName": "Üç Gümbetler",
-                    "description": "Selçuklu döneminden kalma tarihi mezar yapıları."
+                    "description": "Erzurum'un simgelerinden biri olan Selçuklu dönemi medresesi.",
+                    "image": "https://i.imgur.com/MWQM74l.jpg"
                 },
                 {
                     "populerName": "Palandöken Kayak Merkezi",
-                    "description": "Türkiye'nin en popüler kayak merkezlerinden biri."
+                    "description": "Türkiye'nin en popüler kayak merkezlerinden biri.",
+                    "image": "https://i.imgur.com/n1oBatv.jpg"
                 },
                 {
                     "populerName": "Tortum Şelalesi",
-                    "description": "Türkiye'nin en büyük şelalelerinden biri olan doğal güzellik."
+                    "description": "Türkiye'nin en büyük şelalelerinden biri olan doğal güzellik.",
+                    "image": "https://i.imgur.com/U6qvHOO.jpg"
                 },
                 {
                     "populerName": "Tarihi Erzurum Evleri",
-                    "description": "Osmanlı mimarisinin izlerini taşıyan tarihi Erzurum evleri."
-                },
-                {
-                    "populerName": "Erzurum Kalesi",
-                    "description": "Erzurum'un merkezinde yer alan Bizans dönemi kalesi."
-                },
-                {
-                    "populerName": "Tortum Gölü",
-                    "description": "Erzurum'un doğusunda bulunan doğal bir göl."
-                },
-                {
-                    "populerName": "Narman Peribacaları",
-                    "description": "Kırmızı kaya oluşumlarıyla ünlü doğal peribacaları."
-                },
-                {
-                    "populerName": "Erzurum Atatürk Evi Müzesi",
-                    "description": "Atatürk'ün Erzurum Kongresi sırasında kaldığı ev, müzeye dönüştürülmüştür."
-                },
-                {
-                    "populerName": "Abdurrahman Gazi Türbesi",
-                    "description": "Erzurum'un maneviyatı yüksek ziyaret yerlerinden biri."
-                },
-                {
-                    "populerName": "İspir Yedigöller",
-                    "description": "Erzurum'un doğa harikalarından biri olan yedi göller bölgesi."
+                    "description": "Osmanlı mimarisinin izlerini taşıyan tarihi Erzurum evleri.",
+                    "image": "https://i.imgur.com/xjM1tOA.jpg"
                 }
             ],
             "cardReloadPoints": [
@@ -122,59 +91,18 @@
             "populerPlaces": [
                 {
                     "populerName": "Poyrazlar Gölü",
-                    "description": "Doğayla iç içe piknik ve yürüyüş alanları sunan bir göl."
+                    "description": "Doğayla iç içe piknik ve yürüyüş alanları sunan bir göl.",
+                    "image": "https://i.imgur.com/ivpmJpG.jpg"
                 },
                 {
                     "populerName": "Sakarya Müzesi",
-                    "description": "Bölgenin tarihi ve kültürel zenginliklerini sergileyen müze."
+                    "description": "Bölgenin tarihi ve kültürel zenginliklerini sergileyen müze.",
+                    "image": "https://i.imgur.com/pud0cL7.jpg"
                 },
                 {
                     "populerName": "Sakarya Kent Park",
-                    "description": "Şehir içinde geniş yeşil alanlara sahip park."
-                },
-                {
-                    "populerName": "Arifiye Gölya Tabiat Parkı",
-                    "description": "Doğal güzellikleriyle ünlü, tabiat parkı olarak korunan alan."
-                },
-                {
-                    "populerName": "Sakarya Park",
-                    "description": "Dinlenme, yürüyüş ve açık hava etkinlikleri için ideal park."
-                },
-                {
-                    "populerName": "Sakarya İl Ormanı Tabiat Parkı",
-                    "description": "Doğa yürüyüşü ve piknik alanları ile ünlü koruma alanı."
-                },
-                {
-                    "populerName": "Çark Caddesi",
-                    "description": "Sakarya'nın en işlek alışveriş ve yeme-içme caddelerinden biri."
-                },
-                {
-                    "populerName": "Sapanca Gölü",
-                    "description": "Doğa manzarası ve çevresinde yürüyüş yolları ile ünlü göl."
-                },
-                {
-                    "populerName": "Maden Deresi",
-                    "description": "Doğal şelaleleri ve yürüyüş parkurları ile ünlü dere."
-                },
-                {
-                    "populerName": "Acarlar Longozu",
-                    "description": "Türkiye'nin nadir longoz ormanlarından biri, flora ve faunasıyla ünlü."
-                },
-                {
-                    "populerName": "Justinianos Köprüsü",
-                    "description": "Bizans dönemine ait tarihi köprü."
-                },
-                {
-                    "populerName": "Karasu Sahil Parkı",
-                    "description": "Deniz kenarında yürüyüş ve dinlenme alanı sunan park."
-                },
-                {
-                    "populerName": "Serdivan Gölpark",
-                    "description": "Sapanca Gölü manzarasına sahip popüler dinlenme noktası."
-                },
-                {
-                    "populerName": "Karagöl Yaylası",
-                    "description": "Doğa severler için kamp ve yürüyüş alanları sunan yayla."
+                    "description": "Şehir içinde geniş yeşil alanlara sahip park.",
+                    "image": "https://i.imgur.com/BGqI19C.jpg"
                 }
             ],
             "cardReloadPoints": [
