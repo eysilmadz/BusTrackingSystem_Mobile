@@ -21,6 +21,7 @@ import FrequentlyAskedQuestions from './pages/DrawerMenu/FrequentlyAskedQuestion
 import AboutUs from './pages/DrawerMenu/AboutUs';
 import LanguageOptions from './pages/DrawerMenu/LanguageOptions';
 import AllPlaces from './pages/AllPlaces';
+import PlacesDetail from './pages/PlacesDetail';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -172,6 +173,7 @@ function Router() {
         <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false }} />
         <Stack.Screen name="DrawerMenu" component={DrawerMenu} options={{ headerShown: false }} />
         <Stack.Screen name="AllPlaces" component={AllPlaces} options={{ header: (props) => <CustomHeader {...props} />,  }}  />
+        <Stack.Screen name="PlacesDetail" component={PlacesDetail} options={{ header: (props) => <CustomHeader {...props} />,  }}  />
       </Stack.Navigator>
     </NavigationContainer>
   );

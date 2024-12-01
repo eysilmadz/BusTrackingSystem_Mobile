@@ -48,7 +48,7 @@ const Slider = ({ selectedCity, limit = 5 }) => {
                     {popularPlaces.map((place, index) => (
                         <TouchableOpacity
                             key={index}
-                            onPress={() => console.log(place.populerName)}
+                            onPress={() => navigation.navigate('PlacesDetail',  { place } )}
                             activeOpacity={0.7}
                         >
                             <PopularPlacesCard 

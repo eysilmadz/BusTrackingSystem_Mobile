@@ -34,6 +34,7 @@ export default StyleSheet.create({
       width: "100%",
       height: Dimensions.get("window").height/3.8,
       resizeMode: "cover",
+      opacity: 0.8
     },
     name: {
       fontSize: 18,
@@ -42,11 +43,5 @@ export default StyleSheet.create({
       padding: 10,
       color: "#333",
       opacity: 0.9
-    },
-    description: {
-      fontSize: 15,
-      paddingBottom: 10,
-      marginHorizontal: 15,
-      color: "#666",
-    },
+    }
   });
