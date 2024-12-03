@@ -25,6 +25,7 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
     const fetchData = async () => {
         try {
             const response = await axios.get(`${API_URL}/cities`);
+            console.log(response)
             if (dataType === "cities") {
                 const cityNames = response.data.map(city => city.cityName);
                 setData(cityNames);

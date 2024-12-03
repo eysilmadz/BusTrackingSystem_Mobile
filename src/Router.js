@@ -20,8 +20,9 @@ import ContactAndFeedback from './pages/DrawerMenu/ContactAndFeedback';
 import FrequentlyAskedQuestions from './pages/DrawerMenu/FrequentlyAskedQuestions';
 import AboutUs from './pages/DrawerMenu/AboutUs';
 import LanguageOptions from './pages/DrawerMenu/LanguageOptions';
-import AllPlaces from './pages/AllPlaces';
+import AllPlaces from './pages/AllPlacesScreen';
 import PlacesDetail from './pages/PlacesDetail';
+import BusRoutes from './pages/RoutesScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -174,6 +175,7 @@ function Router() {
         <Stack.Screen name="DrawerMenu" component={DrawerMenu} options={{ headerShown: false }} />
         <Stack.Screen name="AllPlaces" component={AllPlaces} options={{ header: (props) => <CustomHeader {...props} />,  }}  />
         <Stack.Screen name="PlacesDetail" component={PlacesDetail} options={{ header: (props) => <CustomHeader {...props} />,  }}  />
+        <Stack.Screen name="BusRoutes" component={BusRoutes} options={{ header: (props) => <CustomHeader {...props} />,  }}  />
       </Stack.Navigator>
     </NavigationContainer>
   );

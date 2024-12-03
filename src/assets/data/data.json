@@ -68,14 +68,169 @@
             "cityName": "Sakarya",
             "stations": [
                 {
-                    "stationId": "stop-541",
-                    "stationsName": "Kyk Durağı",
-                    "stationsLocation": "x1,y1"
+                    "stationId": "stop54-1",
+                    "stationsName": "Demokrasi Meydanı",
+                    "stationsLocation": "40.775660, 30.401123"
                 },
                 {
-                    "stationsId": "stop-542",
-                    "stationsName": "Yurtlar Bölgesi Durağı",
-                    "stationsLocation": "x2,y2"
+                    "stationsId": "stop54-2",
+                    "stationsName": "Kudüs Caddesi",
+                    "stationsLocation": "40.774400, 30.397276"
+                },
+                {
+                    "stationId": "stop54-3",
+                    "stationsName": "Kudüs Caddesi-1",
+                    "stationsLocation": "40.773275, 30.393149"
+                },
+                {
+                    "stationId": "stop54-4",
+                    "stationsName": "Kudüs Caddesi-2",
+                    "stationsLocation": "40.774024, 30.389604"
+                },
+                {
+                    "stationId": "stop54-5",
+                    "stationsName": "Millet Bahçesi",
+                    "stationsLocation": "40.775398, 30.385649"
+                },
+                {
+                    "stationId": "stop54-6",
+                    "stationsName": "Çark Köprü-1",
+                    "stationsLocation": "40.775006, 30.383662"
+                },
+                {
+                    "stationId": "stop54-7",
+                    "stationsName": "Çark Caddesi-2",
+                    "stationsLocation": "40.774098, 30.380993"
+                },
+                {
+                    "stationId": "stop54-8",
+                    "stationsName": "Hakkı Demir Ortaokulu-1",
+                    "stationsLocation": "40.772016, 30.379829"
+                },
+                {
+                    "stationId": "stop54-9",
+                    "stationsName": "Çark Sanayi-1",
+                    "stationsLocation": "40.769798, 30.378093"
+                },
+                {
+                    "stationId": "stop54-10",
+                    "stationsName": "Altınova Durağı",
+                    "stationsLocation": "40.768356, 30.376125"
+                },
+                {
+                    "stationId": "stop54-11",
+                    "stationsName": "Serdivan Devlet Hastanesi",
+                    "stationsLocation": "40.765937, 30.372840"
+                },
+                {
+                    "stationId": "stop54-12",
+                    "stationsName": "Muhsin Yazıcıoğlu Bulvarı-2",
+                    "stationsLocation": "40.764236, 30.370512"
+                },
+                {
+                    "stationId": "stop54-13",
+                    "stationsName": "Muhsin Yazıcıoğlu Bulvarı-4",
+                    "stationsLocation": "40.762567, 30.368241"
+                },
+                {
+                    "stationId": "stop54-14",
+                    "stationsName": "Muhsin Yazıcıoğlu Bulvarı-6",
+                    "stationsLocation": "40.760690, 30.365680"
+                },
+                {
+                    "stationId": "stop54-15",
+                    "stationsName": "Darboğaz Durağı",
+                    "stationsLocation": "40.757568, 30.364023"
+                },
+                {
+                    "stationId": "stop54-16",
+                    "stationsName": "165. Sokak Durağı-1",
+                    "stationsLocation": "40.755399, 30.363648"
+                },
+                {
+                    "stationId": "stop54-17",
+                    "stationsName": "Su Durağı-2",
+                    "stationsLocation": "40.748975, 30.363209"
+                },
+                {
+                    "stationId": "stop54-18",
+                    "stationsName": "Su Yönetim Merkezi",
+                    "stationsLocation": "40.747208, 30.362395"
+                },
+                {
+                    "stationId": "stop54-19",
+                    "stationsName": "Necip Fazıl Kısakürek Caddesi-6",
+                    "stationsLocation": "40.747679, 30.359523"
+                },
+                {
+                    "stationId": "stop54-20",
+                    "stationsName": "Necip Fazıl Kısakürek Caddesi-4",
+                    "stationsLocation": "40.747318, 30.357255"
+                },
+                {
+                    "stationId": "stop54-21",
+                    "stationsName": "Necip Fazıl Kısakürek Caddesi-2",
+                    "stationsLocation": "40.747723, 30.353748"
+                },
+                {
+                    "stationId": "stop54-22",
+                    "stationsName": "KYK-1",
+                    "stationsLocation": "40.747356, 30.351222"
+                },
+                {
+                    "stationId": "stop54-23",
+                    "stationsName": "15 Temmuz Şehitler Lisesi",
+                    "stationsLocation": "40.746025, 30.346918"
+                },
+                {
+                    "stationId": "stop54-24",
+                    "stationsName": "Yurtlar Durağı-1",
+                    "stationsLocation": "40.745279, 30.343271"
+                },
+                {
+                    "stationId": "stop54-25",
+                    "stationsName": "Kampüs-1",
+                    "stationsLocation": "40.744507, 30.341158"
+                },
+                {
+                    "stationId": "stop54-26",
+                    "stationsName": "Besyo",
+                    "stationsLocation": "40.743017, 30.337914"
+                },
+                {
+                    "stationId": "stop54-27",
+                    "stationsName": "Enstitü",
+                    "stationsLocation": "40.742926, 30.333966"
+                },
+                {
+                    "stationId": "stop54-28",
+                    "stationsName": "Kampüs Kafeterya-1",
+                    "stationsLocation": "40.744188, 30.331650"
+                },
+                {
+                    "stationId": "stop54-29",
+                    "stationsName": "Fen Bilimleri",
+                    "stationsLocation": "40.745281, 30.328776"
+                },
+                {
+                    "stationId": "stop54-30",
+                    "stationsName": "Esentepe Giriş Kapısı",
+                    "stationsLocation": "40.745050, 30.323810"
+                },
+                {
+                    "stationId": "stop54-31",
+                    "stationsName": "İlahiyat Fakültesi",
+                    "stationsLocation": "40.743263, 30.323896"
+                },
+                {
+                    "stationId": "stop54-32",
+                    "stationsName": "Mühendislik Fakültesi-1",
+                    "stationsLocation": "40.741753, 30.325701"
+                },
+                {
+                    "stationId": "stop54-33",
+                    "stationsName": "Kampüs",
+                    "stationsLocation": "40.74041705549361, 30.328951696442072"
                 }
             ],
             "routes":[
@@ -83,9 +238,25 @@
                     "routeId":"route-26",
                     "routeName": "26",
                     "routeLine": "Kent Meydanı - Kampüs",
-                    "routeStations": ["KENT MEYDANI" , "KUDÜS CAD." , "ÇARK CAD." , "SANAYİ CAD." , "M.YAZICIOĞLU CAD." , "KENAN SOFUOĞLU CAD." , "N.FAZIL CAD." , "ÜNİVERSİTE CAD." , "KAMPÜS"],
-                    "routeStart": ["x2,y2"],
-                    "routeStop": ["x1,y1"]    
+                    "routeStations": ["stop54-1", "stop54-2", "stop54-3", "stop54-4", "stop54-5", "stop54-6", "stop54-7", "stop54-8", "stop54-9", "stop54-10", "stop54-11", "stop54-12", "stop54-13", "stop54-14", "stop54-15", "stop54-16", "stop54-17", "stop54-18", "stop54-19", "stop54-20", "stop54-21", "stop54-22", "stop54-23", "stop54-24", "stop54-25", "stop54-26", "stop54-27", "stop54-28", "stop54-29", "stop54-30", "stop54-31", "stop54-32", "stop54-33"]
+                },
+                {
+                    "routeId":"route-4",
+                    "routeName": "4",
+                    "routeLine": "Kent Meydanı - Kampüs",
+                    "routeStations": ["stop54-1", "stop54-2", "stop54-3", "stop54-4", "stop54-5", "stop54-6", "stop54-7", "stop54-8", "stop54-9", "stop54-10", "stop54-11", "stop54-12", "stop54-13", "stop54-14", "stop54-15", "stop54-16", "stop54-17", "stop54-18", "stop54-19", "stop54-20", "stop54-21", "stop54-22", "stop54-23", "stop54-24", "stop54-25", "stop54-26", "stop54-27", "stop54-28", "stop54-29", "stop54-30", "stop54-31", "stop54-32", "stop54-33"]
+                },
+                {
+                    "routeId":"route-15",
+                    "routeName": "15",
+                    "routeLine": "Kent Meydanı - Kampüs",
+                    "routeStations": ["stop54-1", "stop54-2", "stop54-3", "stop54-4", "stop54-5", "stop54-6", "stop54-7", "stop54-8", "stop54-9", "stop54-10", "stop54-11", "stop54-12", "stop54-13", "stop54-14", "stop54-15", "stop54-16", "stop54-17", "stop54-18", "stop54-19", "stop54-20", "stop54-21", "stop54-22", "stop54-23", "stop54-24", "stop54-25", "stop54-26", "stop54-27", "stop54-28", "stop54-29", "stop54-30", "stop54-31", "stop54-32", "stop54-33"]
+                },
+                {
+                    "routeId":"route-28",
+                    "routeName": "28",
+                    "routeLine": "Kent Meydanı - Kampüs",
+                    "routeStations": ["stop54-1", "stop54-2", "stop54-3", "stop54-4", "stop54-5", "stop54-6", "stop54-7", "stop54-8", "stop54-9", "stop54-10", "stop54-11", "stop54-12", "stop54-13", "stop54-14", "stop54-15", "stop54-16", "stop54-17", "stop54-18", "stop54-19", "stop54-20", "stop54-21", "stop54-22", "stop54-23", "stop54-24", "stop54-25", "stop54-26", "stop54-27", "stop54-28", "stop54-29", "stop54-30", "stop54-31", "stop54-32", "stop54-33"]
                 }
             ],
             "populerPlaces": [
