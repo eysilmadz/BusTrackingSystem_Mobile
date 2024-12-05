@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { SafeAreaView, View, Text, TouchableOpacity, ScrollView } from "react-native";
-import MapView from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import axios from "axios";
 import styles from './RoutesDetail.style';
 import { API_URL } from '@env';
 
 function RoutesDetail({ route }) {
-  const { routes, city } = route.params; //Hatlara ait bilgiler ve şehir geliyor
+  const { routes, city, location } = route.params; // Hatlara ait bilgiler ve şehir geliyor
   const [busStations, setBusStations] = useState([]);
 
   const fetchStations = async () => {
@@ -18,7 +18,7 @@ function RoutesDetail({ route }) {
       const findedCity = data.find((findedCity) => findedCity.cityName === city);
 
       if (findedCity && findedCity.stations) {
-        const stations = findedCity.stations; // tüm duraklar
+        const stations = findedCity.stations; // Tüm duraklar
         const busStations = stations.filter((station) => routes.routeStations.includes(station.stationId));
         setBusStations(busStations);
       } else {
@@ -40,12 +40,23 @@ function RoutesDetail({ route }) {
         <MapView
           style={styles.map}
           initialRegion={{
-            latitude: 39.91987,
-            longitude: 41.27259,
+            latitude: location.coords.latitude,  // Konumdan alınan latitude
+            longitude: location.coords.longitude,  // Konumdan alınan longitude
             latitudeDelta: 0.1,
             longitudeDelta: 0.1,
           }}
-        />
+        >
+          {busStations.map((station) => {
+            const [latitude, longitude] = station.stationsLocation.split(",").map(coord => parseFloat(coord.trim()));
+            return (
+              <Marker
+                key={station.stationId}
+                coordinate={{ latitude, longitude }}
+                title={station.stationsName}
+              />
+            );
+          })}
+        </MapView>
       </View>
 
       {/* Durak Bilgileri */}

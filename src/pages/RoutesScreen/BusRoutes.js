@@ -8,6 +8,7 @@ import { API_URL } from '@env';
 
 const BusRoutes = ({ route }) => {
   const selectedCity = route.params.city;
+  const location = route.params.location;
   const [busRoutes, setBusRoutes] = useState([]);
   const navigation = useNavigation();
 
@@ -45,7 +46,7 @@ const BusRoutes = ({ route }) => {
         keyExtractor={(item, index) => index.toString()}
         style={styles.FlatList}
         renderItem={({ item }) => (
-            <TouchableOpacity key={route.routeId} style={styles.card} onPress={() => navigation.navigate('RoutesDetail', {routes: item,city:selectedCity})}>
+            <TouchableOpacity key={route.routeId} style={styles.card} onPress={() => navigation.navigate('RoutesDetail', {routes: item,city:selectedCity, location: location})}>
               <Icon name="bus-outline" size={28} color="#666"  />
               <View style={styles.cardContent}>
                 <Text style={styles.routeName}>{item.routeName}</Text>

@@ -7,7 +7,7 @@ import styles from './Home.style';
 import Slider from "../../components/Slider";
 
 function Home({ route }) {
-  const { city } = route.params;
+  const { city, location } = route.params;
   const navigation = useNavigation();
   const [isOpenFirst, setIsOpenFirst] = useState(false);
   const [isOpenSecond, setIsOpenSecond] = useState(false);
@@ -36,8 +36,7 @@ function Home({ route }) {
   };
 
   const handleNavigation = (routeName) => {
-    navigation.navigate(routeName,{"city":selectedCity});
-    
+    navigation.navigate(routeName,{"city":selectedCity, "location": location});
   };
 
   return (

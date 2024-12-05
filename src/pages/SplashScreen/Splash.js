@@ -12,19 +12,16 @@ const Splash = ({ navigation }) => {
     const [isConnected, setIsConnected] = useState(true);
     const [modalVisible, setModalVisible] = useState(false);
     const [locationCity, setLocationCity] = useState(null); 
+    const [locationData, setLocationData] = useState(null);
 
     const showAlert = () => setModalVisible(true);
 
     const hideAlert = () => setModalVisible(false);
 
     useEffect(() => {
-
-
         const unsubscribe = NetInfo.addEventListener(state => {
             setIsConnected(state.isConnected);
 
-            
-          
             if (!state.isConnected) {
                 showAlert();
             } else {
@@ -35,15 +32,14 @@ const Splash = ({ navigation }) => {
         return () => {
             unsubscribe();
         };
-
-        
-
     }, [navigation]);
 
+
     useEffect(() => {
-        if(locationCity != null)
+        if(locationCity != null && locationData != null)
         navigateToHome();
-    },[locationCity])
+    },[locationCity, locationData])
+
 
     const openSettings = () => { //ayarlar sayfasına yönlendirme
         if (Platform.OS === 'android') {
@@ -92,6 +88,7 @@ const Splash = ({ navigation }) => {
         Geolocation.getCurrentPosition(
             (position) => {
                 console.log("Konum Bilgisi: ", position);
+                setLocationData(position);
                 fetchCityData(position.coords.latitude, position.coords.longitude);
                 //navigateToHome();
             },
@@ -99,7 +96,7 @@ const Splash = ({ navigation }) => {
                 console.log(error.code, error.message);
                 setLocationCity("N/A");
             },
-            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+            { enableHighAccuracy: true, timeout: 30000, maximumAge: 10000 }
         );
     };
 
@@ -120,6 +117,7 @@ const Splash = ({ navigation }) => {
         const timer = setTimeout(() => {
             navigation.navigate('DrawerMenu',{
                 city: locationCity,
+                location: locationData,
         });
         }, 3000);
         return () => clearTimeout(timer);
