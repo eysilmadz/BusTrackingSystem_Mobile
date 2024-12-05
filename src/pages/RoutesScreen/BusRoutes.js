@@ -4,9 +4,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import styles from "./BusRoutes.style";
 import { useNavigation } from '@react-navigation/native';
 import axios from "axios";
-import { API_URL } from '@env'
+import { API_URL } from '@env';
 
-const BusRoutes = ({ selectedCit, route }) => {
+const BusRoutes = ({ route }) => {
   const selectedCity = route.params.city;
   const [busRoutes, setBusRoutes] = useState([]);
   const navigation = useNavigation();
@@ -21,14 +21,14 @@ const BusRoutes = ({ selectedCit, route }) => {
 
       if (city && city.routes) {
         const routes = city.routes;
-        console.log("Routes----->", routes)
+        //console.log("Routes----->", routes)
         setBusRoutes(routes);
       } else {
         setBusRoutes([]);
       }
     } catch (error) {
       console.log(error)
-      console.error("Error fetching data:", error);
+      console.error("Error fetching data(BusRoutes.js):", error);
       setBusRoutes([]);
     }
   };
@@ -45,7 +45,7 @@ const BusRoutes = ({ selectedCit, route }) => {
         keyExtractor={(item, index) => index.toString()}
         style={styles.FlatList}
         renderItem={({ item }) => (
-            <TouchableOpacity key={route.routeId} style={styles.card}>
+            <TouchableOpacity key={route.routeId} style={styles.card} onPress={() => navigation.navigate('RoutesDetail', {routes: item,city:selectedCity})}>
               <Icon name="bus-outline" size={28} color="#666"  />
               <View style={styles.cardContent}>
                 <Text style={styles.routeName}>{item.routeName}</Text>

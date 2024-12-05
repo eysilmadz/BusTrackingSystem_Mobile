@@ -71,7 +71,7 @@ function Home({ route }) {
         </View>
         <View style={styles.menuContainer}>
           {logo.map(item => (
-            <MenuButton key={item.id} image={item.image} text={item.text} onPress={() => handleNavigation(item.route)} selectedCity={selectedCity}/>
+            <MenuButton key={item.id} image={item.image} text={item.text} onPress={() => handleNavigation(item.route)}/>
           ))}
         </View>
       </SafeAreaView>
