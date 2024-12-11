@@ -24,6 +24,7 @@ import AllPlaces from './pages/AllPlacesScreen';
 import PlacesDetail from './pages/PlacesDetail';
 import BusRoutes from './pages/RoutesScreen';
 import RoutesDetail from './pages/RoutesDetailScreen';
+import Schedule from './pages/ScheduleScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -183,6 +184,7 @@ function Router() {
         <Stack.Screen name="PlacesDetail" component={PlacesDetail} options={{ header: (props) => <CustomHeader {...props} />,  }}  />
         <Stack.Screen name="BusRoutes" component={BusRoutes} options={{ header: (props) => <CustomHeader {...props} />,  }}  />
         <Stack.Screen name="RoutesDetail" component={RoutesDetail} options={{ header: (props) => <CustomHeader {...props} />,  }}  />
+        <Stack.Screen name="Schedule" component={Schedule} options={{ header: (props) => <CustomHeader {...props} />,  }}  />
       </Stack.Navigator>
     </NavigationContainer>
   );

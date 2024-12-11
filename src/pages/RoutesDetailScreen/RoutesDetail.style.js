@@ -12,11 +12,14 @@ export default StyleSheet.create({
         height: "100%",
       },
       stationContainer: {
-        flex: 3,
+        flex: 1,
         backgroundColor: "#f9f9f9",
         borderTopLeftRadius: 15,
         borderTopRightRadius: 15,
         padding: 10,
+      },
+      scrollContainer: {
+        flex: 1,
       },
       header: {
         flexDirection: "row",
@@ -38,7 +41,7 @@ export default StyleSheet.create({
         fontWeight: "bold",
       },
       stationList: {
-        marginTop: 10,
+        flex: 1,
       },
       stationItem: {
         flexDirection: "row",
