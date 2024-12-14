@@ -8,7 +8,7 @@ const { height } = Dimensions.get('window');
 const max_translate_y = -height;
 const min_translate_y = -height / 6; //componentin alttan görülecek sınırı
 
-const BottomSheet = ({children}) => {
+const BottomSheet = ({ children }) => {
     const navigation = useNavigation();
     const translationY = useSharedValue(0);
 
@@ -51,10 +51,10 @@ const BottomSheet = ({children}) => {
     });
 
     return (
-        <GestureDetector gesture={gesture}>
-            <Animated.View style={[styles.bottomSheetContainer, rBottomSheetStyle]}>
+        <GestureDetector gesture={gesture} enableContentPanningGesture={false}>
+            <Animated.View style={[styles.bottomSheetContainer, rBottomSheetStyle]} >
                 <View style={styles.line} />
-                {children}
+                    {children}
             </Animated.View>
         </GestureDetector>
 

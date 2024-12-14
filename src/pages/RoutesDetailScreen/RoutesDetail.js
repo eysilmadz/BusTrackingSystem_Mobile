@@ -1,20 +1,27 @@
 import React, { useState, useEffect, useRef } from "react";
-import { SafeAreaView, View, Text, TouchableOpacity, ScrollView } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import { SafeAreaView, View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
+import MapView, { Marker, Polyline } from "react-native-maps";
 import axios from "axios";
 import styles from './RoutesDetail.style';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from "@react-navigation/native";
 import { API_URL } from '@env';
 import BottomSheet from "../../components/BottomSheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 function RoutesDetail({ route }) {
-  const { routes, city, location } = route.params; // Hatlara ait bilgiler ve şehir geliyor
+  const { routes, city } = route.params; // Hatlara ait bilgiler ve şehir geliyor
   const [busStations, setBusStations] = useState([]);
   const [busLocation, setBusLocation] = useState(null); // WebSocket'ten gelen otobüs konumu
   const wsRef = useRef(null); // WebSocket bağlantısı için referans
   const [bus, setBus] = useState([]);
   const navigation = useNavigation();
+  const [defaultLocation, setDefaultLocation] = useState(null);
+
+  const polylineCoordinates = busStations.map(station => {
+    const [latitude, longitude] = station.stationsLocation.split(",").map(coord => parseFloat(coord.trim()));
+    return { latitude, longitude };
+  });
 
   const fetchStations = async () => {
     if (!city) return;
@@ -26,10 +33,12 @@ function RoutesDetail({ route }) {
 
       if (findedCity && findedCity.stations) {
         const stations = findedCity.stations; // Tüm duraklar
-        console.log("Stations---->", stations);
         const busStations = stations.filter((station) => routes.routeStations.includes(station.stationId));
         setBusStations(busStations);
-        console.log("Bus Sttaions---->", busStations);
+
+        const [latitude, longitude] = busStations[(busStations.length / 2).toFixed(0)].stationsLocation.split(",").map(coord => parseFloat(coord.trim()));
+        setDefaultLocation({ latitude, longitude })
+
       } else {
         setBusStations([]);
       }
@@ -60,6 +69,7 @@ function RoutesDetail({ route }) {
       console.error("Veri çekme hatası(RoutesDetail.js):", error);
     }
   };
+
   const fetchWs = async () => {
     // WebSocket bağlantısını kur
     const ws = new WebSocket('ws://192.168.25.97:3003'); // WebSocket sunucu adresi
@@ -87,7 +97,7 @@ function RoutesDetail({ route }) {
     };
 
     return () => {
-      if (ws) ws.close(); // Bileşen kaldırıldığında bağlantıyı kapat
+      if (ws) ws.close();
     };
   }
 
@@ -103,64 +113,90 @@ function RoutesDetail({ route }) {
   return (
     <GestureHandlerRootView>
       <SafeAreaView style={styles.container}>
-        {/* Harita */}
         <View style={styles.mapContainer}>
-          <MapView
-            style={styles.map}
-            initialRegion={{
-              latitude: location.coords.latitude,  // Konumdan alınan latitude
-              longitude: location.coords.longitude,  // Konumdan alınan longitude
-              latitudeDelta: 0.1,
-              longitudeDelta: 0.1,
-            }}
-          >
-            {busStations.map((station) => {
-              const [latitude, longitude] = station.stationsLocation.split(",").map(coord => parseFloat(coord.trim()));
-              return (
+          {defaultLocation != null &&
+            <MapView
+              style={styles.map}
+              initialRegion={{
+                latitude: defaultLocation.latitude,  // Konumdan alınan latitude
+                longitude: defaultLocation.longitude,  // Konumdan alınan longitude
+                latitudeDelta: 0.1,
+                longitudeDelta: 0.1,
+              }}
+            >
+               <Polyline
+            coordinates={polylineCoordinates}
+            strokeColor="#3699FF" // Rota çizgisi rengi
+            strokeWidth={3} // Çizgi kalınlığı
+          />
+              {busStations.map((station) => {
+                const [latitude, longitude] = station.stationsLocation.split(",").map(coord => parseFloat(coord.trim()));
+                return (
+                  <Marker
+                    key={station.stationId}
+                    coordinate={{ latitude, longitude }}
+                    title={station.stationsName}
+                    mapType="standard"
+                  >
+                    <Image
+                      source={require('../../assets/images/busStop.png')}
+                      style={{ width: 16, height: 16, zIndex: 0 }} // Simgenin boyutlarını burada ayarlayın
+                    />
+                  </Marker>
+                );
+              })}
+              {busLocation && (
                 <Marker
-                  key={station.stationId}
-                  coordinate={{ latitude, longitude }}
-                  title={station.stationsName}
-                />
-              );
-            })}
-            {busLocation && (
-              <Marker
-                coordinate={busLocation}
-                title="Otobüs Konumu"
-                pinColor="blue"
-              />
-            )}
+                  coordinate={busLocation}
+                  title="Otobüs Konumu"
+                  style={{zIndex: 99}}
+                >
+                  <Icon name="bus-outline" size={24} color={'#444'} />
+                </Marker>
+              )}
 
-          </MapView>
+            </MapView>
+          }
         </View>
 
-        {/* // Durak Bilgileri 
-       */}
-
-        <BottomSheet style={{flex:1}}>
+        <BottomSheet >
           <View style={styles.stationContainer}>
             <View style={styles.header}>
-              <Text style={styles.routeTitle}>{routes.routeName}   {routes.routeLine}</Text>
-              <TouchableOpacity style={styles.scheduleButton} onPress={() => navigation.navigate('Schedule')} >
+              <View style={styles.routeName}>
+                <Icon name="bus-outline" size={22} />
+                <Text style={[styles.routeTitle, { fontSize: 18 }]}>{routes.routeName}</Text>
+              </View>
+              <View style={styles.routeLine}>
+                <Text style={styles.routeTitle}>{routes.routeLine}</Text>
+              </View>
+              <View>
+                <TouchableOpacity style={styles.scheduleButton} onPress={() => navigation.navigate('MovementTimes', {routes: routes,city:city})} >
+                  <Icon name="alarm-outline" size={28} color="#666" />
+                </TouchableOpacity>
                 <Text style={styles.scheduleText}>Hareket Saatleri</Text>
-              </TouchableOpacity>
+              </View>
             </View>
-            <View style={styles.scrollContainer}>
-                <ScrollView style={styles.stationList} nestedScrollEnabled={true}>
-              {busStations.map((station) => (
-                <View key={station.stationId} style={styles.stationItem}>
-                  <Text style={styles.stationName}>{station.stationsName}</Text>
-                  {bus.map((busRoute) => (
-                    <View key={busRoute.routeId} style={styles.routeNumber}>
-                      <Text>{busRoute.routeName}</Text>
+            <ScrollView
+              style={styles.stationList}
+              nestedScrollEnabled={true}
+              keyboardShouldPersistTaps="handled"
+            >
+              <View style={styles.scrollContainer}>
+                {busStations.map((station) => (
+                  <View key={station.stationId} style={styles.stationItem}>
+                    <Text style={styles.stationName}>{station.stationsName}</Text>
+                    <View style={styles.routeNumbersContainer}>
+                      {bus.map((busRoute) => (
+                        <View key={busRoute.routeId} style={styles.routeNumber}>
+                          <Text>{busRoute.routeName}</Text>
+                        </View>
+                      ))}
                     </View>
-                  ))}
-                </View>
-              ))}
+                  </View>
+                ))}
+
+              </View>
             </ScrollView>
-            </View>
-          
           </View>
 
         </BottomSheet>
