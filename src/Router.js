@@ -25,6 +25,7 @@ import PlacesDetail from './pages/PlacesDetail';
 import BusRoutes from './pages/RoutesScreen';
 import RoutesDetail from './pages/RoutesDetailScreen';
 import MovementTimes from './pages/MovementTimesScreen';
+import FillerPoints from './pages/FillerPointsScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -185,6 +186,7 @@ function Router() {
         <Stack.Screen name="BusRoutes" component={BusRoutes} options={{ header: (props) => <CustomHeader {...props} />,  }}  />
         <Stack.Screen name="RoutesDetail" component={RoutesDetail} options={{ header: (props) => <CustomHeader {...props} />,  }}  />
         <Stack.Screen name="MovementTimes" component={MovementTimes} options={{ header: (props) => <CustomHeader {...props} />,  }}  />
+        <Stack.Screen name="FillerPoints" component={FillerPoints} options={{ header: (props) => <CustomHeader {...props} />,  }}  />
       </Stack.Navigator>
     </NavigationContainer>
   );
