@@ -32,11 +32,6 @@ function RoutesDetail({ route }) {
 
     try {
       const response = await axios.get(`${API_URL}/cities`);
-      if (!response.ok) {
-        // HTTP durum koduna göre hata mesajı ayarla
-        setErrorWithCode(response.status);
-        return;
-      }
       const data = response.data;
       const findedCity = data.find((findedCity) => findedCity.cityName === city);
 
@@ -53,7 +48,10 @@ function RoutesDetail({ route }) {
       }
     } catch (error) {
       console.error("Veri çekme hatası(RoutesDetail.js):", error);
-      setErrorWithCode(status)
+      if (error.response) {
+        // HTTP durum kodlarına göre özel hata mesajı
+        setErrorWithCode(error.response.status);
+      }
     } finally {
       setLoading(false);
     }
@@ -64,11 +62,6 @@ function RoutesDetail({ route }) {
     setError(null)
     try {
       const response = await axios.get(`${API_URL}/cities`);
-      if (!response.ok) {
-        // HTTP durum koduna göre hata mesajı ayarla
-        setErrorWithCode(response.status);
-        return;
-      }
       const data = response.data;
       const findedCity = data.find((findedCity) => findedCity.cityName === city);
 
@@ -85,7 +78,10 @@ function RoutesDetail({ route }) {
       }
     } catch (error) {
       console.error("Veri çekme hatası(RoutesDetail.js):", error);
-      setErrorWithCode(status)
+      if (error.response) {
+        // HTTP durum kodlarına göre özel hata mesajı
+        setErrorWithCode(error.response.status);
+      }
     } finally {
       setLoading(false);
     }

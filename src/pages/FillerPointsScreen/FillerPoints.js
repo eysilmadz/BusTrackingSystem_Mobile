@@ -16,13 +16,6 @@ function FillerPoints({ route }) {
         setError(null);
         try {
             const response = await axios.get(`${API_URL}/cities`); // API_URL'i kullan
-
-            if (!response.ok) {
-                // HTTP durum koduna göre hata mesajı ayarla
-                setErrorWithCode(response.status);
-                return;
-            }
-
             const data = response.data;
 
             const findedCity = data.find((findedCity) => findedCity.cityName === city);
@@ -38,7 +31,10 @@ function FillerPoints({ route }) {
             }
         } catch (error) {
             console.error("Veriler alınırken hata oluştu(FillerPoints.js):", error);
-            setErrorWithCode(status);
+            if (error.response) {
+                // HTTP durum kodlarına göre özel hata mesajı
+                setErrorWithCode(error.response.status);
+              }
         } finally {
             setLoading(false);
         }

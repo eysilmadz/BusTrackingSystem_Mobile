@@ -21,13 +21,6 @@ const BusRoutes = ({ route }) => {
 
     try {
       const response = await axios.get(`${API_URL}/cities`);
-
-      if (!response.ok) {
-        // HTTP durum koduna göre hata mesajı ayarla
-        setErrorWithCode(response.status);
-        return;
-      }
-
       const data = response.data;
       const city = data.find((city) => city.cityName === selectedCity);
 
@@ -41,7 +34,10 @@ const BusRoutes = ({ route }) => {
     } catch (error) {
       console.log(error)
       console.error("Error fetching data(BusRoutes.js):", error);
-      setError("Bir hata oluştu, lütfen tekrar deneyin.");
+      if (error.response) {
+        // HTTP durum kodlarına göre özel hata mesajı
+        setErrorWithCode(error.response.status);
+      }
       setBusRoutes([]);
     } finally {
       setLoading(false);
@@ -50,7 +46,7 @@ const BusRoutes = ({ route }) => {
 
   useEffect(() => {
     fetchData();
-  }, [setLoading]);
+  }, []);
 
 
   return (

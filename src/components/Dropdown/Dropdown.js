@@ -30,12 +30,6 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
         try {
             const response = await axios.get(`${API_URL}/cities`);
 
-            if (!response.ok) {
-                // HTTP durum koduna göre hata mesajı ayarla
-                setErrorWithCode(response.status);
-                return;
-            }
-
             if (dataType === "cities") {
                 const cityNames = response.data.map(city => city.cityName);
                 setData(cityNames);
@@ -49,7 +43,10 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
 
         } catch (error) {
             console.log("errorDropdown", error);
-            setErrorWithCode(status)
+            if (error.response) {
+                // HTTP durum kodlarına göre özel hata mesajı
+                setErrorWithCode(error.response.status);
+              }
         } finally {
             setLoading(false)
         }

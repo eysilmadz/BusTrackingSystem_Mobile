@@ -15,7 +15,6 @@ const Splash = ({ navigation }) => {
     const showAlert = () => setModalVisible(true);
 
     const hideAlert = () => setModalVisible(false);
-    const { loading, setLoading, error, setError } = useGlobalContext();
 
     useEffect(() => {
         const unsubscribe = NetInfo.addEventListener(state => {
