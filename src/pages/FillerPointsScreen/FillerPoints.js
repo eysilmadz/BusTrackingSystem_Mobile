@@ -4,30 +4,43 @@ import { API_URL } from '@env';
 import axios from "axios";
 import MapView, { Marker } from "react-native-maps";
 import styles from './FillerPoints.style';
+import { useGlobalContext } from "../../contexts/GlobalContext";
 
 function FillerPoints({ route }) {
     const { city } = route.params; //Seçilen şehir geliyor
-
+    const { setLoading, setErrorWithCode, setError } = useGlobalContext();
     const [fillerPoints, setFillerPoints] = useState([]);
 
     const fetchFillerPoints = async () => {
+        setLoading(true);
+        setError(null);
         try {
             const response = await axios.get(`${API_URL}/cities`); // API_URL'i kullan
+
+            if (!response.ok) {
+                // HTTP durum koduna göre hata mesajı ayarla
+                setErrorWithCode(response.status);
+                return;
+            }
+
             const data = response.data;
 
             const findedCity = data.find((findedCity) => findedCity.cityName === city);
-                console.log(findedCity);
+            console.log(findedCity);
             if (findedCity && findedCity.cardReloadPoints) {
                 const fillerPoints = findedCity.cardReloadPoints; //Tüm dolum noktaları
                 console.log("---->" + fillerPoints[0].location.split(", ")[0] + "-----");
                 console.log("---->" + fillerPoints[0].location.split(", ")[1] + "-----");
-                
+
                 setFillerPoints(fillerPoints);
             } else {
                 setFillerPoints([]);
             }
         } catch (error) {
             console.error("Veriler alınırken hata oluştu(FillerPoints.js):", error);
+            setErrorWithCode(status);
+        } finally {
+            setLoading(false);
         }
     }
 

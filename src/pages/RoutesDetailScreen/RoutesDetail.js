@@ -8,6 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 import { API_URL } from '@env';
 import BottomSheet from "../../components/BottomSheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useGlobalContext } from "../../contexts/GlobalContext";
 
 function RoutesDetail({ route }) {
   const { routes, city } = route.params; // Hatlara ait bilgiler ve şehir geliyor
@@ -17,6 +18,7 @@ function RoutesDetail({ route }) {
   const [bus, setBus] = useState([]);
   const navigation = useNavigation();
   const [defaultLocation, setDefaultLocation] = useState(null);
+  const { setLoading, setErrorWithCode, setError } = useGlobalContext();
 
   const polylineCoordinates = busStations.map(station => {
     const [latitude, longitude] = station.stationsLocation.split(",").map(coord => parseFloat(coord.trim()));
@@ -25,9 +27,16 @@ function RoutesDetail({ route }) {
 
   const fetchStations = async () => {
     if (!city) return;
-    console.log(city);
+    setLoading(true);
+    setError(null);
+
     try {
       const response = await axios.get(`${API_URL}/cities`);
+      if (!response.ok) {
+        // HTTP durum koduna göre hata mesajı ayarla
+        setErrorWithCode(response.status);
+        return;
+      }
       const data = response.data;
       const findedCity = data.find((findedCity) => findedCity.cityName === city);
 
@@ -35,7 +44,7 @@ function RoutesDetail({ route }) {
         const stations = findedCity.stations; // Tüm duraklar
         const busStations = stations.filter((station) => routes.routeStations.includes(station.stationId));
         setBusStations(busStations);
-
+        console.log(busStations)
         const [latitude, longitude] = busStations[(busStations.length / 2).toFixed(0)].stationsLocation.split(",").map(coord => parseFloat(coord.trim()));
         setDefaultLocation({ latitude, longitude })
 
@@ -44,13 +53,22 @@ function RoutesDetail({ route }) {
       }
     } catch (error) {
       console.error("Veri çekme hatası(RoutesDetail.js):", error);
+      setErrorWithCode(status)
+    } finally {
+      setLoading(false);
     }
   };
   const fetchBusAtStations = async (filteredStations) => {
     if (!city || filteredStations.length === 0) return;
-
+    setLoading(true);
+    setError(null)
     try {
       const response = await axios.get(`${API_URL}/cities`);
+      if (!response.ok) {
+        // HTTP durum koduna göre hata mesajı ayarla
+        setErrorWithCode(response.status);
+        return;
+      }
       const data = response.data;
       const findedCity = data.find((findedCity) => findedCity.cityName === city);
 
@@ -67,6 +85,9 @@ function RoutesDetail({ route }) {
       }
     } catch (error) {
       console.error("Veri çekme hatası(RoutesDetail.js):", error);
+      setErrorWithCode(status)
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -124,11 +145,11 @@ function RoutesDetail({ route }) {
                 longitudeDelta: 0.1,
               }}
             >
-               <Polyline
-            coordinates={polylineCoordinates}
-            strokeColor="#3699FF" // Rota çizgisi rengi
-            strokeWidth={3} // Çizgi kalınlığı
-          />
+              <Polyline
+                coordinates={polylineCoordinates}
+                strokeColor="#3699FF" // Rota çizgisi rengi
+                strokeWidth={3} // Çizgi kalınlığı
+              />
               {busStations.map((station) => {
                 const [latitude, longitude] = station.stationsLocation.split(",").map(coord => parseFloat(coord.trim()));
                 return (
@@ -149,7 +170,7 @@ function RoutesDetail({ route }) {
                 <Marker
                   coordinate={busLocation}
                   title="Otobüs Konumu"
-                  style={{zIndex: 99}}
+                  style={{ zIndex: 99 }}
                 >
                   <Icon name="bus-outline" size={24} color={'#444'} />
                 </Marker>
@@ -170,7 +191,7 @@ function RoutesDetail({ route }) {
                 <Text style={styles.routeTitle}>{routes.routeLine}</Text>
               </View>
               <View>
-                <TouchableOpacity style={styles.scheduleButton} onPress={() => navigation.navigate('MovementTimes', {routes: routes,city:city})} >
+                <TouchableOpacity style={styles.scheduleButton} onPress={() => navigation.navigate('MovementTimes', { routes: routes, city: city })} >
                   <Icon name="alarm-outline" size={28} color="#666" />
                 </TouchableOpacity>
                 <Text style={styles.scheduleText}>Hareket Saatleri</Text>

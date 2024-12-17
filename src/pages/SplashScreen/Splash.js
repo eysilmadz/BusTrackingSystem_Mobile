@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, Image, StyleSheet, Dimensions, Linking, Alert, PermissionsAndroid, BackHandler, Platform } from "react-native";
+import { SafeAreaView, Image, StyleSheet, Dimensions, Linking, Platform } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
 import Geolocation from "react-native-geolocation-service";
 import { check, PERMISSIONS, request, RESULTS } from "react-native-permissions";
-import axios from 'axios';
-import { API_URL } from '@env';
 import ModalAlert from "../../components/ModalAlert";
+import { useGlobalContext } from "../../contexts/GlobalContext";
 
 const Splash = ({ navigation }) => {
-
     const [isConnected, setIsConnected] = useState(true);
     const [modalVisible, setModalVisible] = useState(false);
-    const [locationCity, setLocationCity] = useState(null); 
+    const [locationCity, setLocationCity] = useState(null);
     const [locationData, setLocationData] = useState(null);
 
     const showAlert = () => setModalVisible(true);
 
     const hideAlert = () => setModalVisible(false);
+    const { loading, setLoading, error, setError } = useGlobalContext();
 
     useEffect(() => {
         const unsubscribe = NetInfo.addEventListener(state => {
@@ -36,9 +35,9 @@ const Splash = ({ navigation }) => {
 
 
     useEffect(() => {
-        if(locationCity != null && locationData != null)
-        navigateToHome();
-    },[locationCity, locationData])
+        if (locationCity != null && locationData != null)
+            navigateToHome();
+    }, [locationCity, locationData])
 
 
     const openSettings = () => { //ayarlar sayfasına yönlendirme
@@ -51,7 +50,7 @@ const Splash = ({ navigation }) => {
     };
 
     const retryConnection = () => { //Sayfayı yeniler
-        navigation.replace('Splash'); 
+        navigation.replace('Splash');
     };
 
 
@@ -114,13 +113,10 @@ const Splash = ({ navigation }) => {
     };
 
     const navigateToHome = () => {
-        const timer = setTimeout(() => {
-            navigation.navigate('DrawerMenu',{
-                city: locationCity,
-                location: locationData,
+        navigation.navigate('DrawerMenu', {
+            city: locationCity,
+            location: locationData,
         });
-        }, 3000);
-        return () => clearTimeout(timer);
     };
 
     return (

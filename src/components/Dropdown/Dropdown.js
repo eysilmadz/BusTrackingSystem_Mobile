@@ -4,9 +4,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import styles from './Dropdown.style';
 import axios from 'axios';
 import { API_URL } from '@env';
+import { useGlobalContext } from "../../contexts/GlobalContext";
 
 const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySelect, selectedCity, disabled, onCityInputClear, selectedRoute, setSelectedRoute }) => {
-
+    const { setLoading, setError, setErrorWithCode } = useGlobalContext();
     const [data, setData] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [inputValue, setInputValue] = useState('');
@@ -20,25 +21,37 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
             setSelectedRoute(null);
             setInputValue('');
         }
-    }, [dataType,selectedCity]);
+    }, [dataType, selectedCity]);
 
     const fetchData = async () => {
+        setLoading(true);
+        setError(null);
+
         try {
             const response = await axios.get(`${API_URL}/cities`);
-            //console.log(response)
+
+            if (!response.ok) {
+                // HTTP durum koduna göre hata mesajı ayarla
+                setErrorWithCode(response.status);
+                return;
+            }
+
             if (dataType === "cities") {
                 const cityNames = response.data.map(city => city.cityName);
                 setData(cityNames);
-                console.log("cityName " ,cityNames)
+                console.log("cityName ", cityNames)
             }
             else if (dataType === "routes" && selectedCity) {
                 const city = response.data.find(city => city.cityName === selectedCity);
                 const route = city ? city.routes.map(route => `${route.routeName}-${route.routeLine}`) : [];
                 setData(route);
             }
-            
+
         } catch (error) {
             console.log("errorDropdown", error);
+            setErrorWithCode(status)
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -56,7 +69,7 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
         setInputValue(item);
         setIsOpen(false);
         if (dataType === "cities" && onCitySelect) {
-            onCitySelect(item); 
+            onCitySelect(item);
         } else if (dataType === "routes" && setSelectedRoute) {
             setSelectedRoute(item);
         }
@@ -76,7 +89,7 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
             setIsOpen(false);
             fetchData();
             if (dataType === "cities" && onCityInputClear) {
-                onCityInputClear(); 
+                onCityInputClear();
             }
         }
 
