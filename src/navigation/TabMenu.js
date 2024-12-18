@@ -60,7 +60,7 @@ const TabMenu = ({ route }) => {
       })}>
       <Tab.Screen name="Home" component={Home} initialParams={{ city: paramValue, location: location }} options={{ headerShown: false, tabBarShowLabel: false, }} />
       <Tab.Screen name="Map" component={Map} options={{ headerShown: false, tabBarShowLabel: false }} />
-      <Tab.Screen name="Favourites" component={Favourites} options={{ headerShown: false, tabBarShowLabel: false }} />
+      <Tab.Screen name="Favourites" component={Favourites} options={{ headerShown: false, tabBarShowLabel: false }} initialParams={{ city: paramValue, location: location }}/>
       <Tab.Screen name="Cards" component={Cards} options={{ headerShown: false, tabBarShowLabel: false }} />
     </Tab.Navigator>
   );

@@ -6,12 +6,15 @@ import { useNavigation } from '@react-navigation/native';
 import axios from "axios";
 import { API_URL } from '@env';
 import { useGlobalContext } from "../../contexts/GlobalContext";
+import { useFavouriteContext } from "../../contexts/FavouriteContext";
+
 
 const BusRoutes = ({ route }) => {
   const selectedCity = route.params.city;
   const location = route.params.location;
   const { setLoading, setError, setErrorWithCode } = useGlobalContext();
   const [busRoutes, setBusRoutes] = useState([]);
+  const {favourites, toggleFavourite } = useFavouriteContext();
   const navigation = useNavigation();
 
   const fetchData = async () => {
@@ -26,7 +29,6 @@ const BusRoutes = ({ route }) => {
 
       if (city && city.routes) {
         const routes = city.routes;
-        //console.log("Routes----->", routes)
         setBusRoutes(routes);
       } else {
         setBusRoutes([]);
@@ -48,24 +50,36 @@ const BusRoutes = ({ route }) => {
     fetchData();
   }, []);
 
-
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
         data={busRoutes}
         keyExtractor={(item, index) => index.toString()}
-        style={styles.FlatList}
         renderItem={({ item }) => (
           <TouchableOpacity key={route.routeId} style={styles.card} onPress={() => navigation.navigate('RoutesDetail', { routes: item, city: selectedCity, location: location })}>
-            <Icon name="bus-outline" size={28} color="#666" />
+           <Icon name="bus-outline" size={28} color="#666" style={styles.icon} />
             <View style={styles.cardContent}>
               <Text style={styles.routeName}>{item.routeName}</Text>
               <Text style={styles.routeLine}>{item.routeLine}</Text>
             </View>
+            <TouchableOpacity onPress={() => toggleFavourite(item.routeId)} style={styles.favouriteIcon}>
+              <Icon
+                name={favourites.includes(item.routeId) ? "heart" : "heart-outline"}
+                size={28}
+                color={favourites.includes(item.routeId) ? "red" : "#666"}
+              />
+            </TouchableOpacity>
           </TouchableOpacity>
         )}
       >
       </FlatList>
+      {/* Favori sayfasına yönlendirirken favori rotaları da gönderiyoruz */}
+      <TouchableOpacity 
+        onPress={() => navigation.navigate('Favourites', { favouriteRoutes: favourites })}
+        style={styles.goToFavouritesButton}
+      >
+        <Text style={styles.buttonText}>Favorilere Git</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

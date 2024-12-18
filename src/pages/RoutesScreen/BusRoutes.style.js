@@ -1,31 +1,40 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-      container: {
-        flex: 1,
-        padding: 16,
-        backgroundColor: "#fff",
-        justifyContent: "center",
-      },
-      card: {
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: "#f8f8f8",
-        padding: 15,
-        borderRadius: 25,
-        marginBottom: 12,
-      },
-      cardContent: {
-        marginLeft: 16,
-      },
-      routeName: {
-        fontSize: 18,
-        color: "#666",
-        fontWeight: "bold",
-      },
-      routeLine: {
-        fontSize: 14,
-        color: "#666",
-      }
+  container: {
+    flex: 1,
+    backgroundColor: "#F5F5F5",
+    padding: 10,
+  },
+  card: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    padding: 15,
+    borderRadius: 20,
+    marginVertical: 5,
+  },
+  icon: {
+    marginRight: 10,
+  },
+  cardContent: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  routeName: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  routeLine: {
+    fontSize: 14,
+    color: "#777",
+    marginTop: 5,
+  },
+  favouriteIcon: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 5,
+  },
     
   });

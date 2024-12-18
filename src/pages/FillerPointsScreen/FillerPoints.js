@@ -19,11 +19,8 @@ function FillerPoints({ route }) {
             const data = response.data;
 
             const findedCity = data.find((findedCity) => findedCity.cityName === city);
-            console.log(findedCity);
             if (findedCity && findedCity.cardReloadPoints) {
                 const fillerPoints = findedCity.cardReloadPoints; //Tüm dolum noktaları
-                console.log("---->" + fillerPoints[0].location.split(", ")[0] + "-----");
-                console.log("---->" + fillerPoints[0].location.split(", ")[1] + "-----");
 
                 setFillerPoints(fillerPoints);
             } else {
