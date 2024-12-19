@@ -37,7 +37,7 @@ export default StyleSheet.create({
     marginLeft: 3
   },
   routeLine: {
-    marginRight: 40
+    marginRight: 70
   },
   routeTitle: {
     fontSize: 16,
@@ -50,7 +50,7 @@ export default StyleSheet.create({
     borderRadius: 50,
     alignItems: "center",
     justifyContent: "center",
-    marginLeft: 20,
+    marginLeft: 10,
     borderWidth: 1,
     borderColor: '#666'
   },
@@ -98,5 +98,7 @@ export default StyleSheet.create({
     borderColor: "#666",
     marginBottom: 3,
   },
-
+  favouriteIcon: {
+    marginLeft: '38%',
+  }
 });

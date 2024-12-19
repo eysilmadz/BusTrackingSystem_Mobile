@@ -34,8 +34,6 @@ const CustomDrawerContent = (props) => {
 const DrawerMenu = ({ route }) => {
     const paramValue = route.params?.city;
     const location = route.params?.location;
-    console.log("drawer", paramValue)
-    console.log("drawer location", location)
     return (
       <Drawer.Navigator
         drawerContent={(props) => <CustomDrawerContent {...props} />}

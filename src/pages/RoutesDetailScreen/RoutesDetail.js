@@ -9,6 +9,7 @@ import { API_URL } from '@env';
 import BottomSheet from "../../components/BottomSheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useGlobalContext } from "../../contexts/GlobalContext";
+import { useFavouriteContext } from "../../contexts/FavouriteContext";
 
 function RoutesDetail({ route }) {
   const { routes, city } = route.params; // Hatlara ait bilgiler ve şehir geliyor
@@ -19,6 +20,7 @@ function RoutesDetail({ route }) {
   const navigation = useNavigation();
   const [defaultLocation, setDefaultLocation] = useState(null);
   const { setLoading, setErrorWithCode, setError } = useGlobalContext();
+  const { favouriteStations, toggleStationFavourite } = useFavouriteContext();
 
   const polylineCoordinates = busStations.map(station => {
     const [latitude, longitude] = station.stationsLocation.split(",").map(coord => parseFloat(coord.trim()));
@@ -39,7 +41,6 @@ function RoutesDetail({ route }) {
         const stations = findedCity.stations; // Tüm duraklar
         const busStations = stations.filter((station) => routes.routeStations.includes(station.stationId));
         setBusStations(busStations);
-        console.log(busStations)
         const [latitude, longitude] = busStations[(busStations.length / 2).toFixed(0)].stationsLocation.split(",").map(coord => parseFloat(coord.trim()));
         setDefaultLocation({ latitude, longitude })
 
@@ -89,7 +90,7 @@ function RoutesDetail({ route }) {
 
   const fetchWs = async () => {
     // WebSocket bağlantısını kur
-    const ws = new WebSocket('ws://192.168.25.97:3003'); // WebSocket sunucu adresi
+    const ws = new WebSocket('ws://192.168.19.97:3003'); // WebSocket sunucu adresi
     wsRef.current = ws;
 
     ws.onopen = () => {
@@ -208,6 +209,13 @@ function RoutesDetail({ route }) {
                           <Text>{busRoute.routeName}</Text>
                         </View>
                       ))}
+                      <TouchableOpacity onPress={() => toggleStationFavourite(station.stationId)} style={styles.favouriteIcon}>
+                        <Icon
+                          name={favouriteStations.includes(station.stationId) ? "heart" : "heart-outline"}
+                          size={28}
+                          color={favouriteStations.includes(station.stationId) ? "#222" : "#666"}
+                        />
+                      </TouchableOpacity>
                     </View>
                   </View>
                 ))}

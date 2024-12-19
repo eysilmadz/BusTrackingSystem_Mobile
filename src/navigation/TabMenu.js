@@ -16,8 +16,6 @@ const Tab = createBottomTabNavigator();
 const TabMenu = ({ route }) => {
   const paramValue = route.params?.city;
   const location = route.params?.location;
-  console.log("tab menu location", location);
-  console.log("tab menu params", route.params);
 
   return (
     <Tab.Navigator

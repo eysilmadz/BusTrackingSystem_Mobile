@@ -15,6 +15,7 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
 
     useEffect(() => {
         fetchData();
+
         if (dataType === "cities" && selectedCity && selectedCity !== "N/A") {
             setInputValue(selectedCity);
         } else if (dataType === "routes" && !selectedCity) {
@@ -24,11 +25,11 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
     }, [dataType, selectedCity]);
 
     const fetchData = async () => {
-        setLoading(true);
-        setError(null);
-
         try {
             const response = await axios.get(`${API_URL}/cities`);
+            if (!response.data || !Array.isArray(response.data)) {
+                throw new Error("Beklenen formatta veri gelmedi.");
+            }
 
             if (dataType === "cities") {
                 const cityNames = response.data.map(city => city.cityName);
@@ -43,12 +44,6 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
 
         } catch (error) {
             console.log("errorDropdown", error);
-            if (error.response) {
-                // HTTP durum kodlarına göre özel hata mesajı
-                setErrorWithCode(error.response.status);
-              }
-        } finally {
-            setLoading(false)
         }
     };
 

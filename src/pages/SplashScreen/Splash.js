@@ -85,7 +85,6 @@ const Splash = ({ navigation }) => {
     const getLocation = () => {
         Geolocation.getCurrentPosition(
             (position) => {
-                console.log("Konum Bilgisi: ", position);
                 setLocationData(position);
                 fetchCityData(position.coords.latitude, position.coords.longitude);
                 //navigateToHome();
@@ -105,14 +104,13 @@ const Splash = ({ navigation }) => {
             const data = await response.json();
             const city = data.principalSubdivision;
             setLocationCity(city);
-            console.log(city)
         } catch (error) {
             console.error(error);
         }
     };
 
     const navigateToHome = () => {
-        navigation.navigate('DrawerMenu', {
+        navigation.replace('DrawerMenu', {
             city: locationCity,
             location: locationData,
         });

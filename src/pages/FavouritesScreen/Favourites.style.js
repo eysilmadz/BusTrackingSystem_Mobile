@@ -6,9 +6,32 @@ export default StyleSheet.create({
         backgroundColor: "#F5F5F5",
         padding: 10,
     },
+    button: {
+        flex: 1,
+        padding: 10,
+        marginHorizontal: 5,
+        backgroundColor: '#fff',
+        borderRadius: 20,
+        alignItems: 'center',
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginVertical: 16,
+        backgroundColor: '#fff',
+        padding: 15,
+        borderRadius: 20
+    },
+    activeButton: {
+      backgroundColor: '#f5f5f5',
+    },
+    buttonText: {
+      color: '#222',
+    },
     card: {
         flexDirection: "row",
         alignItems: "center",
+        justifyContent: "space-between",
         backgroundColor: "#FFFFFF",
         padding: 15,
         borderRadius: 20,
@@ -37,4 +60,17 @@ export default StyleSheet.create({
         color: "#666",
         marginTop: 20,
     },
+      contentContainer: {
+        flex: 1,
+      },
+      item: {
+        padding: 10,
+        fontSize: 16
+      },
+      placeholder: {
+        fontSize: 16,
+        color: '#aaa',
+        textAlign: 'center',
+        marginTop: 20,
+      },
 })

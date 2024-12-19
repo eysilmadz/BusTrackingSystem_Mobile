@@ -5,18 +5,27 @@ const FavouriteContext = createContext();
 
 // Context sağlayıcı
 export const FavouriteProvider = ({ children }) => {
-  const [favourites, setFavourites] = useState([]);
+  const [favouriteRoutes, setFavouriteRoutes] = useState([]);
+  const [favouriteStations, setFavouriteStations] = useState([]);
 
-  const toggleFavourite = (routeId) => {
-    setFavourites((prevFavourites) =>
+  const toggleRouteFavourite = (routeId) => {
+    setFavouriteRoutes((prevFavourites) =>
       prevFavourites.includes(routeId)
         ? prevFavourites.filter((id) => id !== routeId)
         : [...prevFavourites, routeId]
     );
   };
 
+  const toggleStationFavourite = (stationId) => {
+    setFavouriteStations((prevFavourites) =>
+      prevFavourites.includes(stationId)
+        ? prevFavourites.filter((id) => id !== stationId)
+        : [...prevFavourites, stationId]
+    );
+  };
+
   return (
-    <FavouriteContext.Provider value={{ favourites, setFavourites, toggleFavourite }}>
+    <FavouriteContext.Provider value={{ favouriteRoutes, favouriteStations, toggleRouteFavourite, toggleStationFavourite, setFavouriteRoutes, setFavouriteStations  }}>
       {children}
     </FavouriteContext.Provider>
   );
