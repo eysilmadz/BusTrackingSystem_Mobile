@@ -9,7 +9,6 @@ import Settings from '../pages/DrawerMenu/Settings';
 import ContactAndFeedback from '../pages/DrawerMenu/ContactAndFeedback';
 import FrequentlyAskedQuestions from '../pages/DrawerMenu/FrequentlyAskedQuestions';
 import AboutUs from '../pages/DrawerMenu/AboutUs';
-import LanguageOptions from '../pages/DrawerMenu/LanguageOptions';
 import CustomHeader from './CustomHeader';
 import TabMenu from './TabMenu';
 
@@ -47,17 +46,15 @@ const DrawerMenu = ({ route }) => {
           },
           drawerIcon: ({ focused, color, size }) => {
             let iconName;
-            if (route.name === 'LostItemReport') {
+            if (route.name === 'Kayıp Eşya Bildirimi') {
               iconName = 'briefcase-outline'; // Bu kısımda 'home' ve 'home-outline' ikonları belirsiz 
-            } else if (route.name === 'ContactAndFeedback') {
+            } else if (route.name === 'İletişim ve Geri Bildirim') {
               iconName = 'mail-outline'
-            } else if (route.name === 'FrequentlyAskedQuestions') {
+            } else if (route.name === 'Sık Sorulan Sorular') {
               iconName = "help-circle-outline";
-            } else if (route.name === 'AboutUs') {
+            } else if (route.name === 'Hakkımızda') {
               iconName = 'information-circle-outline';
-            } else if (route.name === 'LanguageOptions') {
-              iconName = 'language-outline';
-            } else if (route.name === 'Settings') {
+            }  else if (route.name === 'Ayarlar') {
               iconName = 'settings-outline';
             }
             return (
@@ -71,12 +68,11 @@ const DrawerMenu = ({ route }) => {
         })}
       >
         <Drawer.Screen name='HomeTab' component={TabMenu} initialParams={{ city: route.params?.city, location: location }} options={{ drawerItemStyle: { display: 'none' } }} />
-        <Drawer.Screen name="LostItemReport" component={LostItemReport} />
-        <Drawer.Screen name="ContactAndFeedback" component={ContactAndFeedback} />
-        <Drawer.Screen name="FrequentlyAskedQuestions" component={FrequentlyAskedQuestions} />
-        <Drawer.Screen name="AboutUs" component={AboutUs} />
-        <Drawer.Screen name="LanguageOptions" component={LanguageOptions} />
-        <Drawer.Screen name="Settings" component={Settings} />
+        <Drawer.Screen name="Kayıp Eşya Bildirimi" component={LostItemReport} />
+        <Drawer.Screen name="İletişim ve Geri Bildirim" component={ContactAndFeedback} />
+        <Drawer.Screen name="Sık Sorulan Sorular" component={FrequentlyAskedQuestions} />
+        <Drawer.Screen name="Hakkımızda" component={AboutUs} />
+        <Drawer.Screen name="Ayarlar" component={Settings} />
       </Drawer.Navigator>
     );
   };
