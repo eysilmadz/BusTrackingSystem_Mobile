@@ -22,7 +22,7 @@ const CustomHeader = ({ navigation, route }) => {
             style={styles.headerLogo}
           />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => { navigation.navigate('Login') }}>
           <Icon name="person-outline" size={24} color="#222" />
         </TouchableOpacity>
       </View>

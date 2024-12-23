@@ -15,6 +15,8 @@ import Loading from "../components/Loading";
 import Error from '../components/Error';
 import CustomHeader from './CustomHeader';
 import { useGlobalContext } from "../contexts/GlobalContext";
+import Register  from '../pages/Auth/RegisterScreen/Register';
+import Login from '../pages/Auth/LoginScreen/Login';
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +36,8 @@ function Router() {
           <Stack.Screen name="RoutesDetail" component={RoutesDetail} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="MovementTimes" component={MovementTimes} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="FillerPoints" component={FillerPoints} options={{ header: (props) => <CustomHeader {...props} />, }} />
+          <Stack.Screen name="Login" component={Login} options={{ header: (props) => <CustomHeader {...props} />, }}/>
+          <Stack.Screen name="Register" component={Register} />
         </Stack.Navigator>
       </NavigationContainer>
       {loading && <Loading />}
