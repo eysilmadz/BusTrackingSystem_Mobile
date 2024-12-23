@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
     container: {
@@ -6,18 +6,17 @@ export default StyleSheet.create({
         backgroundColor: '#fff'
     },
     imageContainer: {
-        flex: 1,
+        flex: 0.75,
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent:"center",
         padding: 10,
-        marginVertical: 20
     },
     image: {
         width: 250,
         height: 250,
     },
     formContainer: {
-        flex: 2,
+        flex: 2.25,
         padding: 20
     },
     title: {
@@ -25,7 +24,7 @@ export default StyleSheet.create({
         fontSize: 30,
         color: '#333',
         fontWeight: '500',
-        marginBottom: 20
+        marginBottom: 10
     },
     innerContainer: {
         padding: 10
@@ -75,4 +74,4 @@ export default StyleSheet.create({
         color: '#222',
         marginLeft: 5
     },
-})
+});

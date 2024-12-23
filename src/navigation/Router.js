@@ -37,7 +37,7 @@ function Router() {
           <Stack.Screen name="MovementTimes" component={MovementTimes} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="FillerPoints" component={FillerPoints} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="Login" component={Login} options={{ header: (props) => <CustomHeader {...props} />, }}/>
-          <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="Register" component={Register} options={{ header: (props) => <CustomHeader {...props} />, }}/>
         </Stack.Navigator>
       </NavigationContainer>
       {loading && <Loading />}
