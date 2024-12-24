@@ -15,6 +15,9 @@ const Login = () => {
         const { email, password } = values;
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+            navigation.navigate('Profile');
+            
             Alert.alert('Başarılı', `Hoş geldiniz ${userCredential.user.email}!`);
             console.log(userCredential);
         } catch (error) {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import 'react-native-gesture-handler';
@@ -15,14 +15,17 @@ import Loading from "../components/Loading";
 import Error from '../components/Error';
 import CustomHeader from './CustomHeader';
 import { useGlobalContext } from "../contexts/GlobalContext";
-import Register  from '../pages/Auth/RegisterScreen/Register';
+import Register from '../pages/Auth/RegisterScreen/Register';
 import Login from '../pages/Auth/LoginScreen/Login';
+import Profile from '../pages/Auth/ProfleScreen';
+import { auth } from '../firebase.config';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const Stack = createNativeStackNavigator();
 
 function Router() {
-
   const { loading, error } = useGlobalContext();
+
 
   return (
     <>
@@ -36,8 +39,9 @@ function Router() {
           <Stack.Screen name="RoutesDetail" component={RoutesDetail} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="MovementTimes" component={MovementTimes} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="FillerPoints" component={FillerPoints} options={{ header: (props) => <CustomHeader {...props} />, }} />
-          <Stack.Screen name="Login" component={Login} options={{ header: (props) => <CustomHeader {...props} />, }}/>
-          <Stack.Screen name="Register" component={Register} options={{ header: (props) => <CustomHeader {...props} />, }}/>
+          <Stack.Screen name="Login" component={Login} options={{ header: (props) => <CustomHeader {...props} />, }} />
+          <Stack.Screen name="Register" component={Register} options={{ header: (props) => <CustomHeader {...props} />, }} />
+          <Stack.Screen name="Profile" component={Profile} options={{ header: (props) => <CustomHeader {...props} />, }} />
         </Stack.Navigator>
       </NavigationContainer>
       {loading && <Loading />}
