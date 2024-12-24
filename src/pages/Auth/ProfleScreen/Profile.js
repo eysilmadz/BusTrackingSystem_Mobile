@@ -31,6 +31,7 @@ const Profile = () => {
                 }
             }
         };
+
         fetchUserDetails();
     }, [user]);
 
@@ -39,10 +40,21 @@ const Profile = () => {
         try {
             await signOut(auth);  // Firebase'den çıkış yap
             navigation.navigate('Login');  // Çıkış yaptıktan sonra Login sayfasına yönlendir
+            Alert.alert('Çıkış Yapıldı', 'Başarıyla çıkış yaptınız.');
         } catch (error) {
             console.log('Çıkış yaparken hata:', error);
         }
     };
+
+    const MenuItem = ({ iconName, title, onPress }) => (
+        <TouchableOpacity style={styles.menuItem} onPress={onPress}>
+            <Icon name={iconName} size={24} style={styles.icon} />
+            <View style={styles.navigationContainer}>
+                <Text style={styles.menuText}>{title}</Text>
+                <Icon name='chevron-forward-outline' color="#666" size={24} />
+            </View>
+        </TouchableOpacity>
+    );
 
     return (
         <SafeAreaView style={styles.container}>
@@ -51,43 +63,16 @@ const Profile = () => {
                 <View style={styles.profilContainer}>
                     <Icon name='person' color="#fff" size={80} />
                 </View>
-                {userDetail &&
+                {userDetail && (
                     <Text style={styles.userName}>{userDetail.firstName.toUpperCase()} {userDetail.lastName.toUpperCase()}</Text>
-                }
+                )}
             </View>
             <View style={styles.menu}>
-                <TouchableOpacity style={styles.menuItem}>
-                    <Icon name='person-outline' size={24} style={styles.icon} />
-                    <View style={styles.navigationContainer}>
-                        <Text style={styles.menuText}>Bilgilerim</Text>
-                        <Icon name='chevron-forward-outline' color="#666" size={24} />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.menuItem}>
-                    <Icon name='repeat-outline' size={24} style={styles.icon} />
-                    <View style={styles.navigationContainer}>
-                        <Text style={styles.menuText}>Geçmiş Banka İşlemlerim</Text>
-                        <Icon name='chevron-forward-outline' color="#666" size={24} />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.menuItem}>
-                    <Icon name='card-outline' size={24} style={styles.icon} />
-                    <View style={styles.navigationContainer}>
-                        <Text style={styles.menuText}>Banka/Kredi Kartlarım</Text>
-                        <Icon name='chevron-forward-outline' color="#666" size={24} />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.menuItem}>
-                    <Icon name='lock-closed-outline' size={24} style={styles.icon} />
-                    <View style={styles.navigationContainer}>
-                        <Text style={styles.menuText}>Şifre Değiştir</Text>
-                        <Icon name='chevron-forward-outline' color="#666" size={24} />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
-                    <Icon name='exit-outline' size={24} style={styles.icon} />
-                    <Text style={styles.menuText}>Çıkış Yap</Text>
-                </TouchableOpacity>
+                <MenuItem iconName="person-outline" title="Bilgilerim" onPress={() => console.log('Bilgilerim')} />
+                <MenuItem iconName="repeat-outline" title="Geçmiş Banka İşlemlerim" onPress={() => console.log('Geçmiş İşlemler')} />
+                <MenuItem iconName="card-outline" title="Banka/Kredi Kartlarım" onPress={() => console.log('Kartlarım')} />
+                <MenuItem iconName="lock-closed-outline" title="Şifre Değiştir" onPress={() => console.log('Şifre Değiştir')} />
+                <MenuItem iconName="exit-outline" title="Çıkış Yap" onPress={handleLogout} />
             </View>
         </SafeAreaView>
     );

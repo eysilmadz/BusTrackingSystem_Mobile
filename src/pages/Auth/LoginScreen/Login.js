@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, Alert, Touchable, TouchableOpacity, Image } from 'react-native';
 import { Formik } from 'formik';
 import { auth } from '../../../firebase.config';
@@ -7,9 +7,17 @@ import loginValidationSchema from '../../../schemas/loginValidationSchema';
 import { useNavigation } from '@react-navigation/native';
 import styles from './Login.style';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { UserContext } from '../../../contexts/UserContext';
 
 const Login = () => {
     const navigation = useNavigation();
+    const { user } = useContext(UserContext);
+    useEffect(() => {
+        if (user) {
+            navigation.navigate('Profile');
+        }
+
+    }, [user, navigation])
 
     const handleLogin = async (values) => {
         const { email, password } = values;
@@ -17,7 +25,7 @@ const Login = () => {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
             navigation.navigate('Profile');
-            
+
             Alert.alert('Başarılı', `Hoş geldiniz ${userCredential.user.email}!`);
             console.log(userCredential);
         } catch (error) {
@@ -69,7 +77,7 @@ const Login = () => {
                                 <Text style={styles.buttonText}>Giriş Yap</Text>
                             </TouchableOpacity>
                             <View style={styles.bottomContainer}>
-                                <Text style={{color: '#666'}}>Hesabınız yok mu?</Text>
+                                <Text style={{ color: '#666' }}>Hesabınız yok mu?</Text>
                                 <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                                     <Text style={styles.registerText} >Kayıt Olun.</Text>
                                 </TouchableOpacity>

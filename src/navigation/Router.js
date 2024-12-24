@@ -41,7 +41,7 @@ function Router() {
           <Stack.Screen name="FillerPoints" component={FillerPoints} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="Login" component={Login} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="Register" component={Register} options={{ header: (props) => <CustomHeader {...props} />, }} />
-          <Stack.Screen name="Profile" component={Profile} options={{ header: (props) => <CustomHeader {...props} />, }} />
+          <Stack.Screen name="Profile" component={Profile}  options={{ headerTitle: "Profil" }}/>
         </Stack.Navigator>
       </NavigationContainer>
       {loading && <Loading />}
