@@ -7,36 +7,56 @@ import loginValidationSchema from '../../../schemas/loginValidationSchema';
 import { useNavigation } from '@react-navigation/native';
 import styles from './Login.style';
 import Icon from 'react-native-vector-icons/Ionicons';
+import ModalAlert from '../../../components/ModalAlert';
 import { UserContext } from '../../../contexts/UserContext';
 
 const Login = () => {
     const navigation = useNavigation();
     const { user } = useContext(UserContext);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalTitle, setModalTitle] = useState('');
+    const [modalAlert, setModalAlert] = useState('');
+
     useEffect(() => {
         if (user) {
             navigation.navigate('Profile');
         }
-
     }, [user, navigation])
 
     const handleLogin = async (values) => {
         const { email, password } = values;
+
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
+            setModalTitle('Başarılı');
+            setModalAlert(`Hoş geldiniz ${userCredential.user.email}!`);
+            setModalVisible(true);
             navigation.navigate('Profile');
 
-            Alert.alert('Başarılı', `Hoş geldiniz ${userCredential.user.email}!`);
             console.log(userCredential);
         } catch (error) {
             console.log(error);
-            Alert.alert('Hata', 'Giriş başarısız. Lütfen bilgilerinizi kontrol edin.');
+            setModalTitle('Hata');
+            setModalAlert('Giriş başarısız. Lütfen bilgilerinizi kontrol edin.');
+            setModalVisible(true);
         }
     };
-
-
+    
     return (
         <SafeAreaView style={styles.container}>
+            <ModalAlert
+                setModalVisible={setModalVisible}
+                modalVisible={modalVisible}
+                title={modalTitle}
+                alert={modalAlert}
+                buttons={[
+                    {
+                        text: 'Tamam',
+                        onPress: () => setModalVisible(false),
+                    },
+                ]}
+            />
             <View style={styles.imageContainer}>
                 <Image source={require('../../../assets/images/logoSlogansiz.png')} style={styles.image} />
             </View>

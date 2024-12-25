@@ -17,9 +17,10 @@ import CustomHeader from './CustomHeader';
 import { useGlobalContext } from "../contexts/GlobalContext";
 import Register from '../pages/Auth/RegisterScreen/Register';
 import Login from '../pages/Auth/LoginScreen/Login';
-import Profile from '../pages/Auth/ProfleScreen';
+import Profile from '../pages/Auth/Profile/ProfileScreen';
 import { auth } from '../firebase.config';
 import { onAuthStateChanged } from 'firebase/auth';
+import MyInfo from '../pages/Auth/Profile/MyInfo';
 
 const Stack = createNativeStackNavigator();
 
@@ -42,6 +43,7 @@ function Router() {
           <Stack.Screen name="Login" component={Login} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="Register" component={Register} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="Profile" component={Profile}  options={{ headerTitle: "Profil" }}/>
+          <Stack.Screen name="MyInfo" component={MyInfo}  options={{ headerTitle: "Bilgilerim" }}/>
         </Stack.Navigator>
       </NavigationContainer>
       {loading && <Loading />}

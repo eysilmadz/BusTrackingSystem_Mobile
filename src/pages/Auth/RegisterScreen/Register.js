@@ -8,10 +8,12 @@ import { useNavigation } from '@react-navigation/native';
 import registerValidationSchema from '../../../schemas/registerValidationSchema';
 import { Formik } from 'formik';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import ModalAlert from '../../../components/ModalAlert';
 
 const Register = () => {
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalProps, setModalProps] = useState({ title: '', alert: '', buttons: [] });
 
   const handleRegister = async (values) => {
     try {
@@ -25,11 +27,35 @@ const Register = () => {
         lastName: values.lastName,
         phoneNumber: values.phoneNumber,
       });
-      Alert.alert('Başarılı', 'Kayıt işlemi başarıyla tamamlandı!');
+
+      setModalProps({
+        title: 'Başarılı',
+        alert: 'Kayıt işlemi başarıyla tamamlandı!',
+        buttons: [
+          {
+            text: 'Tamam',
+            onPress: () => {
+              setModalVisible(false);
+              navigation.navigate('Login');
+            },
+          },
+        ],
+      });
+      setModalVisible(true);
       navigation.navigate('Login');
     } catch (error) {
       console.error(error);
-      Alert.alert('Hata', 'Kayıt işlemi sırasında bir hata oluştu.');
+      setModalProps({
+        title: 'Hata',
+        alert: 'Kayıt işlemi sırasında bir hata oluştu.',
+        buttons: [
+          {
+            text: 'Kapat',
+            onPress: () => setModalVisible(false),
+          },
+        ],
+      });
+      setModalVisible(true);
     }
   };
 
@@ -122,6 +148,13 @@ const Register = () => {
           )}
         </Formik>
       </View>
+      <ModalAlert
+        setModalVisible={setModalVisible}
+        modalVisible={modalVisible}
+        title={modalProps.title}
+        alert={modalProps.alert}
+        buttons={modalProps.buttons}
+      />
     </SafeAreaView>
   );
 };
