@@ -36,6 +36,7 @@ function RoutesDetail({ route }) {
       const response = await axios.get(`${API_URL}/cities`);
       const data = response.data;
       const findedCity = data.find((findedCity) => findedCity.cityName === city);
+      console.log(findedCity);
 
       if (findedCity && findedCity.stations) {
         const stations = findedCity.stations; // Tüm duraklar
@@ -90,7 +91,7 @@ function RoutesDetail({ route }) {
 
   const fetchWs = async () => {
     // WebSocket bağlantısını kur
-    const ws = new WebSocket('ws://192.168.19.97:3003'); // WebSocket sunucu adresi
+    const ws = new WebSocket('ws://192.168.250.97:3003'); // WebSocket sunucu adresi
     wsRef.current = ws;
 
     ws.onopen = () => {
@@ -125,7 +126,7 @@ function RoutesDetail({ route }) {
 
   useEffect(() => {
     fetchStations();
-    //fetchWs();
+    fetchWs();
   }, [routes]);
 
   return (

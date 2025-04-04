@@ -18,15 +18,43 @@ import { useGlobalContext } from "../contexts/GlobalContext";
 import Register from '../pages/Auth/RegisterScreen/Register';
 import Login from '../pages/Auth/LoginScreen/Login';
 import Profile from '../pages/Auth/Profile/ProfileScreen';
-import { auth } from '../firebase.config';
-import { onAuthStateChanged } from 'firebase/auth';
 import MyInfo from '../pages/Auth/Profile/MyInfo';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import apiClient from '../api/apiClient';
 
 const Stack = createNativeStackNavigator();
 
 function Router() {
   const { loading, error } = useGlobalContext();
+  const [user, setUser] = useState(null);
+  const [checkingAuth, setCheckingAuth] = useState(true); //auth kontrolü
 
+  //kullanıcı giriş yapmış mı kontrol useeffecti
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        if (token) {
+          //API'den kullanıcı bilgilerini al
+          const response = await apiClient.get('/auth/me');
+          setUser(response.data); //kullanıcı bilgilerini kaydettim
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.log('Auth kontrolü sırasında hata oluştu:', error);
+        setUser(null);
+      } finally {
+        setCheckingAuth(false);
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
+
+  // if (checkingAuth) {
+  //   return <Loading />;
+  // }
 
   return (
     <>
@@ -42,8 +70,15 @@ function Router() {
           <Stack.Screen name="FillerPoints" component={FillerPoints} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="Login" component={Login} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="Register" component={Register} options={{ header: (props) => <CustomHeader {...props} />, }} />
-          <Stack.Screen name="Profile" component={Profile}  options={{ headerTitle: "Profil" }}/>
-          <Stack.Screen name="MyInfo" component={MyInfo}  options={{ headerTitle: "Bilgilerim" }}/>
+
+          {/**Eğer kullanıcı giriş yaptıysa görebilir. */}
+          {user ? (
+            <>
+              <Stack.Screen name="Profile" component={Profile} options={{ headerTitle: "Profil" }} />
+              <Stack.Screen name="MyInfo" component={MyInfo} options={{ headerTitle: "Bilgilerim" }} />
+            </>
+          ) : null}
+
         </Stack.Navigator>
       </NavigationContainer>
       {loading && <Loading />}

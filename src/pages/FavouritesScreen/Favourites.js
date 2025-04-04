@@ -26,7 +26,7 @@ const Favourites = ({ route }) => {
     try {
       const response = await axios.get(`${API_URL}/cities`);
       const data = response.data;
-
+      console.log(data)
       const city = data.find((city) => city.cityName === selectedCity);
       // if (city?.routes?.length) {
       //   setBusRoutes(city.routes);

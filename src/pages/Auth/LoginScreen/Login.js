@@ -1,48 +1,67 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, SafeAreaView, Alert, Touchable, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TextInput, SafeAreaView, TouchableOpacity, Image } from 'react-native';
 import { Formik } from 'formik';
-import { auth } from '../../../firebase.config';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import loginValidationSchema from '../../../schemas/loginValidationSchema';
 import { useNavigation } from '@react-navigation/native';
 import styles from './Login.style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ModalAlert from '../../../components/ModalAlert';
 import { UserContext } from '../../../contexts/UserContext';
+import apiClient from '../../../api/apiClient';
+
 
 const Login = () => {
     const navigation = useNavigation();
-    const { user } = useContext(UserContext);
+    const { setUser } = useContext(UserContext);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
     const [modalAlert, setModalAlert] = useState('');
+    const [redirectAfterModal, setRedirectAfterModal] = useState(false);
 
     useEffect(() => {
-        if (user) {
-            navigation.navigate('Profile');
+        const checkUser = async () => {
+            const token = await AsyncStorage.getItem('token');
+            if (token) {
+                navigation.navigate('Profile');
+            }
         }
-    }, [user, navigation])
+        checkUser();
+    }, [navigation])
 
     const handleLogin = async (values) => {
-        const { email, password } = values;
-
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const response = await apiClient.post('/auth/login', {
+                email: values.email,
+                password: values.password,
+            });
+            
+            const {token, user} = response.data;
+            
+            await AsyncStorage.setItem('token', token);
+            setUser(user);
 
             setModalTitle('Başarılı');
-            setModalAlert(`Hoş geldiniz ${userCredential.user.email}!`);
+            setModalAlert(`Hoş geldiniz!`);
             setModalVisible(true);
-            navigation.navigate('Profile');
+            setRedirectAfterModal(true);
 
-            console.log(userCredential);
         } catch (error) {
             console.log(error);
             setModalTitle('Hata');
             setModalAlert('Giriş başarısız. Lütfen bilgilerinizi kontrol edin.');
             setModalVisible(true);
+            setRedirectAfterModal(false);
         }
     };
     
+    const handleModalClose = () => {
+        setModalVisible(false);
+        if (redirectAfterModal) {
+            navigation.navigate('Profile');
+        }
+    };
+
     return (
         <SafeAreaView style={styles.container}>
             <ModalAlert
@@ -53,7 +72,7 @@ const Login = () => {
                 buttons={[
                     {
                         text: 'Tamam',
-                        onPress: () => setModalVisible(false),
+                        onPress: handleModalClose,
                     },
                 ]}
             />

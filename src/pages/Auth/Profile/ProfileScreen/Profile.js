@@ -1,18 +1,16 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { SafeAreaView, View, Text, TouchableOpacity } from 'react-native';
-import { auth } from '../../../../firebase.config';
-import { signOut } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { UserContext } from '../../../../contexts/UserContext';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import { db } from '../../../../firebase.config';
+import apiClient from '../../../../api/apiClient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ModalAlert from '../../../../components/ModalAlert';
 import styles from './Profile.style';
 
 const Profile = () => {
     const navigation = useNavigation();
-    const { user } = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext);
     const [userDetail, setUserDetail] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalConfig, setModalConfig] = useState({ title: '', alert: '', buttons: [] });
@@ -20,39 +18,33 @@ const Profile = () => {
 
     useEffect(() => {
         const fetchUserDetails = async () => {
-            if (user) {
-                try {
-                    const docRef = doc(db, "users", user.uid);
-                    const docSnap = await getDoc(docRef);
-
-                    if (docSnap.exists()) {
-                        setUserDetail(docSnap.data());
-                    } else {
-                        console.log("Kullanıcı bilgileri Firestore'da bulunamadı.");
-                    }
-                } catch (error) {
-                    console.error("Kullanıcı Bilgilerini alırken hata oluştu.")
+            try {
+                const token = await AsyncStorage.getItem('token');
+                if(!token) {
+                    navigation.navigate('Login');
+                    return;
                 }
-            }
+                const response = await apiClient.get('/auth/me', {
+                    headers: { Authorization: `Bearer ${token}`}
+                })
+             }catch(error){
+                console.error('Kullanıcı bilgilerini alırken hata oluştu', error);
+             }
         };
 
         fetchUserDetails();
-    }, [user]);
+    }, []);
 
     // Çıkış yapma işlemi
     const handleLogout = async () => {
         try {
-            await signOut(auth);  // Firebase'den çıkış yap
-            navigation.navigate('Login');  // Çıkış yaptıktan sonra Login sayfasına yönlendir
+            await AsyncStorage.removeItem('token');
+            setUser(null);
+            navigation.navigate('Login');
             setModalConfig({
                 title: 'Çıkış Yapıldı',
                 alert: 'Başarıyla çıkış yaptınız.',
-                buttons: [
-                    {
-                        text: 'Tamam',
-                        onPress: () => setModalVisible(false)
-                    }
-                ]
+                buttons: [{text: 'Tamam', onPress: () => setModalVisible(false)}]
             });
             setModalVisible(true);
         } catch (error) {

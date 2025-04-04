@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase.config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const UserContext = createContext();
 
@@ -8,19 +7,22 @@ export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            if (currentUser) {
-                setUser(currentUser); //kullanıcı varsa bilgileri set et
-            } else {
-                setUser(null); //kullanıcı yoksa null yap
+        const loadUserFromStorage = async () => {
+            try {
+                const storedToken = await AsyncStorage.getItem('token');
+                const storedUser = await AsyncStorage.getItem('user');
+                if(storedToken && storedUser) {
+                    setUser(JSON.parse(storedUser));
+                }
+            } catch(error) {
+                console.log("Kullanıcı yüklenemedi: ", error);
             }
-        });
-
-        return () => unsubscribe();
+        };
+        loadUserFromStorage();
     }, []);
 
     return (
-        <UserContext.Provider value={{ user }}>
+        <UserContext.Provider value={{ user, setUser }}>
             {children}
         </UserContext.Provider>
     )

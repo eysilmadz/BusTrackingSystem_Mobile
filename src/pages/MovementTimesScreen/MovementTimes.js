@@ -19,7 +19,7 @@ function MovementTimes({ route }) {
     try {
       const response = await axios.get(`${API_URL}/cities`);
       const data = response.data;
-
+      console.log(data)
       const findedCity = data.find((findedCity) => findedCity.cityName === city); //seçilen şehir 
       if (findedCity && findedCity.routes) {
         const findedRoute = findedCity.routes.find((route) => route.routeName === routes.routeName);

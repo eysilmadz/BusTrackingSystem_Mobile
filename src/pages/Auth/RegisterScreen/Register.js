@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { SafeAreaView, View, Text, TextInput, Alert, Image, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, Text, TextInput, Image, TouchableOpacity } from 'react-native';
 import styles from './Register.style';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
-import { auth, db } from '../../../firebase.config';
 import { useNavigation } from '@react-navigation/native';
 import registerValidationSchema from '../../../schemas/registerValidationSchema';
 import { Formik } from 'formik';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ModalAlert from '../../../components/ModalAlert';
+import apiClient from '../../../api/apiClient';
 
 const Register = () => {
   const navigation = useNavigation();
@@ -17,15 +15,13 @@ const Register = () => {
 
   const handleRegister = async (values) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-      const user = userCredential.user;
-      const userDocRef = doc(db, "users", user.uid);
-      await setDoc(userDocRef, {
-        userId: user.uid,
-        email: values.email,
+
+      await apiClient.post('/auth/register', {
         firstName: values.firstName,
         lastName: values.lastName,
         phoneNumber: values.phoneNumber,
+        email: values.email,
+        password: values.password,
       });
 
       setModalProps({
@@ -42,7 +38,6 @@ const Register = () => {
         ],
       });
       setModalVisible(true);
-      navigation.navigate('Login');
     } catch (error) {
       console.error(error);
       setModalProps({
@@ -74,7 +69,21 @@ const Register = () => {
           {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
             <View style={styles.innerContainer}>
 
-              <View style={styles.inputContainer}>
+              {['firstName', 'lastName', 'phoneNumber', 'email', 'password'].map((field, index) => (
+                <View key={index} style={styles.inputContainer}>
+                  <TextInput
+                    placeholder={field === 'password' ? 'Şifre' : field}
+                    secureTextEntry={field === 'password'}
+                    value={values[field]}
+                    onChangeText={handleChange(field)}
+                    onBlur={handleBlur(field)}
+                    style={styles.input}
+                  />
+                  <Icon name={field === 'password' ? 'key-outline' : 'person-outline'} size={24} style={styles.icon} />
+                </View>
+              ))}
+
+              {/* <View style={styles.inputContainer}>
                 <TextInput
                   placeholder="Ad"
                   value={values.firstName}
@@ -96,8 +105,8 @@ const Register = () => {
                 />
                 <Icon name={"person-outline"} size={24} style={styles.icon} />
               </View>
-              {touched.lastName && errors.lastName && <Text style={styles.error}>{errors.lastName}</Text>}
-
+              {touched.lastName && errors.lastName && <Text style={styles.error}>{errors.lastName}</Text>} */}
+              {/* 
               <View style={styles.inputContainer}>
                 <TextInput
                   placeholder="Telefon Numarası"
@@ -108,9 +117,9 @@ const Register = () => {
                 />
                 <Icon name={"call-outline"} size={24} style={styles.icon} />
               </View>
-              {touched.phoneNumber && errors.phoneNumber && <Text style={styles.error}>{errors.phoneNumber}</Text>}
+              {touched.phoneNumber && errors.phoneNumber && <Text style={styles.error}>{errors.phoneNumber}</Text>} */}
 
-              <View style={styles.inputContainer}>
+              {/* <View style={styles.inputContainer}>
                 <TextInput
                   placeholder="E-posta"
                   value={values.email}
@@ -120,9 +129,9 @@ const Register = () => {
                 />
                 <Icon name={"mail-outline"} size={24} style={styles.icon} />
               </View>
-              {touched.email && errors.email && <Text style={styles.error}>{errors.email}</Text>}
+              {touched.email && errors.email && <Text style={styles.error}>{errors.email}</Text>} */}
 
-              <View style={styles.inputContainer}>
+              {/* <View style={styles.inputContainer}>
                 <TextInput
                   placeholder="Şifre"
                   value={values.password}
@@ -133,7 +142,7 @@ const Register = () => {
                 />
                 <Icon name={"key-outline"} size={24} style={styles.icon} />
               </View>
-              {touched.password && errors.password && <Text style={styles.error}>{errors.password}</Text>}
+              {touched.password && errors.password && <Text style={styles.error}>{errors.password}</Text>} */}
 
               <TouchableOpacity onPress={handleSubmit} style={styles.button}>
                 <Text style={styles.buttonText}>Kayıt Ol</Text>

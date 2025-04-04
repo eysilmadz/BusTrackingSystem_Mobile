@@ -17,7 +17,7 @@ function FillerPoints({ route }) {
         try {
             const response = await axios.get(`${API_URL}/cities`); // API_URL'i kullan
             const data = response.data;
-
+            console.log(data)
             const findedCity = data.find((findedCity) => findedCity.cityName === city);
             if (findedCity && findedCity.cardReloadPoints) {
                 const fillerPoints = findedCity.cardReloadPoints; //Tüm dolum noktaları

@@ -20,6 +20,7 @@ const BusRoutes = ({ route }) => {
     if (!selectedCity) return;
     try {
       const response = await axios.get(`${API_URL}/cities`);
+      console.log(response);
       const data = response.data;
       const city = data.find((city) => city.cityName === selectedCity);
       if (city && city.routes) {
