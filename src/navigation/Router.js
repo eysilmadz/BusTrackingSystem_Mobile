@@ -52,9 +52,9 @@ function Router() {
     checkAuthStatus();
   }, []);
 
-  // if (checkingAuth) {
-  //   return <Loading />;
-  // }
+  if (checkingAuth) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -70,15 +70,8 @@ function Router() {
           <Stack.Screen name="FillerPoints" component={FillerPoints} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="Login" component={Login} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="Register" component={Register} options={{ header: (props) => <CustomHeader {...props} />, }} />
-
-          {/**Eğer kullanıcı giriş yaptıysa görebilir. */}
-          {user ? (
-            <>
-              <Stack.Screen name="Profile" component={Profile} options={{ headerTitle: "Profil" }} />
-              <Stack.Screen name="MyInfo" component={MyInfo} options={{ headerTitle: "Bilgilerim" }} />
-            </>
-          ) : null}
-
+          <Stack.Screen name="Profile" options={{ headerTitle: "Profil" }}>{(props) => <Profile {...props} user={user} />}</Stack.Screen>
+          <Stack.Screen name="MyInfo" options={{ headerTitle: "Bilgilerim" }}>{(props) => <MyInfo {...props} user={user} />}</Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
       {loading && <Loading />}

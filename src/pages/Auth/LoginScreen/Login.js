@@ -23,11 +23,24 @@ const Login = () => {
         const checkUser = async () => {
             const token = await AsyncStorage.getItem('token');
             if (token) {
-                navigation.navigate('Profile');
+                try {
+                    // Gerçekten geçerli mi diye backend'e soralım
+                    const response = await apiClient.get('/auth/me');
+                    if (response.status === 200) {
+                        navigation.navigate('Profile');
+                    }
+                } catch (error) {
+                    console.log("Token geçersiz veya kullanıcı alınamadı:", error.response?.status);
+                    // Token geçersizse kaldır
+                    await AsyncStorage.removeItem('token');
+                }
             }
         }
-        checkUser();
-    }, [navigation])
+
+        const timeout = setTimeout(() => {
+            checkUser();
+        }, 100);
+    }, [])
 
     const handleLogin = async (values) => {
         try {
@@ -35,12 +48,23 @@ const Login = () => {
                 email: values.email,
                 password: values.password,
             });
-            
-            const {token, user} = response.data;
-            
-            await AsyncStorage.setItem('token', token);
-            setUser(user);
 
+            const { token, user } = response.data;
+
+            await AsyncStorage.setItem('token', token);
+
+            // BURAYA KOY: setItem işlemi tamamlandıktan sonra kontrol et
+            const checkToken = await AsyncStorage.getItem('token');
+            console.log("Token gerçekten kaydedilmiş mi:", checkToken);
+
+
+            if (checkToken) {
+                // Authenticated request şimdi yapılabilir
+                const meResponse = await apiClient.get('/auth/me');
+                console.log("ME response:", meResponse.data);
+            }
+
+            setUser(user);
             setModalTitle('Başarılı');
             setModalAlert(`Hoş geldiniz!`);
             setModalVisible(true);
@@ -54,7 +78,7 @@ const Login = () => {
             setRedirectAfterModal(false);
         }
     };
-    
+
     const handleModalClose = () => {
         setModalVisible(false);
         if (redirectAfterModal) {

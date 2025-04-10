@@ -14,37 +14,51 @@ const Profile = () => {
     const [userDetail, setUserDetail] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalConfig, setModalConfig] = useState({ title: '', alert: '', buttons: [] });
-
+    const [hasRedirected, setHasRedirected] = useState(false);
 
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
                 const token = await AsyncStorage.getItem('token');
-                if(!token) {
-                    navigation.navigate('Login');
+                //token yoksa direkt logine yönlendir
+                if (!token) {
+                    if (!hasRedirected) {
+                        setHasRedirected(true);
+                        navigation.replace('Login');
+                    }
                     return;
                 }
+                //kullanıcı bilgileri
                 const response = await apiClient.get('/auth/me', {
-                    headers: { Authorization: `Bearer ${token}`}
+                    headers: { Authorization: `Bearer ${token}` }
                 })
-             }catch(error){
+
+                setUserDetail(response.data);
+
+            } catch (error) {
                 console.error('Kullanıcı bilgilerini alırken hata oluştu', error);
-             }
+
+                // Token geçersiz veya istek başarısızsa kullanıcıyı login ekranına yönlendir
+                if (!hasRedirected) {
+                    setHasRedirected(true);
+                    navigation.replace('Login');
+                }
+            }
         };
 
         fetchUserDetails();
-    }, []);
+    }, [hasRedirected]);
 
     // Çıkış yapma işlemi
     const handleLogout = async () => {
         try {
             await AsyncStorage.removeItem('token');
             setUser(null);
-            navigation.navigate('Login');
+            navigation.replace('Login');
             setModalConfig({
                 title: 'Çıkış Yapıldı',
                 alert: 'Başarıyla çıkış yaptınız.',
-                buttons: [{text: 'Tamam', onPress: () => setModalVisible(false)}]
+                buttons: [{ text: 'Tamam', onPress: () => setModalVisible(false) }]
             });
             setModalVisible(true);
         } catch (error) {
@@ -64,12 +78,12 @@ const Profile = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <ModalAlert 
-                modalVisible={modalVisible} 
-                setModalVisible={setModalVisible} 
-                title={modalConfig.title} 
-                alert={modalConfig.alert} 
-                buttons={modalConfig.buttons} 
+            <ModalAlert
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                title={modalConfig.title}
+                alert={modalConfig.alert}
+                buttons={modalConfig.buttons}
             />
             <View style={styles.topContainer}></View>
             <View style={{ alignItems: 'center', bottom: 50 }}>
@@ -77,7 +91,9 @@ const Profile = () => {
                     <Icon name='person' color="#fff" size={80} />
                 </View>
                 {userDetail && (
-                    <Text style={styles.userName}>{userDetail.firstName.toUpperCase()} {userDetail.lastName.toUpperCase()}</Text>
+                    <Text style={styles.userName}>
+                        {userDetail.firstName.toUpperCase()} {userDetail.lastName.toUpperCase()}
+                    </Text>
                 )}
             </View>
             <View style={styles.menu}>

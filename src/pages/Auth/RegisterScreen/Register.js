@@ -72,78 +72,31 @@ const Register = () => {
               {['firstName', 'lastName', 'phoneNumber', 'email', 'password'].map((field, index) => (
                 <View key={index} style={styles.inputContainer}>
                   <TextInput
-                    placeholder={field === 'password' ? 'Şifre' : field}
+                    placeholder={
+                      field === 'firstName' ? 'Ad' :
+                        field === 'lastName' ? 'Soyad' :
+                          field === 'phoneNumber' ? 'Telefon' :
+                            field === 'email' ? 'E-posta' : 'Şifre'
+                    }
+
                     secureTextEntry={field === 'password'}
                     value={values[field]}
                     onChangeText={handleChange(field)}
                     onBlur={handleBlur(field)}
                     style={styles.input}
                   />
-                  <Icon name={field === 'password' ? 'key-outline' : 'person-outline'} size={24} style={styles.icon} />
+                  <Icon
+                    name={
+                      field === 'phoneNumber' ? 'call-outline' :
+                        field === 'email' ? 'mail-outline' :
+                          field === 'password' ? 'key-outline' : 'person-outline'
+                    }
+                    size={24}
+                    style={styles.icon}
+                  />
+                  {touched[field] && errors[field] && <Text style={styles.error}>{errors[field]}</Text>}
                 </View>
               ))}
-
-              {/* <View style={styles.inputContainer}>
-                <TextInput
-                  placeholder="Ad"
-                  value={values.firstName}
-                  onChangeText={handleChange('firstName')}
-                  onBlur={handleBlur('firstName')}
-                  style={styles.input}
-                />
-                <Icon name={"person-outline"} size={24} style={styles.icon} />
-              </View>
-              {touched.firstName && errors.firstName && <Text style={styles.error}>{errors.firstName}</Text>}
-
-              <View style={styles.inputContainer}>
-                <TextInput
-                  placeholder="Soyad"
-                  value={values.lastName}
-                  onChangeText={handleChange('lastName')}
-                  onBlur={handleBlur('lastName')}
-                  style={styles.input}
-                />
-                <Icon name={"person-outline"} size={24} style={styles.icon} />
-              </View>
-              {touched.lastName && errors.lastName && <Text style={styles.error}>{errors.lastName}</Text>} */}
-              {/* 
-              <View style={styles.inputContainer}>
-                <TextInput
-                  placeholder="Telefon Numarası"
-                  value={values.phoneNumber}
-                  onChangeText={handleChange('phoneNumber')}
-                  onBlur={handleBlur('phoneNumber')}
-                  style={styles.input}
-                />
-                <Icon name={"call-outline"} size={24} style={styles.icon} />
-              </View>
-              {touched.phoneNumber && errors.phoneNumber && <Text style={styles.error}>{errors.phoneNumber}</Text>} */}
-
-              {/* <View style={styles.inputContainer}>
-                <TextInput
-                  placeholder="E-posta"
-                  value={values.email}
-                  onChangeText={handleChange('email')}
-                  onBlur={handleBlur('email')}
-                  style={styles.input}
-                />
-                <Icon name={"mail-outline"} size={24} style={styles.icon} />
-              </View>
-              {touched.email && errors.email && <Text style={styles.error}>{errors.email}</Text>} */}
-
-              {/* <View style={styles.inputContainer}>
-                <TextInput
-                  placeholder="Şifre"
-                  value={values.password}
-                  onChangeText={handleChange('password')}
-                  onBlur={handleBlur('password')}
-                  secureTextEntry
-                  style={styles.input}
-                />
-                <Icon name={"key-outline"} size={24} style={styles.icon} />
-              </View>
-              {touched.password && errors.password && <Text style={styles.error}>{errors.password}</Text>} */}
-
               <TouchableOpacity onPress={handleSubmit} style={styles.button}>
                 <Text style={styles.buttonText}>Kayıt Ol</Text>
               </TouchableOpacity>
