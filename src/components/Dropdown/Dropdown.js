@@ -2,45 +2,52 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, TextInput, TouchableOpacity, Text, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import styles from './Dropdown.style';
-import axios from 'axios';
-import { API_URL } from '@env';
 import { useGlobalContext } from "../../contexts/GlobalContext";
+import { getCityNames } from '../../api/cityService';
+import { getRoutesByCityId } from '../../api/routeService';
 
 const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySelect, selectedCity, disabled, onCityInputClear, selectedRoute, setSelectedRoute }) => {
     const { setLoading, setError, setErrorWithCode } = useGlobalContext();
+    const [allData, setAllData] = useState([]);
     const [data, setData] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [inputValue, setInputValue] = useState('');
     const inputRef = useRef(null);
+    const hasInitialized = useRef(false);
 
     useEffect(() => {
         fetchData();
 
+        // Eğer şehir konumdan geldiyse veya sonradan değiştiyse input'a yaz
         if (dataType === "cities" && selectedCity && selectedCity !== "N/A") {
-            setInputValue(selectedCity);
+            setInputValue(selectedCity.name ?? selectedCity);
         } else if (dataType === "routes" && !selectedCity) {
             setSelectedRoute(null);
             setInputValue('');
         }
+        
     }, [dataType, selectedCity]);
 
     const fetchData = async () => {
         try {
-            const response = await axios.get(`${API_URL}/cities`);
-            console.log(response)
-            if (!response.data || !Array.isArray(response.data)) {
-                throw new Error("Beklenen formatta veri gelmedi.");
-            }
-
             if (dataType === "cities") {
-                const cityNames = response.data.map(city => city.cityName);
-                setData(cityNames);
-                console.log("cityName ", cityNames)
-            }
-            else if (dataType === "routes" && selectedCity) {
-                const city = response.data.find(city => city.cityName === selectedCity);
-                const route = city ? city.routes.map(route => `${route.routeName}-${route.routeLine}`) : [];
-                setData(route);
+                const cityList = await getCityNames();
+                setAllData(cityList);
+                setData(cityList);
+
+                if(selectedCity && !hasInitialized.current) {
+                    setInputValue(selectedCity.name ?? selectedCity);
+                    setSelectedItem(selectedCity);
+                    hasInitialized.current = true;
+                } 
+                // else {
+                //     setInputValue('');
+                //     setSelectedItem(null);
+                // }
+            } else if (dataType === "routes" && selectedCity) {
+                const routeList = await getRoutesByCityId(selectedCity.id);
+                setAllData(routeList);
+                setData(routeList);
             }
 
         } catch (error) {
@@ -59,7 +66,7 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
 
     const selectItem = (item) => {
         setSelectedItem(item);
-        setInputValue(item);
+        setInputValue(dataType === "cities" ? item.name : item);
         setIsOpen(false);
         if (dataType === "cities" && onCitySelect) {
             onCitySelect(item);
@@ -70,22 +77,27 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
 
     const handleSearch = (text) => {
         setInputValue(text);
+        
         if (text.length > 0) {
             setIsOpen(true);
-            const filteredList = data.filter(city => {
-                const searchedText = text.toLowerCase();
-                const currentTitle = city.toLowerCase();
-                return currentTitle.includes(searchedText);
+            const filtered = allData.filter(item => {
+                const val = dataType === "cities" ? item.name : item;
+                return val.toLowerCase().includes(text.toLowerCase());
             });
-            setData(filteredList);
+            setData(filtered);
+
+            if (dataType === "cities" && onCityInputClear && selectedItem) {
+                onCityInputClear();
+                setSelectedItem(null);
+            }
         } else {
             setIsOpen(false);
-            fetchData();
+            setData(allData);
+            setSelectedItem(null);
             if (dataType === "cities" && onCityInputClear) {
                 onCityInputClear();
             }
         }
-
     };
 
     return (
@@ -112,7 +124,7 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
                             style={styles.dropdownItem}
                             onPress={() => selectItem(item)}
                         >
-                            <Text style={styles.itemText}>{item}</Text>
+                            <Text style={styles.itemText}>{dataType === "cities" ? item.name : item}</Text>
                         </TouchableOpacity>
                     )}
                 />
