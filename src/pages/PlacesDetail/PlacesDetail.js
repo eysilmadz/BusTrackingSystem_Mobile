@@ -9,7 +9,7 @@ function PlacesDetail({ route }) {
         <SafeAreaView style={styles.container}>
             <View>
                 <Image source={{ uri: place.image }} style={styles.image} />
-                <Text style={styles.name}>{place.populerName}</Text>
+                <Text style={styles.name}>{place.name}</Text>
                 <Text style={styles.description}>{place.description}</Text>
             </View>
         </SafeAreaView>

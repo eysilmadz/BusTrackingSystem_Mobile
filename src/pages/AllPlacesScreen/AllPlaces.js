@@ -11,7 +11,7 @@ function AllPlaces({ route }) {
         <View style={styles.card}>
             <TouchableOpacity onPress={() => navigation.navigate('PlacesDetail', { place: item })}>
                 <Image source={{ uri: item.image }} style={styles.image} />
-                <Text style={styles.name}>{item.populerName}</Text>
+                <Text style={styles.name}>{item.name}</Text>
             </TouchableOpacity>
         </View>
     );

@@ -5,6 +5,7 @@ import Geolocation from "react-native-geolocation-service";
 import { check, PERMISSIONS, request, RESULTS } from "react-native-permissions";
 import ModalAlert from "../../components/ModalAlert";
 import { useGlobalContext } from "../../contexts/GlobalContext";
+import { getCityNames } from "../../api/cityService";
 
 const Splash = ({ navigation }) => {
     const [isConnected, setIsConnected] = useState(true);
@@ -71,11 +72,11 @@ const Splash = ({ navigation }) => {
                     getLocation();
                 }
                 else {
-                    setLocationCity("N/A")
+                    setLocationCity({id: null, namme: "N/A"})
                 }
             }
             else {
-                setLocationCity("N/A");
+                setLocationCity({id: null, namme: "N/A"});
             }
         } catch (error) {
             console.warn(error);
@@ -91,7 +92,7 @@ const Splash = ({ navigation }) => {
             },
             (error) => {
                 console.log(error.code, error.message);
-                setLocationCity("N/A");
+                setLocationCity({id: null, namme: "N/A"});
             },
             { enableHighAccuracy: true, timeout: 30000, maximumAge: 10000 }
         );
@@ -103,9 +104,27 @@ const Splash = ({ navigation }) => {
             const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
             const data = await response.json();
             const city = data.principalSubdivision;
-            setLocationCity(city);
+            // setLocationCity(city);
+            matchCityWithId(city);
         } catch (error) {
             console.error(error);
+        }
+    };
+
+    const matchCityWithId = async (cityName) => {
+        try {
+            const cityList = await getCityNames();
+            const matchedCity = cityList.find(city => city.name.toLowerCase() === cityName.toLowerCase());
+
+            if (matchedCity) {
+                setLocationCity(matchedCity);
+
+            } else {
+                setLocationCity({ id: null, name: cityName });
+            }
+        } catch (error) {
+            console.error("Şehir eşleştirme hatası:", error);
+            setLocationCity({ id: null, name: cityName });
         }
     };
 

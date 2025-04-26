@@ -22,7 +22,7 @@ function Home({ route }) {
 
   useEffect(() => {
     if (city != "N/A") {
-      setSelectedCity(city)
+      setSelectedCity({ id: city.id, name: city.name })
     }
   }, [])
 
@@ -66,7 +66,7 @@ function Home({ route }) {
           />
         </View>
         <View style={styles.placesContainer}>
-          <Slider selectedCity={selectedCity} />
+          <Slider selectedCity={selectedCity?.id} />
         </View>
         <View style={styles.menuContainer}>
           {logo.map(item => (
