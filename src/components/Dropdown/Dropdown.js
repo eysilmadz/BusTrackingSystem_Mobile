@@ -6,7 +6,7 @@ import { useGlobalContext } from "../../contexts/GlobalContext";
 import { getCityNames } from '../../api/cityService';
 import { getRoutesByCityId } from '../../api/routeService';
 
-const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySelect, selectedCity, disabled, onCityInputClear, selectedRoute, setSelectedRoute }) => {
+const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySelect, selectedCity, disabled, onCityInputClear, setSelectedRoute }) => {
     const { setLoading, setError, setErrorWithCode } = useGlobalContext();
     const [allData, setAllData] = useState([]);
     const [data, setData] = useState([]);
@@ -25,7 +25,7 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
             setSelectedRoute(null);
             setInputValue('');
         }
-        
+
     }, [dataType, selectedCity]);
 
     const fetchData = async () => {
@@ -35,11 +35,11 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
                 setAllData(cityList);
                 setData(cityList);
 
-                if(selectedCity && !hasInitialized.current) {
+                if (selectedCity && !hasInitialized.current) {
                     setInputValue(selectedCity.name ?? selectedCity);
                     setSelectedItem(selectedCity);
                     hasInitialized.current = true;
-                } 
+                }
                 // else {
                 //     setInputValue('');
                 //     setSelectedItem(null);
@@ -66,7 +66,7 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
 
     const selectItem = (item) => {
         setSelectedItem(item);
-        setInputValue(dataType === "cities" ? item.name : item);
+        setInputValue(dataType === "cities" ? item.name : `${item.name} - ${item.line}`);
         setIsOpen(false);
         if (dataType === "cities" && onCitySelect) {
             onCitySelect(item);
@@ -77,7 +77,7 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
 
     const handleSearch = (text) => {
         setInputValue(text);
-        
+
         if (text.length > 0) {
             setIsOpen(true);
             const filtered = allData.filter(item => {
@@ -124,7 +124,9 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
                             style={styles.dropdownItem}
                             onPress={() => selectItem(item)}
                         >
-                            <Text style={styles.itemText}>{dataType === "cities" ? item.name : item}</Text>
+                            <Text style={styles.itemText}>
+                                {dataType === "cities" ? item.name : `${item.name} - ${item.line}`}
+                            </Text>
                         </TouchableOpacity>
                     )}
                 />
