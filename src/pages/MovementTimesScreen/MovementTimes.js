@@ -1,51 +1,48 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
-import axios from 'axios';
-import { API_URL } from '@env';
+import { View, Text, FlatList } from 'react-native';
 import styles from './MovementTimes.style';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useGlobalContext } from "../../contexts/GlobalContext";
+import { getMovementTimesByRoute } from '../../api/routeService';
 
 function MovementTimes({ route }) {
   const { city, routes } = route.params
+  console.log("1------>",routes)
   const [busTimes, setBusTimes] = useState(null);
-  const [startToEnd, endToStart] = routes.routeLine.split(" - ");
+  const [startToEnd, endToStart] = routes.line?.split(" - ") || ["Başlangıç", "Bitiş"];
   const { setLoading, setError, setStatusWithCode } = useGlobalContext();
 
   const fetchBusTimes = async () => {
-    if (!city || !routes) return;
-    setLoading(true);
-    setError(null);
+    if (!routes?.id) return;
+    console.log("2------>",!routes?.routeId)
+    // setLoading(true);
+    // setError(null);
     try {
-      const response = await axios.get(`${API_URL}/cities`);
-      const data = response.data;
-      console.log(data)
-      const findedCity = data.find((findedCity) => findedCity.cityName === city); //seçilen şehir 
-      if (findedCity && findedCity.routes) {
-        const findedRoute = findedCity.routes.find((route) => route.routeName === routes.routeName);
+     const data = await getMovementTimesByRoute(routes.id);
+    console.log("data",data)
+     const startToEndClock = data
+     .filter(item => item.direction === "startToEnd")
+     .map(item => item.time);
 
-        if (findedRoute && findedRoute.movementTimes) {
-          setBusTimes(findedRoute.movementTimes); // Hareket saatlerini kaydet
-        } else {
-          setBusTimes(null);
-        }
-      } else {
-        setBusTimes(null);
-      }
+     const endToStartClock = data
+        .filter(item => item.direction === "endToStart")
+        .map(item => item.time);
+
+        setBusTimes({ startToEndClock, endToStartClock });
     } catch (error) {
       console.error("Veri çekme hatası (HareketSaatleri.js):", error);
       if (error.response) {
         // HTTP durum kodlarına göre özel hata mesajı
-        setErrorWithCode(error.response.status);
+        //setErrorWithCode(error.response.status);
       }
     } finally {
-      setLoading(false);
+      //setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchBusTimes();
-  }, [city, route]);
+  }, [routes]);
 
   if (!busTimes) {
     return (

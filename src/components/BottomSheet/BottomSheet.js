@@ -9,15 +9,14 @@ const max_translate_y = -height;
 const min_translate_y = -height / 6; //componentin alttan görülecek sınırı
 
 const BottomSheet = ({ children }) => {
-    const navigation = useNavigation();
     const translationY = useSharedValue(0);
+    const context = useSharedValue({ y: 0 });
 
     const scrollTo = useCallback((destination) => {
         'worklet';
         translationY.value = withSpring(destination, { damping: 50 }); //ilk açıldığında animasyon
     }, [])
 
-    const context = useSharedValue({ y: 0 });
     const gesture = Gesture.Pan().onStart(() => {
         context.value = { y: translationY.value };
     }).onUpdate((event) => {
