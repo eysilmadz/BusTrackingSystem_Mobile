@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView, View, Text, TouchableOpacity } from "react-native";
 import PopularPlacesCard from "../PopularPlacesCard";
-import citiesData from "../../assets/data/data.json"; // JSON dosyasını içe aktar
 import { useNavigation } from '@react-navigation/native';
 import { getPopularPlaces } from "../../api/popularPlaceService";
 import styles from './Slider.style';
+import AllPlaces from "../../pages/AllPlacesScreen";
 
 const Slider = ({ selectedCity, limit = 5 }) => {
+    const [allPlaces, setAllPlaces] = useState([]); 
     const [popularPlaces, setPopularPlaces] = useState([]);
     const navigation = useNavigation();
 
     const fetchData = async () => {
         try {
             const data = await getPopularPlaces(selectedCity);
+            setAllPlaces(data);
             setPopularPlaces(data.slice(0, limit));
         } catch (error) {
             console.error("Slider.js:", error);
@@ -26,7 +28,7 @@ const Slider = ({ selectedCity, limit = 5 }) => {
     }, [selectedCity, limit]);
 
     const handleSeeAll = () => {
-        navigation.navigate("AllPlaces", { populerPlaces: popularPlaces });
+        navigation.navigate("AllPlaces", { populerPlaces: allPlaces });
     };
 
     return (

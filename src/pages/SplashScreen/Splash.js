@@ -72,11 +72,11 @@ const Splash = ({ navigation }) => {
                     getLocation();
                 }
                 else {
-                    setLocationCity({id: null, namme: "N/A"})
+                    setLocationCity({id: null, name: "N/A"})
                 }
             }
             else {
-                setLocationCity({id: null, namme: "N/A"});
+                setLocationCity({id: null, name: "N/A"});
             }
         } catch (error) {
             console.warn(error);

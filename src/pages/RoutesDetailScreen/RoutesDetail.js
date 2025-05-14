@@ -8,14 +8,18 @@ import BottomSheet from "../../components/BottomSheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useGlobalContext } from "../../contexts/GlobalContext";
 import { useFavouriteContext } from "../../contexts/FavouriteContext";
-import { getRoutesByStation, getRouteStations } from "../../api/routeService";
+import { getRoutesByStation, getRouteStations, getRoutePath, simulateAllMovements, startSimulation, getMovementTimesByRoute } from "../../api/routeService";
+import { BusSocket } from "../../api/BusSocket";
+import { connectWebSocket, disconnectedWebSocket } from "../../api/WebSocketService";
+
 
 function RoutesDetail({ route }) {
   const { routes, city } = route.params; // Hatlara ait bilgiler ve şehir geliyor
-  const [busStations, setBusStations] = useState([]);
-  const [busLocation, setBusLocation] = useState(null); // WebSocket'ten gelen otobüs konumu
-  const wsRef = useRef(null); // WebSocket bağlantısı için referans
-  const [bus, setBus] = useState([]);
+  const [busStations, setBusStations] = useState([]); //Otobüs durakları
+  const [busPositions, setBusPositions] = useState({ startToEnd: null, endToStart: null}); // WebSocket'ten gelen otobüs konumu
+  const [bus, setBus] = useState([]); //otobüsler
+  const [forwardPath, setForwardPath] = useState([]); //startToEnd yolu
+  const [backwardPath, setBackwardPath] = useState([]); //endToStart yolu
   const navigation = useNavigation();
   const [defaultLocation, setDefaultLocation] = useState(null);
   const { setLoading, setErrorWithCode, setError } = useGlobalContext();
@@ -26,48 +30,35 @@ function RoutesDetail({ route }) {
     return { latitude, longitude };
   });
 
+  //Durak listesini çek
   const fetchStations = async () => {
-    if (!routes || !routes.id) return;
-    // setLoading(true);
-    // setError(null);
+    if (!routes?.id) return;
     try {
       const stationData = await getRouteStations(routes.id);
+      if (!stationData.length) return setBusStations([]);
 
-      if (stationData && stationData.length > 0) {
-        const mappedStations = stationData.map((station) => ({
-          stationsLocation: station.location,
-          stationsName: station.name,
-          stationId: station.id,
-        }));
-        setBusStations(mappedStations);
+      const mappedStations = stationData.map((station) => ({
+        stationsLocation: station.location,
+        stationsName: station.name,
+        stationId: station.id,
+      }));
+      setBusStations(mappedStations);
 
-        const middleIndex = Math.floor(stationData.length / 2);
-        const station = mappedStations[middleIndex];
-        const location = station.stationsLocation;
-
-        if (location && location.includes(",")) {
-          const [latitude, longitude] = location.split(",").map(coord => parseFloat(coord.trim()));
-          setDefaultLocation({ latitude, longitude });
-        } else {
-          console.error("Geçersiz location verisi:", location);
-        }
-
-      } else {
-        setBusStations([]);
-      }
+      //harita başlangıç konumu
+      const mid = Math.floor(mappedStations.length / 2);
+      const [lat, lon] = mappedStations[mid].stationsLocation
+        .split(",")
+        .map(c => parseFloat(c.trim()));
+      setDefaultLocation({ latitude: lat, longitude: lon });
 
     } catch (error) {
-
-      console.error("Veri çekme hatası(RoutesDetail.js):", error);
-      if (error.response) {
-        // HTTP durum kodlarına göre özel hata mesajı
-        ///setErrorWithCode(error.response.status);
-      }
+      console.error("Veri çekme hatası(RoutesDetail.js-fetchStations):", error);
     } finally {
       //setLoading(false);
     }
   };
 
+  //Duraktan hangi hatlar geçiyor
   const fetchBusAtStations = async (filteredStations, city) => {
     if (!city?.id || filteredStations.length === 0) return;
     // setLoading(true);
@@ -97,45 +88,53 @@ function RoutesDetail({ route }) {
     }
   };
 
-  // const fetchWs = async () => {
-  //   // WebSocket bağlantısını kur
-  //   const ws = new WebSocket('ws://192.168.250.97:3003'); // WebSocket sunucu adresi
-  //   wsRef.current = ws;
-
-  //   ws.onopen = () => {
-  //     console.log('WebSocket bağlantısı açıldı');
-  //     ws.send(`join|${routes.routeId}`); // Hat için join mesajı gönder
-  //   };
-
-  //   ws.onmessage = (event) => {
-  //     const message = event.data;
-  //     const [prefix, routeId, latitude, longitude] = message.split('|');
-  //     if (prefix === 'BLCM' && routeId === routes.routeId) {
-  //       setBusLocation({ latitude: parseFloat(latitude), longitude: parseFloat(longitude) });
-  //     }
-  //   };
-
-  //   ws.onerror = (error) => {
-  //     console.error('WebSocket hatası:', error);
-  //   };
-
-  //   ws.onclose = () => {
-  //     console.log('WebSocket bağlantısı kapatıldı');
-  //   };
-
-  //   return () => {
-  //     if (ws) ws.close();
-  //   };
-  // }
-
+  //shape polyline çizer
   useEffect(() => {
     fetchBusAtStations(busStations, city);
   }, [busStations, city]);
 
+  const fetchPath = async () => {
+    if (!routes?.id) return;
+    try {
+      //gidiş
+      const ptsFwd = await getRoutePath(routes.id, 'startToEnd');
+      setForwardPath(ptsFwd.map(p => ({ latitude: p.lat, longitude: p.lon })));
+      //dönüş
+      const ptsBwd = await getRoutePath(routes.id, 'endToStart');
+      setBackwardPath(ptsBwd.map(p => ({ latitude: p.lat, longitude: p.lon })));
+    } catch (e) {
+      console.error("Path fetch error:", e);
+    }
+  };
+
+  //routes.id her değiştiğinde durakları çek ve websocket aboneliği kur
   useEffect(() => {
     fetchStations();
-    // fetchWs();
+    fetchPath();
   }, [routes]);
+
+  // WebSocket aboneliği
+   useEffect(() => {
+    if (!routes?.id) return;
+    connectWebSocket(routes.id, loc => {
+      // loc.direction, loc.latitude, loc.longitude burada geliyor
+      console.log("Yeni pozisyon:", loc);
+      setBusPositions(prev => ({
+        ...prev,
+        [loc.direction]: {
+          latitude: loc.latitude,
+          longitude: loc.longitude
+        }
+      }));
+    });
+
+    //sayfa açılır açılmaz simülasyon başlat
+    simulateAllMovements(routes.id)
+    .then(() => console.log("Auto-started this route's simulations"))
+    .catch(e => console.error("Auto-start error:",e));
+
+    return () => { disconnectedWebSocket(); };
+  }, [routes.id]);
 
   return (
     <GestureHandlerRootView>
@@ -151,11 +150,21 @@ function RoutesDetail({ route }) {
                 longitudeDelta: 0.1,
               }}
             >
-              <Polyline
-                coordinates={polylineCoordinates}
-                strokeColor="#3699FF" // Rota çizgisi rengi
-                strokeWidth={3} // Çizgi kalınlığı
-              />
+              {forwardPath.length > 0 && (
+                <Polyline
+                  coordinates={forwardPath}
+                  strokeColor="#3699FF" // Rota çizgisi rengi
+                  strokeWidth={3} // Çizgi kalınlığı
+                />
+              )}
+              {backwardPath.length > 0 && (
+                <Polyline
+                  coordinates={backwardPath}
+                  strokeColor="#FF6347" // Rota çizgisi rengi
+                  strokeWidth={3} // Çizgi kalınlığı
+                  lineDashPattern={[10, 5]}
+                />
+              )}
               {busStations.map((station) => {
                 const [latitude, longitude] = station.stationsLocation.split(",").map(coord => parseFloat(coord.trim()));
                 return (
@@ -172,16 +181,25 @@ function RoutesDetail({ route }) {
                   </Marker>
                 );
               })}
-              {busLocation && (
+              {busPositions.startToEnd && (
                 <Marker
-                  coordinate={busLocation}
-                  title="Otobüs Konumu"
-                  style={{ zIndex: 99 }}
+                coordinate={busPositions.startToEnd}
+                title="obodüs"
+                style={{ zIndex: 99 }}
                 >
-                  <Icon name="bus-outline" size={24} color={'#444'} />
+                <Icon name="bus-outline" size={24} color={'#444'} />
                 </Marker>
               )}
-
+              {busPositions.endToStart && (
+                <Marker
+                coordinate={busPositions.endToStart}
+                title="obodüs"
+                style={{ zIndex: 99 }}
+                pinColor="red"
+                >
+                <Icon name="bus-outline" size={24} color={'red'} />
+                </Marker>
+              )}
             </MapView>
           }
         </View>
