@@ -16,8 +16,9 @@ import { connectWebSocket, disconnectedWebSocket } from "../../api/WebSocketServ
 function RoutesDetail({ route }) {
   const { routes, city } = route.params; // Hatlara ait bilgiler ve şehir geliyor
   const [busStations, setBusStations] = useState([]); //Otobüs durakları
-  const [busPositions, setBusPositions] = useState({ startToEnd: null, endToStart: null}); // WebSocket'ten gelen otobüs konumu
+  const [busPositions, setBusPositions] = useState({ startToEnd: null, endToStart: null }); // WebSocket'ten gelen otobüs konumu
   const [bus, setBus] = useState([]); //otobüsler
+  const [simDirection, setSimDirection] = useState("");
   const [forwardPath, setForwardPath] = useState([]); //startToEnd yolu
   const [backwardPath, setBackwardPath] = useState([]); //endToStart yolu
   const navigation = useNavigation();
@@ -114,7 +115,7 @@ function RoutesDetail({ route }) {
   }, [routes]);
 
   // WebSocket aboneliği
-   useEffect(() => {
+  useEffect(() => {
     if (!routes?.id) return;
     connectWebSocket(routes.id, loc => {
       // loc.direction, loc.latitude, loc.longitude burada geliyor
@@ -126,12 +127,16 @@ function RoutesDetail({ route }) {
           longitude: loc.longitude
         }
       }));
+      //sayfa açılır açılmaz simülasyon başlat
+      startSimulation(routes.id, {
+        direction: loc.direction,
+        dwellSeconds: 10,
+        avgSpeedKmh: 40.0
+      })
+        .then(() => console.log("Auto-started this route's simulations"))
+        .catch(e => console.error("Auto-start error:", e));
     });
 
-    //sayfa açılır açılmaz simülasyon başlat
-    simulateAllMovements(routes.id)
-    .then(() => console.log("Auto-started this route's simulations"))
-    .catch(e => console.error("Auto-start error:",e));
 
     return () => { disconnectedWebSocket(); };
   }, [routes.id]);
@@ -183,21 +188,21 @@ function RoutesDetail({ route }) {
               })}
               {busPositions.startToEnd && (
                 <Marker
-                coordinate={busPositions.startToEnd}
-                title="obodüs"
-                style={{ zIndex: 99 }}
+                  coordinate={busPositions.startToEnd}
+                  title="obodüs"
+                  style={{ zIndex: 99 }}
                 >
-                <Icon name="bus-outline" size={24} color={'#444'} />
+                  <Icon name="bus-outline" size={24} color={'#444'} />
                 </Marker>
               )}
               {busPositions.endToStart && (
                 <Marker
-                coordinate={busPositions.endToStart}
-                title="obodüs"
-                style={{ zIndex: 99 }}
-                pinColor="red"
+                  coordinate={busPositions.endToStart}
+                  title="obodüs"
+                  style={{ zIndex: 99 }}
+                  pinColor="red"
                 >
-                <Icon name="bus-outline" size={24} color={'red'} />
+                  <Icon name="bus-outline" size={24} color={'red'} />
                 </Marker>
               )}
             </MapView>
