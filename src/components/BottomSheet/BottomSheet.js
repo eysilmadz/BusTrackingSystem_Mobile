@@ -1,82 +1,131 @@
-import React, { useCallback, useEffect } from 'react';
-import { StyleSheet, View, Text, Dimensions, ScrollView, TouchableOpacity } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, { Extrapolation, interpolate, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
-import { useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useRef } from 'react';
+import { StyleSheet, View, Dimensions } from 'react-native';
+import { PanGestureHandler, NativeViewGestureHandler } from 'react-native-gesture-handler';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  useAnimatedGestureHandler,
+  useAnimatedScrollHandler,
+  withSpring,
+  interpolate,
+  Extrapolation,
+} from 'react-native-reanimated';
 
 const { height } = Dimensions.get('window');
-const max_translate_y = -height;
-const min_translate_y = -height / 6; //componentin alttan görülecek sınırı
+const MAX_TRANSLATE_Y = -height;       // Tam açılma (en yukarı)
+const MIN_TRANSLATE_Y = -height / 5;   // Minimize (alttan görünen kısmı)
 
 const BottomSheet = ({ children }) => {
-    const translationY = useSharedValue(0);
-    const context = useSharedValue({ y: 0 });
+  // Sheet pozisyonu
+  const translationY = useSharedValue(0);
+  // Scroll offset
+  const scrollOffsetY = useSharedValue(0);
+  // Refs
+  const handleRef = useRef();
+  const scrollRef = useRef();
 
-    const scrollTo = useCallback((destination) => {
-        'worklet';
-        translationY.value = withSpring(destination, { damping: 50 }); //ilk açıldığında animasyon
-    }, [])
+  // ScrollView offset yakalayıcı
+  const onScroll = useAnimatedScrollHandler({
+    onScroll: e => {
+      scrollOffsetY.value = e.contentOffset.y;
+    },
+  });
 
-    const gesture = Gesture.Pan().onStart(() => {
-        context.value = { y: translationY.value };
-    }).onUpdate((event) => {
-        translationY.value = event.translationY + context.value.y;
-        translationY.value = Math.max(translationY.value, max_translate_y);
-        translationY.value = Math.min(translationY.value, min_translate_y);
-    }).onEnd(() => {
-        if (translationY.value > min_translate_y) {
-            scrollTo(0); // Yukarı kaydırma
-        } else if (translationY.value < max_translate_y) {
-            scrollTo(max_translate_y); // Aşağı kaydırma
-        }
-    });
+  // Sheet’i hedefe spring’le götür
+  const snapTo = useCallback(dest => {
+    'worklet';
+    translationY.value = withSpring(dest, { damping: 50 });
+  }, []);
 
-    useEffect(() => {
-        scrollTo(-height / 3); //Başlangıç Pozisyonu
-    }, [])
+  // Açılışta 1/3 açık pozisyon
+  useEffect(() => {
+    snapTo(-height / 2.8);
+  }, [snapTo]);
 
+  // Sadece handle’ı sürüklemek için gesture
+  const gesture = useAnimatedGestureHandler({
+    onStart: (_, ctx) => {
+      ctx.startY = translationY.value;
+    },
+    onActive: (e, ctx) => {
+      let next = ctx.startY + e.translationY;
+      next = Math.max(next, MAX_TRANSLATE_Y);
+      next = Math.min(next, MIN_TRANSLATE_Y);
+      translationY.value = next;
+    },
+    onEnd: () => {
+      const mid = (MAX_TRANSLATE_Y + MIN_TRANSLATE_Y) / 2;
+      if (translationY.value < mid) {
+        snapTo(MAX_TRANSLATE_Y);   // tam aç
+      } else {
+        snapTo(MIN_TRANSLATE_Y);   // minimize
+      }
+    },
+  });
 
-    const rBottomSheetStyle = useAnimatedStyle(() => {
-        const borderRadius = interpolate(
-            translationY.value,
-            [max_translate_y + 50, max_translate_y],
-            [25, 5],
-            Extrapolation.CLAMP
-        );
-        return {
-            borderRadius,
-            transform: [{ translateY: translationY.value }],
-        };
-    });
+  // Animated stil
+  const rStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translationY.value }],
+    borderRadius: interpolate(
+      translationY.value,
+      [MAX_TRANSLATE_Y + 50, MAX_TRANSLATE_Y],
+      [25, 5],
+      Extrapolation.CLAMP
+    ),
+  }));
 
-    return (
-        <GestureDetector gesture={gesture} enableContentPanningGesture={false}>
-            <Animated.View style={[styles.bottomSheetContainer, rBottomSheetStyle]} >
-                <View style={styles.line} />
-                    {children}
-            </Animated.View>
-        </GestureDetector>
+  return (
+    <Animated.View style={[styles.container, rStyle]}>
+      {/* 1) Sadece bu handle alanı PanGestureHandler ile sarıyoruz */}
+      <PanGestureHandler
+        ref={handleRef}
+        onGestureEvent={gesture}
+        simultaneousHandlers={scrollRef}
+      >
+        <Animated.View style={styles.handle}>
+          <View style={styles.line} />
+        </Animated.View>
+      </PanGestureHandler>
 
-    );
+      {/* 2) Geri kalan tüm alanı ScrollView yapıyoruz */}
+      <NativeViewGestureHandler
+        ref={scrollRef}
+        simultaneousHandlers={handleRef}
+      >
+        <Animated.ScrollView
+          onScroll={onScroll}
+          scrollEventThrottle={16}
+          nestedScrollEnabled
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ paddingBottom: 50 }}
+        >
+          {children}
+        </Animated.ScrollView>
+      </NativeViewGestureHandler>
+    </Animated.View>
+  );
 };
 
 const styles = StyleSheet.create({
-    bottomSheetContainer: {
-        height: height,
-        width: '100%',
-        backgroundColor: 'white',
-        position: 'absolute',
-        top: height,
-        borderRadius: 25
-    },
-    line: {
-        width: 75,
-        height: 4,
-        backgroundColor: 'gray',
-        alignSelf: 'center',
-        marginVertical: 15,
-        borderRadius: 2,
-    }
+  container: {
+    position: 'absolute',
+    top: height,
+    width: '100%',
+    height,
+    backgroundColor: 'white',
+  },
+  handle: {
+    // Handle’ın yüksekliği: kullanıcı burayı sürükler
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  line: {
+    width: 75,
+    height: 4,
+    backgroundColor: 'gray',
+    borderRadius: 2,
+  },
 });
 
 export default BottomSheet;
