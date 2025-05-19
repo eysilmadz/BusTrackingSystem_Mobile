@@ -8,7 +8,7 @@ const CustomHeader = ({ navigation, route }) => {
     return (
       <View style={styles.headerContainer}>
         {route.name !== 'HomeTab' ? (
-          <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <Icon name="arrow-back-outline" size={24} color={"#222"} />
           </TouchableOpacity>
         ) : (

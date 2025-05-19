@@ -21,6 +21,8 @@ import Profile from '../pages/Auth/Profile/ProfileScreen';
 import MyInfo from '../pages/Auth/Profile/MyInfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import apiClient from '../api/apiClient';
+import HowToGet from '../pages/HowToGetScreen';
+import MapPicker from '../pages/MapPicker';
 
 const Stack = createNativeStackNavigator();
 
@@ -66,6 +68,8 @@ function Router() {
           <Stack.Screen name="PlacesDetail" component={PlacesDetail} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="BusRoutes" component={BusRoutes} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="RoutesDetail" component={RoutesDetail} options={{ header: (props) => <CustomHeader {...props} />, }} />
+          <Stack.Screen name="HowToGet" component={HowToGet} options={{ header: (props) => <CustomHeader {...props} />, }} />
+          <Stack.Screen name="MapPicker" component={MapPicker} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="MovementTimes" component={MovementTimes} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="FillerPoints" component={FillerPoints} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="Login" component={Login} options={{ header: (props) => <CustomHeader {...props} />, }} />

@@ -17,7 +17,7 @@ function Home({ route }) {
   const logo = [
     { id: "1", image: require("../../assets/images/bus.png"), text: "Hatlar", route: "BusRoutes" },
     { id: "2", image: require("../../assets/images/card.png"), text: "Dolum Noktaları", route: "FillerPoints" },
-    { id: "3", image: require("../../assets/images/location.png"), text: "Nasıl Giderim?", route: "BusRoutes" }
+    { id: "3", image: require("../../assets/images/location.png"), text: "Nasıl Giderim?", route: "HowToGet" }
   ]
 
   useEffect(() => {
