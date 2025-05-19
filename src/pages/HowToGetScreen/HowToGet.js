@@ -1,20 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, View, Text, TouchableOpacity, TextInput } from "react-native";
+import { SafeAreaView, View, Text, TouchableOpacity, TextInput, Keyboard } from "react-native";
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import DatePicker from 'react-native-date-picker';
 import { format } from 'date-fns';
 import tr from 'date-fns/locale/tr';
 import styles from "../../pages/HowToGetScreen/HowToGet.style";
+import Dropdown from "../../components/Dropdown";
 
 function HowToGet({ route }) {
-  const { location } = route.params;
+  const { location, city } = route.params;
+  console.log(city) // LOG  {"id": 42, "name": "Konya"}
   const navigation = useNavigation();
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState(new Date());
   const [fromLocation, setFromLocation] = useState(null);
   const [toLocation, setToLocation] = useState(null);
   const [selectingField, setSelectingField] = useState(null);
+
+  // Dropdown için durak seçimi
+  const [isOpenStops, setIsOpenStops] = useState(false);
+  const [selectedStop, setSelectedStop] = useState(null);
 
   useEffect(() => {
     if (location?.coords && fromLocation === null) {
@@ -25,6 +31,18 @@ function HowToGet({ route }) {
     }
   }, [location]);
 
+  // Dropdown’dan durak seçildiğinde ilgili alana ata
+  useEffect(() => {
+    if (selectedStop && selectingField) {
+      // location string formatı "lat,lon"
+      const [lat, lon] = selectedStop.location.split(',').map(Number);
+      const target = { coords: { latitude: lat, longitude: lon }, address: selectedStop.name };
+      if (selectingField === 'from') setFromLocation(target);
+      else setToLocation(target);
+      setSelectingField(null);
+    }
+  }, [selectedStop]);
+
   // Kullanıcı mevcut konum seçtiğinde
   const applyPropLocation = () => {
     if (location?.coords) {
@@ -32,6 +50,21 @@ function HowToGet({ route }) {
       selectingField === 'from'
         ? setFromLocation(target)
         : setToLocation(target);
+    }
+    setSelectingField(null);
+  };
+
+  const handleStopSelect = (stop) => {
+    // location string formatı "lat,lon"
+    const [lat, lon] = stop.location.split(',').map(Number);
+    const target = {
+      coords: { latitude: lat, longitude: lon },
+      address: stop.name
+    };
+    if (selectingField === 'from') {
+      setFromLocation(target);
+    } else {
+      setToLocation(target);
     }
     setSelectingField(null);
   };
@@ -72,25 +105,33 @@ function HowToGet({ route }) {
         {isSelecting ? (
           <>
             <View style={styles.selectionContainer}>
-              <TextInput
-                placeholder="Hat veya Durak Ara"
-                style={styles.searchInput}
+              <Dropdown
+                placeholder="Durak Ara"
+                iconName="search-outline"
+                isOpen={isOpenStops}
+                setIsOpen={setIsOpenStops}
+                dataType="stops"
+                selectedCity={city}
+                disabled={!city}
+                selectedItem={selectedStop}
+                setSelectedItem={setSelectedStop}
+                setSelectedStop={setSelectedStop}
+                onSelectStop={handleStopSelect}
               />
-              <Icon name="search-outline" size={20} color="#777" />
-            </View>
-            <View style={{ backgroundColor: 'white', borderRadius: 12, marginVertical: '4%' }}>
-              <TouchableOpacity style={styles.optionButton} onPress={applyPropLocation}>
-                <View style={styles.icon}>
-                  <Icon name="navigate-circle-outline" size={24} color='#fff' />
-                </View>
-                <Text style={styles.optionText}>Mevcut Konumum</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.optionButton} onPress={applyMapPick}>
-                <View style={styles.icon}>
-                  <Icon name="map-outline" size={24} color='#fff'/>
-                </View>
-                <Text style={styles.optionText}>Haritadan Seç</Text>
-              </TouchableOpacity>
+              <View style={{ backgroundColor: 'white', borderRadius: 12, marginVertical: '2%', marginHorizontal: '4%' }}>
+                <TouchableOpacity style={styles.optionButton} onPress={applyPropLocation}>
+                  <View style={styles.icon}>
+                    <Icon name="navigate-circle-outline" size={24} color='#fff' />
+                  </View>
+                  <Text style={styles.optionText}>Mevcut Konumum</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.optionButton} onPress={applyMapPick}>
+                  <View style={styles.icon}>
+                    <Icon name="map-outline" size={24} color='#fff' />
+                  </View>
+                  <Text style={styles.optionText}>Haritadan Seç</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </>
         ) : (

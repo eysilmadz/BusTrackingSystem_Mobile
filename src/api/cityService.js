@@ -9,3 +9,8 @@ export const getCityNames = async () => {
 //   console.log(`➡️ ${req.method.toUpperCase()} →`, req.baseURL + req.url);
 //   return req;
 // }, err => Promise.reject(err));
+
+export async function getStationByCity(cityId) {
+    const response = await apiClient.get(`/stations/city/${cityId}`);
+    return response.data;
+}

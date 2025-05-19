@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: '5%',
+    marginBottom: '3%',
   },
   title: {
     flexDirection: 'row',
@@ -32,13 +32,8 @@ const styles = StyleSheet.create({
     alignItems:"center",
   },
   selectionContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: "space-between",
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    paddingHorizontal: '5%',
-    paddingVertical:2
+    alignSelf: 'center',
+    zIndex: 99
   },
   searchInput: {
     fontSize: 18,

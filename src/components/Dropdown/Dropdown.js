@@ -3,10 +3,10 @@ import { View, TextInput, TouchableOpacity, Text, FlatList } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons';
 import styles from './Dropdown.style';
 import { useGlobalContext } from "../../contexts/GlobalContext";
-import { getCityNames } from '../../api/cityService';
+import { getCityNames, getStationByCity } from '../../api/cityService';
 import { getRoutesByCityId } from '../../api/routeService';
 
-const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySelect, selectedCity, disabled, onCityInputClear, setSelectedRoute }) => {
+const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySelect, selectedCity, disabled, onCityInputClear, setSelectedRoute, setSelectedStop, onSelect }) => {
     const { setLoading, setError, setErrorWithCode } = useGlobalContext();
     const [allData, setAllData] = useState([]);
     const [data, setData] = useState([]);
@@ -23,6 +23,9 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
             setInputValue(selectedCity.name ?? selectedCity);
         } else if (dataType === "routes" && !selectedCity) {
             setSelectedRoute(null);
+            setInputValue('');
+        } else if (dataType === "stops" && !selectedCity) {
+            setSelectedStop(null);
             setInputValue('');
         }
 
@@ -48,7 +51,13 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
                 const routeList = await getRoutesByCityId(selectedCity.id);
                 setAllData(routeList);
                 setData(routeList);
+            } else if (dataType === "stops" && selectedCity) {
+                // şehir bazlı durakları çekiyoruz
+                const stops = await getStationByCity(selectedCity.id);
+                setAllData(stops);
+                setData(stops);
             }
+
 
         } catch (error) {
             console.log("errorDropdown", error);
@@ -66,12 +75,14 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
 
     const selectItem = (item) => {
         setSelectedItem(item);
-        setInputValue(dataType === "cities" ? item.name : `${item.name} - ${item.line}`);
+        setInputValue(dataType === 'routes' ? `${item.name} - ${item.line}` : item.name);
         setIsOpen(false);
         if (dataType === "cities" && onCitySelect) {
             onCitySelect(item);
         } else if (dataType === "routes" && setSelectedRoute) {
             setSelectedRoute(item);
+        } if (dataType === 'stops' && setSelectedStop) {
+            setSelectedStop(item);
         }
     };
 
@@ -125,7 +136,7 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
                             onPress={() => selectItem(item)}
                         >
                             <Text style={styles.itemText}>
-                                {dataType === "cities" ? item.name : `${item.name} - ${item.line}`}
+                                {dataType === "routes" ? `${item.name} - ${item.line}` : item.name}
                             </Text>
                         </TouchableOpacity>
                     )}
