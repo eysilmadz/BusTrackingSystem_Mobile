@@ -2,18 +2,23 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, TextInput, TouchableOpacity, Text, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import styles from './Dropdown.style';
+import { useNavigation } from '@react-navigation/native';
 import { useGlobalContext } from "../../contexts/GlobalContext";
-import { getCityNames, getStationByCity } from '../../api/cityService';
+import { getCityNames } from '../../api/cityService';
 import { getRoutesByCityId } from '../../api/routeService';
+import { getStationByCity } from '../../api/StationService';
 
 const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySelect, selectedCity, disabled, onCityInputClear, setSelectedRoute, setSelectedStop, onSelect }) => {
     const { setLoading, setError, setErrorWithCode } = useGlobalContext();
     const [allData, setAllData] = useState([]);
     const [data, setData] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
+    const [icon, setIcon] = useState('return-down-forward-outline')
     const [inputValue, setInputValue] = useState('');
     const inputRef = useRef(null);
     const hasInitialized = useRef(false);
+    const navigation = useNavigation();
+
 
     useEffect(() => {
         fetchData();
@@ -24,6 +29,7 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
         } else if (dataType === "routes" && !selectedCity) {
             setSelectedRoute(null);
             setInputValue('');
+            setIcon('return-down-forward-outline');
         } else if (dataType === "stops" && !selectedCity) {
             setSelectedStop(null);
             setInputValue('');
@@ -81,6 +87,11 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
             onCitySelect(item);
         } else if (dataType === "routes" && setSelectedRoute) {
             setSelectedRoute(item);
+            if (item?.id) {
+                navigation.navigate('RoutesDetail', { routes: item, city: selectedCity }); // ✅
+            } else {
+                console.warn("Seçilen hattın ID'si yok:", item);
+            }
         } if (dataType === 'stops' && setSelectedStop) {
             setSelectedStop(item);
         }
@@ -135,9 +146,14 @@ const Dropdown = ({ placeholder, iconName, isOpen, setIsOpen, dataType, onCitySe
                             style={styles.dropdownItem}
                             onPress={() => selectItem(item)}
                         >
-                            <Text style={styles.itemText}>
-                                {dataType === "routes" ? `${item.name} - ${item.line}` : item.name}
-                            </Text>
+                            <View style={styles.itemRow}>
+                                <Text style={styles.itemText}>
+                                    {dataType === "routes" ? `${item.name} - ${item.line}` : item.name}
+                                </Text>
+                                {dataType === "routes" && (
+                                    <Icon style={styles.flatIcon} name="return-down-forward-outline" size={20} color="#555" />
+                                )}
+                            </View>
                         </TouchableOpacity>
                     )}
                 />

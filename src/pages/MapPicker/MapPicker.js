@@ -4,7 +4,7 @@ import MapView, { Marker } from "react-native-maps";
 
 export default function MapPicker({ route, navigation }) {
     const [marker, setMarker] = useState(initialLocation?.coords || null);
-    const { onSelect, initialLocation } = route.params;
+    const { field, initialLocation } = route.params;
 
     // Haritanın açılış bölgesi:
     const initialRegion = initialLocation
@@ -46,14 +46,19 @@ export default function MapPicker({ route, navigation }) {
                         alignItems: 'center',
                     }}
                     onPress={() => {
-                        onSelect({
+                        const picked = {
                             coords: marker,
                             address: `${marker.latitude.toFixed(5)},${marker.longitude.toFixed(5)}`,
+                        };
+                        // v6’da merge: true, mevcut ekran params’ını bozmadan ekler
+                        navigation.navigate({
+                            name: 'HowToGet',
+                            params: { pickedLocation: picked, field },
+                            merge: true,
                         });
-                        navigation.goBack();
                     }}
                 >
-                    <Text style={{fontSize: 20, fontWeight: '500'}}>Bu Konumu Seç</Text>
+                    <Text style={{ fontSize: 20, fontWeight: '500' }}>Bu Konumu Seç</Text>
                 </TouchableOpacity>
             )}
         </View>

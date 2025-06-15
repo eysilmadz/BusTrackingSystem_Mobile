@@ -19,10 +19,18 @@ export default StyleSheet.create({
     padding: 10,
   },
   header: {
+    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 10,
+  },
+  headerName: {
+    width: '80%',
+    height: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: "space-between",        
   },
   routeName: {
     backgroundColor: '#fff',
@@ -34,14 +42,18 @@ export default StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderColor: '#666',
-    marginLeft: 3
+    marginLeft: '3%'
   },
   routeLine: {
-    marginRight: 70
+    width:'75%',
   },
   routeTitle: {
+    marginLeft: '2%',
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "bold"
+  },
+  timeContainer:{
+    width: '20%',
   },
   scheduleButton: {
     backgroundColor: "#fff",
@@ -68,6 +80,7 @@ export default StyleSheet.create({
     flex: 1,
   },
   stationItem: {
+    flex: 1,
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
@@ -76,10 +89,17 @@ export default StyleSheet.create({
     marginBottom: 10,
     borderRadius: 25,
   },
+  titleContainer:{
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: "space-between",
+    alignItems:"center",
+    marginBottom: '3%',
+    paddingHorizontal: '2%'
+  },
   stationName: {
     fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 5,
   },
   routeNumbersContainer: {
     flexDirection: "row",
@@ -98,7 +118,4 @@ export default StyleSheet.create({
     borderColor: "#666",
     marginBottom: 3,
   },
-  favouriteIcon: {
-    marginLeft: '38%',
-  }
 });

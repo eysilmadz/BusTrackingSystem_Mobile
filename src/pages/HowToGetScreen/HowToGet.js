@@ -1,26 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, View, Text, TouchableOpacity, TextInput, Keyboard } from "react-native";
+import { SafeAreaView, View, Text, TouchableOpacity, Keyboard, FlatList, Alert } from "react-native";
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import DatePicker from 'react-native-date-picker';
 import { format } from 'date-fns';
 import tr from 'date-fns/locale/tr';
 import styles from "../../pages/HowToGetScreen/HowToGet.style";
 import Dropdown from "../../components/Dropdown";
+import { getRouteSegments } from "../../api/PlannerService";
+
+const TABS = [
+  { key: 'TIME', label: 'En kısa süre' },
+  { key: 'WALK', label: 'En az yürüme' },
+  { key: 'DISTANCE', label: 'En kısa mesafe' },
+];
 
 function HowToGet({ route }) {
   const { location, city } = route.params;
-  console.log(city) // LOG  {"id": 42, "name": "Konya"}
   const navigation = useNavigation();
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState(new Date());
   const [fromLocation, setFromLocation] = useState(null);
   const [toLocation, setToLocation] = useState(null);
   const [selectingField, setSelectingField] = useState(null);
-
-  // Dropdown için durak seçimi
-  const [isOpenStops, setIsOpenStops] = useState(false);
+  const [isOpenStops, setIsOpenStops] = useState(false); // Dropdown için durak seçimi
   const [selectedStop, setSelectedStop] = useState(null);
+  const [selectedTab, setSelectedTab] = useState('TIME'); //rota sonuçları ve seçili sekme
+  const [routesByType, setRoutesByType] = useState(null);
+  const [fromSelectedByUser, setFromSelectedByUser] = useState(false);
+
 
   useEffect(() => {
     if (location?.coords && fromLocation === null) {
@@ -54,6 +62,28 @@ function HowToGet({ route }) {
     setSelectingField(null);
   };
 
+  useEffect(() => {
+    const { pickedLocation, field } = route.params || {};
+    if (pickedLocation) {
+      if (field === 'from') {
+        setFromLocation(pickedLocation);
+      } else if (field === 'to') {
+        setToLocation(pickedLocation);
+      }
+      setSelectingField(null);
+      // ➋ Tekrar tetiklememesi için temizleyelim
+      navigation.setParams({ pickedLocation: undefined, field: undefined });
+    }
+  }, [route.params?.pickedLocation]);
+
+  useEffect(() => {
+    const { toLocation } = route.params || {};
+    if (toLocation) {
+      setToLocation(toLocation);
+      navigation.setParams({ toLocation: undefined }); // tekrar tetiklenmemesi için temizle
+    }
+  }, [route.params?.toLocation]);
+
   const handleStopSelect = (stop) => {
     // location string formatı "lat,lon"
     const [lat, lon] = stop.location.split(',').map(Number);
@@ -72,23 +102,87 @@ function HowToGet({ route }) {
   // Haritadan seçmeye yönlendir
   const applyMapPick = () => {
     navigation.navigate('MapPicker', {
-      onSelect: loc => {
-        selectingField === 'from'
-          ? setFromLocation(loc)
-          : setToLocation(loc);
-        setSelectingField(null);
-      },
-      initialLocation: fromLocation
+      initialLocation: fromLocation,
+      field: selectingField,             // “from” veya “to”
     });
   };
+
+
+  const createRoute = async () => {
+    if (!fromLocation || !toLocation) {
+      Alert.alert('Uyarı', 'Lütfen başlangıç ve varış noktalarını seçin.');
+      return;
+    }
+    Keyboard.dismiss();
+
+    try {
+      // ➊ Türleri belirliyoruz
+      const types = ['DISTANCE', 'TIME', 'WALK'];
+
+      // ➋ Promise.all içinde her bir getRouteSegments çağrısı, bir Axios yanıt objesi (response) döner
+      const results = await Promise.all(
+        types.map(type =>
+          getRouteSegments(
+            fromLocation.coords.latitude,
+            fromLocation.coords.longitude,
+            toLocation.coords.latitude,
+            toLocation.coords.longitude,
+            type
+          )
+        )
+      );
+
+      // ➌ results artık tanımlı, aynı blokta hemen kullanabiliriz
+      //    Her bir results[i] bir Axios response objesi; gerçek segment dizisi response.data içinde
+      const byType = {
+        DISTANCE: [results[0]],
+        TIME: [results[1]],
+        WALK: [results[2]],
+      };
+
+      setRoutesByType(byType);
+      setSelectedTab('DISTANCE'); console.log('🚌 byType:', byType);
+      console.log('🚌 selectedTab:', selectedTab);
+    } catch (err) {
+      console.error('Rota oluşturma hatası:', err.response?.data || err.message);
+      Alert.alert('Hata', 'Rota oluşturulurken bir sorun çıktı.');
+    }
+
+
+  };
+
+  // Karte basınca segment dizisini ikoncuklu bir kart olarak gösteriyoruz
+  const renderRouteCard = ({ item: segments, index }) => {
+    console.log('→ renderRouteCard segments.length =', segments)
+    return (
+      <View style={styles.card}>
+        <FlatList
+          data={segments}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(_, i) => i.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.cardSegment}>
+              <Icon name={item.mode === 'WALK' ? 'walk' : 'bus'} size={24} />
+              <Text style={styles.cardSegText}>
+                {item.mode === 'WALK'
+                  ? `${item.durationMin.toFixed(0)} dk`
+                  : item.routeLine}
+              </Text>
+            </View>
+          )}
+        />
+      </View>
+    )
+  }
+
 
   const isSelecting = selectingField === 'from' || selectingField === 'to';
   const selectionLabel = selectingField === 'from' ? 'Nereden' : 'Nereye';
 
-
   return (
     <SafeAreaView style={styles.wrapper}>
-      <View style={styles.container}>
+      <View style={styles.topContainer}>
         <View style={styles.header}>
           <View style={styles.title}>
             <Icon name={"location-outline"} size={30} color={'white'} />
@@ -112,11 +206,10 @@ function HowToGet({ route }) {
                 setIsOpen={setIsOpenStops}
                 dataType="stops"
                 selectedCity={city}
-                disabled={!city}
                 selectedItem={selectedStop}
                 setSelectedItem={setSelectedStop}
+                onSelect={handleStopSelect}
                 setSelectedStop={setSelectedStop}
-                onSelectStop={handleStopSelect}
               />
               <View style={{ backgroundColor: 'white', borderRadius: 12, marginVertical: '2%', marginHorizontal: '4%' }}>
                 <TouchableOpacity style={styles.optionButton} onPress={applyPropLocation}>
@@ -169,7 +262,7 @@ function HowToGet({ route }) {
               </Text>
               <Icon name={"time-outline"} size={20} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { }} style={styles.button}>
+            <TouchableOpacity onPress={createRoute} style={styles.button}>
               <Text style={{ fontSize: 20, fontWeight: '500', color: '#555' }}>
                 Rota Oluştur
               </Text>
@@ -196,8 +289,42 @@ function HowToGet({ route }) {
           </>
 
         )}
-
       </View>
+      {routesByType && (
+        <View style={styles.bottomContainer}>
+
+          {/* Sekmeler */}
+          <View style={styles.tabBarContainer}>
+            {TABS.map(tab => (
+              <TouchableOpacity
+                key={tab.key}
+                style={[
+                  styles.tabItem,
+                  selectedTab === tab.key && styles.tabItemActive
+                ]}
+                onPress={() => setSelectedTab(tab.key)}
+              >
+                <Text style={[
+                  styles.tabText,
+                  selectedTab === tab.key && styles.tabTextActive
+                ]}>
+                  {tab.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {/* Rota Kartları */}
+          <FlatList
+            data={routesByType[selectedTab]}
+            keyExtractor={(_, i) => i.toString()}
+            ItemSeparatorComponent={() => <View style={styles.sep} />}
+            renderItem={renderRouteCard}
+            contentContainerStyle={{ paddingBottom: 24 }}
+          />
+
+        </View>
+      )}
     </SafeAreaView>
   )
 }

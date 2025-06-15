@@ -212,14 +212,16 @@ function RoutesDetail({ route }) {
         <BottomSheet >
           <View style={styles.stationContainer}>
             <View style={styles.header}>
-              <View style={styles.routeName}>
-                <Icon name="bus-outline" size={22} />
-                <Text style={[styles.routeTitle, { fontSize: 18 }]}>{routes.name}</Text>
+              <View style={styles.headerName}>
+                <View style={styles.routeName}>
+                  <Icon name="bus-outline" size={22} />
+                  <Text style={[styles.routeTitle, { fontSize: 18 }]}>{routes.name}</Text>
+                </View>
+                <View style={styles.routeLine}>
+                  <Text style={styles.routeTitle}>{routes.line}</Text>
+                </View>
               </View>
-              <View style={styles.routeLine}>
-                <Text style={styles.routeTitle}>{routes.line}</Text>
-              </View>
-              <View>
+              <View style={styles.timeContainer}>
                 <TouchableOpacity style={styles.scheduleButton} onPress={() => navigation.navigate('MovementTimes', { routes: routes, city: city })} >
                   <Icon name="alarm-outline" size={28} color="#666" />
                 </TouchableOpacity>
@@ -234,7 +236,17 @@ function RoutesDetail({ route }) {
               <View style={styles.scrollContainer}>
                 {busStations.map((station) => (
                   <View key={station.stationId} style={styles.stationItem}>
-                    <Text style={styles.stationName}>{station.stationsName}</Text>
+                    <View style={styles.titleContainer}>
+                      <Text style={styles.stationName}>{station.stationsName}</Text>
+                      <TouchableOpacity onPress={() => toggleStationFavourite(station.stationId)}>
+                        <Icon
+                          name={favouriteStations.includes(station.stationId) ? "heart" : "heart-outline"}
+                          size={28}
+                          color={favouriteStations.includes(station.stationId) ? "#222" : "#666"}
+                        />
+                      </TouchableOpacity>
+                    </View>
+
                     <View style={styles.routeNumbersContainer}>
                       {bus
                         .filter(busRoute => busRoute.stationId === station.stationId)
@@ -244,13 +256,8 @@ function RoutesDetail({ route }) {
                             <Text>{route.name}</Text>
                           </View>
                         ))}
-                      <TouchableOpacity onPress={() => toggleStationFavourite(station.stationId)} style={styles.favouriteIcon}>
-                        <Icon
-                          name={favouriteStations.includes(station.stationId) ? "heart" : "heart-outline"}
-                          size={28}
-                          color={favouriteStations.includes(station.stationId) ? "#222" : "#666"}
-                        />
-                      </TouchableOpacity>
+
+
                     </View>
                   </View>
                 ))}

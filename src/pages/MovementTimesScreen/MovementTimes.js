@@ -7,28 +7,48 @@ import { getMovementTimesByRoute } from '../../api/routeService';
 
 function MovementTimes({ route }) {
   const { city, routes } = route.params
-  console.log("1------>",routes)
+  console.log("1------>", routes)
   const [busTimes, setBusTimes] = useState(null);
   const [startToEnd, endToStart] = routes.line?.split(" - ") || ["Başlangıç", "Bitiş"];
   const { setLoading, setError, setStatusWithCode } = useGlobalContext();
 
   const fetchBusTimes = async () => {
     if (!routes?.id) return;
-    console.log("2------>",!routes?.routeId)
     // setLoading(true);
     // setError(null);
+
+    const sortAndDeduplicateTimes = (times) => {
+      const uniqueSet = new Set();
+
+      return times
+        .filter(time => {
+          if (uniqueSet.has(time)) return false;
+          uniqueSet.add(time);
+          return true;
+        })
+        .sort((a, b) => {
+          const [aHour, aMinute] = a.split(":").map(Number);
+          const [bHour, bMinute] = b.split(":").map(Number);
+          return aHour !== bHour ? aHour - bHour : aMinute - bMinute;
+        });
+    };
+
     try {
-     const data = await getMovementTimesByRoute(routes.id);
-    console.log("data",data)
-     const startToEndClock = data
-     .filter(item => item.direction === "startToEnd")
-     .map(item => item.time);
+      const data = await getMovementTimesByRoute(routes.id);
 
-     const endToStartClock = data
-        .filter(item => item.direction === "endToStart")
-        .map(item => item.time);
+      const startToEndClock = sortAndDeduplicateTimes(
+        data
+          .filter(item => item.direction === "startToEnd")
+          .map(item => item.time)
+      );
 
-        setBusTimes({ startToEndClock, endToStartClock });
+      const endToStartClock = sortAndDeduplicateTimes(
+        data
+          .filter(item => item.direction === "endToStart")
+          .map(item => item.time)
+      );
+
+      setBusTimes({ startToEndClock, endToStartClock });
     } catch (error) {
       console.error("Veri çekme hatası (HareketSaatleri.js):", error);
       if (error.response) {
@@ -36,7 +56,7 @@ function MovementTimes({ route }) {
         //setErrorWithCode(error.response.status);
       }
     } finally {
-      //setLoading(false);
+      //setLoading(false);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
     }
   };
 

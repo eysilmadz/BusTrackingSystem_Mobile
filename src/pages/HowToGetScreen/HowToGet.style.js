@@ -6,7 +6,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
-  container: {
+  topContainer: {
+    flex: 0.35,
     backgroundColor: '#ccc',
     borderRadius: 12,
     padding: '4%',
@@ -22,14 +23,14 @@ const styles = StyleSheet.create({
   },
   title: {
     flexDirection: 'row',
-    alignItems:"center",
+    alignItems: "center",
   },
   innerContainer: {
     backgroundColor: '#fff',
     borderRadius: 12,
     height: '40%',
     flexDirection: "row",
-    alignItems:"center",
+    alignItems: "center",
   },
   selectionContainer: {
     alignSelf: 'center',
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
   optionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical:'2%'
+    paddingVertical: '2%'
   },
   icon: {
     justifyContent: "center",
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '500'
   },
-  picker:{
+  picker: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: "space-between",
@@ -75,14 +76,80 @@ const styles = StyleSheet.create({
     padding: '3%',
     marginVertical: '3%',
     marginHorizontal: '15%',
-    backgroundColor:'white',
+    backgroundColor: 'white',
   },
   button: {
     alignItems: 'center',
     borderRadius: 12,
     padding: '3%',
     marginHorizontal: '30%',
-    backgroundColor:'white'
+    backgroundColor: 'white'
+  },
+  bottomContainer: {
+   flex: 0.65,
+    backgroundColor: '#fff',            // beyaz
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingTop: 12,
+    paddingHorizontal: 16,
+    // gölge (Android / iOS)
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: -2 },
+    shadowRadius: 8,
+  },
+  tabBarContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 16,
+  },
+
+  tabItem: {
+    flex: 1,
+    marginHorizontal: 4,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#F5F5F5',          // hafif gri
+    alignItems: 'center',
+  },
+  tabItemActive: {
+    backgroundColor: '#FFC107',          // sarı (örnek)
+  },
+  tabText: {
+    fontSize: 14,
+    color: '#555',
+  },
+  tabTextActive: {
+    color: '#000',
+    fontWeight: '600',
+  },
+
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    marginBottom: 12,
+    // hafif gölge
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 4,
+  },
+  cardSegment: {
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  cardSegText: {
+    marginTop: 4,
+    fontSize: 12,
+    color: '#333',
+  },
+
+  sep: {
+    height: 12,
   },
 });
 
