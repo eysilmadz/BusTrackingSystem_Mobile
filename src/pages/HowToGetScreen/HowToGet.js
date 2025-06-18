@@ -80,7 +80,9 @@ function HowToGet({ route }) {
     const { toLocation } = route.params || {};
     if (toLocation) {
       setToLocation(toLocation);
-      navigation.setParams({ toLocation: undefined }); // tekrar tetiklenmemesi için temizle
+      setTimeout(() => {
+        navigation.setParams({ toLocation: undefined });
+      }, 100);
     }
   }, [route.params?.toLocation]);
 
