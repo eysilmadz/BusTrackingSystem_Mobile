@@ -187,14 +187,16 @@ function HowToGet({ route }) {
       <View style={styles.topContainer}>
         <View style={styles.header}>
           <View style={styles.title}>
-            <Icon name={"location-outline"} size={30} color={'white'} />
-            <Text style={{ fontSize: 25, color: 'white', fontWeight: 'bold' }}>
+            <Icon name={"location-outline"} size={30} color={'#666'} />
+            <Text style={{
+              fontSize: 25, color: '#666', fontWeight: 'bold', textShadowColor: 'rgba(0, 0, 0, 0.1)', textShadowOffset: { width: 1, height: 2 }, textShadowRadius: 3
+            }}>
               {isSelecting ? selectionLabel : 'Nasıl Giderim?'}
             </Text>
           </View>
           {isSelecting && (
             <TouchableOpacity onPress={() => setSelectingField(null)}>
-              <Icon name="close-circle-outline" size={24} color="#fff" />
+              <Icon name="close-circle-outline" size={24} color="#666" />
             </TouchableOpacity>
           )}
         </View>
@@ -213,7 +215,7 @@ function HowToGet({ route }) {
                 onSelect={handleStopSelect}
                 setSelectedStop={setSelectedStop}
               />
-              <View style={{ backgroundColor: 'white', borderRadius: 12, marginVertical: '2%', marginHorizontal: '4%' }}>
+              <View style={{ backgroundColor: 'white', borderRadius: 12, marginVertical: '2%', marginHorizontal: '4%', shadowColor: '#000', shadowOpacity: 0.1, shadowOffset: { width: 0, height: 2 }, shadowRadius: 6, elevation: 4, }}>
                 <TouchableOpacity style={styles.optionButton} onPress={applyPropLocation}>
                   <View style={styles.icon}>
                     <Icon name="navigate-circle-outline" size={24} color='#fff' />
@@ -257,18 +259,22 @@ function HowToGet({ route }) {
                 </TouchableOpacity>
               </View>
             </View>
-            <TouchableOpacity onPress={() => setOpen(true)} style={styles.picker}>
-              <Icon name={"calendar-number-outline"} size={20} />
-              <Text style={{ fontSize: 18 }}>
-                {format(date, 'dd MMM yyyy | HH:mm', { locale: tr })}
-              </Text>
-              <Icon name={"time-outline"} size={20} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={createRoute} style={styles.button}>
-              <Text style={{ fontSize: 20, fontWeight: '500', color: '#555' }}>
-                Rota Oluştur
-              </Text>
-            </TouchableOpacity>
+            <View>
+              <TouchableOpacity onPress={() => setOpen(true)} style={styles.picker}>
+                <Icon name={"calendar-number-outline"} size={20} />
+                <Text style={{ fontSize: 18 }}>
+                  {format(date, 'dd MMM yyyy | HH:mm', { locale: tr })}
+                </Text>
+                <Icon name={"time-outline"} size={20} />
+              </TouchableOpacity>
+            </View>
+            <View>
+              <TouchableOpacity onPress={createRoute} style={styles.button}>
+                <Text style={{ fontSize: 20, fontWeight: '500', color: '#555' }}>
+                  Rota Oluştur
+                </Text>
+              </TouchableOpacity>
+            </View>
             <DatePicker
               modal
               locale="tr"           // ay isimleri için Türkçe
