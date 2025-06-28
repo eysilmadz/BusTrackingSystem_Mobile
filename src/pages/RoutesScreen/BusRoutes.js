@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, FlatList, SafeAreaView } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, SafeAreaView, TextInput } from "react-native";
 import Icon from 'react-native-vector-icons/Ionicons';
 import styles from "./BusRoutes.style";
 import { useNavigation } from '@react-navigation/native';
@@ -11,32 +11,74 @@ const BusRoutes = ({ route }) => {
   const selectedCity = route.params.city;
   const location = route.params.location;
   const [busRoutes, setBusRoutes] = useState([]);
+  const [filteredRoutes, setFilteredRoutes] = useState([]);
+  const [searchText, setSearchText] = useState("");
   const { favouriteRoutes, toggleRouteFavourite } = useFavouriteContext();
   const { setLoading, setError, setErrorWithCode } = useGlobalContext();
   const navigation = useNavigation();
+
+  function naturalSort(a, b) {
+    const regex = /(\d+)|(\D+)/g; // Sayı veya sayı olmayan parçaları yakala
+
+    const aParts = a.name.toLowerCase().match(regex);
+    const bParts = b.name.toLowerCase().match(regex);
+
+    const len = Math.min(aParts.length, bParts.length);
+
+    for (let i = 0; i < len; i++) {
+      const aPart = aParts[i];
+      const bPart = bParts[i];
+
+      if (aPart !== bPart) {
+        const aNum = parseInt(aPart, 10);
+        const bNum = parseInt(bPart, 10);
+
+        if (!isNaN(aNum) && !isNaN(bNum)) {
+          // Her ikisi de sayıysa karşılaştır
+          return aNum - bNum;
+        } else {
+          // En az biri sayı değil, metinsel karşılaştır
+          return aPart.localeCompare(bPart);
+        }
+      }
+    }
+
+    // Tüm parçalara eşitsek, uzunluk farkına göre karar ver
+    return aParts.length - bParts.length;
+  }
+
 
   const fetchData = async () => {
     if (!selectedCity) return;
 
     try {
-      //setLoading(true);
       const routes = await getRoutesByCityId(selectedCity.id);
-      setBusRoutes(routes);
+      const sortedRoutes = routes.sort(naturalSort);
+      setBusRoutes(sortedRoutes);
+      setFilteredRoutes(sortedRoutes);
     } catch (error) {
-      console.log(error)
-      console.error("Error fetching data(BusRoutes.js):", error);
-      if (error.response) {
-        //setErrorWithCode(error.response.status);
-      }
+      console.log(error);
       setBusRoutes([]);
-    } finally {
-      //setLoading(false);
+      setFilteredRoutes([]);
     }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  // Arama fonksiyonu
+  const handleSearch = (text) => {
+    setSearchText(text);
+    const filtered = busRoutes.filter(item => {
+      const searchLower = text.toLowerCase();
+      return (
+        item.name.toLowerCase().includes(searchLower) ||
+        item.line.toLowerCase().includes(searchLower)
+      );
+    });
+    setFilteredRoutes(filtered);
+  };
 
   const renderRouteItem = ({ item }) => (
     <TouchableOpacity
@@ -48,25 +90,40 @@ const BusRoutes = ({ route }) => {
         <Text style={styles.routeName}>{item.name}</Text>
         <Text style={styles.routeLine}>{item.line}</Text>
       </View>
-      <TouchableOpacity onPress={() => toggleRouteFavourite(item.routeId)} style={styles.favouriteIcon}>
+      <TouchableOpacity onPress={() => toggleRouteFavourite(item)} style={styles.favouriteIcon}>
         <Icon
-          name={favouriteRoutes.includes(item.routeId) ? "heart" : "heart-outline"}
+          name={favouriteRoutes.some(r => r.routeId === item.routeId) ? "heart" : "heart-outline"}
           size={28}
-          color={favouriteRoutes.includes(item.routeId) ? "#222" : "#666"}
+          color={favouriteRoutes.some(r => r.routeId === item.routeId) ? "#222" : "#666"}
         />
       </TouchableOpacity>
     </TouchableOpacity>
   );
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={busRoutes}
+        data={filteredRoutes}
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderRouteItem}
-      >
-      </FlatList>
+        ListHeaderComponent={
+          <View style={styles.searchContainer}>
+            <Icon name="search-outline" size={24} color="#666" style={{ marginRight: 8 }} />
+            <TextInput
+              placeholder="Hat ara..."
+              style={styles.searchInput}
+              value={searchText}
+              onChangeText={handleSearch}
+              autoCorrect={false}
+              autoCapitalize="none"
+              clearButtonMode="while-editing"
+            />
+          </View>
+        }
+      />
     </SafeAreaView>
   );
+
 };
 
 export default BusRoutes;
