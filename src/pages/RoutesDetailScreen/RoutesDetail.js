@@ -159,15 +159,7 @@ function RoutesDetail({ route }) {
                 <Polyline
                   coordinates={forwardPath}
                   strokeColor="#3699FF" // Rota çizgisi rengi
-                  strokeWidth={3} // Çizgi kalınlığı
-                />
-              )}
-              {backwardPath.length > 0 && (
-                <Polyline
-                  coordinates={backwardPath}
-                  strokeColor="#FF6347" // Rota çizgisi rengi
-                  strokeWidth={3} // Çizgi kalınlığı
-                  lineDashPattern={[10, 5]}
+                  strokeWidth={2} // Çizgi kalınlığı
                 />
               )}
               {busStations.map((station) => {
@@ -189,20 +181,22 @@ function RoutesDetail({ route }) {
               {busPositions.startToEnd && (
                 <Marker
                   coordinate={busPositions.startToEnd}
-                  title="obodüs"
+                  title={`${routes.name || 'Otobüs'}`}
+                  description="Gidiş yönü"
                   style={{ zIndex: 99 }}
                 >
-                  <Icon name="bus-outline" size={24} color={'#444'} />
+                  <Icon name="bus-outline" size={24} color={'#000080'} />
                 </Marker>
               )}
               {busPositions.endToStart && (
                 <Marker
                   coordinate={busPositions.endToStart}
-                  title="obodüs"
+                  title={`${routes.name || 'Otobüs'}`}
+                  description="Dönüş yönü"
                   style={{ zIndex: 99 }}
                   pinColor="red"
                 >
-                  <Icon name="bus-outline" size={24} color={'red'} />
+                  <Icon name="bus-outline" size={24} color={'#008080'} />
                 </Marker>
               )}
             </MapView>

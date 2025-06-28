@@ -54,7 +54,7 @@ function Home({ route }) {
             selectedCity={selectedCity}
           />
           <Dropdown
-            placeholder={"Hat veya durak arayın..."}
+            placeholder={"Hat arayın..."}
             iconName={"search-outline"}
             isOpen={isOpenSecond}
             setIsOpen={setIsOpenSecond}
