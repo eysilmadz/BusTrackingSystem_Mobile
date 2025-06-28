@@ -25,7 +25,6 @@ function Map({ route }) {
       if (json) {
         const parsed = JSON.parse(json);
         setStations(parsed);
-        console.log("📦 Local'den duraklar yüklendi");
       }
     } catch (err) {
       console.warn("Local veriyi okuma hatası:", err);
@@ -38,7 +37,6 @@ function Map({ route }) {
       const allKeys = await AsyncStorage.getAllKeys();
       const stationKeys = allKeys.filter(key => key.startsWith("stations_") && key !== storageKey);
       await AsyncStorage.multiRemove(stationKeys);
-      console.log("🧹 Eski şehir verileri temizlendi");
     } catch (err) {
       console.warn("Local temizlik hatası:", err);
     }
@@ -70,7 +68,6 @@ function Map({ route }) {
       await clearOldStationData();
       await AsyncStorage.setItem(storageKey, JSON.stringify(mappedStations));
       setStations(mappedStations);
-      console.log(`🌐 API'den güncellendi: ${city?.name}`);
 
       // Harita merkezini ortadaki durak yap
       if (mappedStations.length > 0) {

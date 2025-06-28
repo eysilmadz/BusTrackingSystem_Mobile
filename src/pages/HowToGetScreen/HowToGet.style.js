@@ -154,18 +154,10 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#fff',
-    borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: '3%',
-    marginHorizontal:'1%',
+    marginHorizontal: '1%',
     marginVertical: '3%',
-    // Gölge (iOS için)
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    // Gölge (Android için)
-    elevation: 4,
   },
   cardSegment: {
     alignItems: 'center',
@@ -179,6 +171,27 @@ const styles = StyleSheet.create({
   sep: {
     height: 12,
   },
+  summary: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 10,
+    color: '#444'
+  },
+  segment: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+    paddingHorizontal: 4
+  },
+  segmentInfo: {
+    marginLeft: 10,
+    flex: 1
+  },
+  text: {
+    fontSize: 14,
+    color: '#333'
+  },
+
 });
 
 export default styles;

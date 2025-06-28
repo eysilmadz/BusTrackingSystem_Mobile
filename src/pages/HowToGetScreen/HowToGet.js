@@ -8,6 +8,8 @@ import tr from 'date-fns/locale/tr';
 import styles from "../../pages/HowToGetScreen/HowToGet.style";
 import Dropdown from "../../components/Dropdown";
 import { getRouteSegments } from "../../api/PlannerService";
+import BottomSheet from "../../components/BottomSheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const TABS = [
   { key: 'TIME', label: 'En kısa süre' },
@@ -27,8 +29,7 @@ function HowToGet({ route }) {
   const [selectedStop, setSelectedStop] = useState(null);
   const [selectedTab, setSelectedTab] = useState('TIME'); //rota sonuçları ve seçili sekme
   const [routesByType, setRoutesByType] = useState(null);
-  const [fromSelectedByUser, setFromSelectedByUser] = useState(false);
-
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (location?.coords && fromLocation === null) {
@@ -48,8 +49,9 @@ function HowToGet({ route }) {
       if (selectingField === 'from') setFromLocation(target);
       else setToLocation(target);
       setSelectingField(null);
+      setSelectedStop(null);
     }
-  }, [selectedStop]);
+  }, [selectedStop, selectingField]);
 
   // Kullanıcı mevcut konum seçtiğinde
   const applyPropLocation = () => {
@@ -71,7 +73,7 @@ function HowToGet({ route }) {
         setToLocation(pickedLocation);
       }
       setSelectingField(null);
-      // ➋ Tekrar tetiklememesi için temizleyelim
+      //Tekrar tetiklememesi için temizleyelim
       navigation.setParams({ pickedLocation: undefined, field: undefined });
     }
   }, [route.params?.pickedLocation]);
@@ -115,13 +117,20 @@ function HowToGet({ route }) {
       Alert.alert('Uyarı', 'Lütfen başlangıç ve varış noktalarını seçin.');
       return;
     }
+
+    if (!city || !city.id) {
+      Alert.alert('Hata', 'Şehir bilgisi bulunamadı.');
+      return;
+    }
+
     Keyboard.dismiss();
+    setLoading(true);
 
     try {
-      // ➊ Türleri belirliyoruz
+      //Türleri belirliyoruz
       const types = ['DISTANCE', 'TIME', 'WALK'];
 
-      // ➋ Promise.all içinde her bir getRouteSegments çağrısı, bir Axios yanıt objesi (response) döner
+      //Promise.all içinde her bir getRouteSegments çağrısı, bir Axios yanıt objesi (response) döner
       const results = await Promise.all(
         types.map(type =>
           getRouteSegments(
@@ -129,211 +138,159 @@ function HowToGet({ route }) {
             fromLocation.coords.longitude,
             toLocation.coords.latitude,
             toLocation.coords.longitude,
-            type
+            type,
+            city.id
           )
         )
       );
 
-      // ➌ results artık tanımlı, aynı blokta hemen kullanabiliriz
-      //    Her bir results[i] bir Axios response objesi; gerçek segment dizisi response.data içinde
+      // results artık tanımlı, aynı blokta hemen kullanabiliriz
+      // Her bir results[i] bir Axios response objesi; gerçek segment dizisi response.data içinde
       const byType = {
-        DISTANCE: [results[0]],
-        TIME: [results[1]],
-        WALK: [results[2]],
+        DISTANCE: results[0],
+        TIME: results[1],
+        WALK: results[2],
       };
 
       setRoutesByType(byType);
-      setSelectedTab('DISTANCE'); console.log('🚌 byType:', byType);
+      setSelectedTab('TIME'); console.log('🚌 byType:', byType);
       console.log('🚌 selectedTab:', selectedTab);
+      navigation.navigate("HowToDetail", {
+        routesByType: byType,  // Tüm seçenekleri gönder
+        fromLocation,
+        toLocation
+      });
+
     } catch (err) {
       console.error('Rota oluşturma hatası:', err.response?.data || err.message);
       Alert.alert('Hata', 'Rota oluşturulurken bir sorun çıktı.');
     }
 
-
   };
-
-  // Karte basınca segment dizisini ikoncuklu bir kart olarak gösteriyoruz
-  const renderRouteCard = ({ item: segments, index }) => {
-    console.log('→ renderRouteCard segments.length =', segments)
-    return (
-      <View style={styles.card}>
-        <FlatList
-          data={segments}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(_, i) => i.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.cardSegment}>
-              <Icon name={item.mode === 'WALK' ? 'walk' : 'bus'} size={24} />
-              <Text style={styles.cardSegText}>
-                {item.mode === 'WALK'
-                  ? `${item.durationMin.toFixed(0)} dk`
-                  : item.routeLine}
-              </Text>
-            </View>
-          )}
-        />
-      </View>
-    )
-  }
-
 
   const isSelecting = selectingField === 'from' || selectingField === 'to';
   const selectionLabel = selectingField === 'from' ? 'Nereden' : 'Nereye';
 
   return (
-    <SafeAreaView style={styles.wrapper}>
-      <View style={styles.topContainer}>
-        <View style={styles.header}>
-          <View style={styles.title}>
-            <Icon name={"location-outline"} size={30} color={'#666'} />
-            <Text style={{
-              fontSize: 25, color: '#666', fontWeight: 'bold', textShadowColor: 'rgba(0, 0, 0, 0.1)', textShadowOffset: { width: 1, height: 2 }, textShadowRadius: 3
-            }}>
-              {isSelecting ? selectionLabel : 'Nasıl Giderim?'}
-            </Text>
+    <GestureHandlerRootView>
+      <SafeAreaView style={styles.wrapper}>
+        <View style={styles.topContainer}>
+          <View style={styles.header}>
+            <View style={styles.title}>
+              <Icon name={"location-outline"} size={30} color={'#666'} />
+              <Text style={{
+                fontSize: 25, color: '#666', fontWeight: 'bold', textShadowColor: 'rgba(0, 0, 0, 0.1)', textShadowOffset: { width: 1, height: 2 }, textShadowRadius: 3
+              }}>
+                {isSelecting ? selectionLabel : 'Nasıl Giderim?'}
+              </Text>
+            </View>
+            {isSelecting && (
+              <TouchableOpacity onPress={() => setSelectingField(null)}>
+                <Icon name="close-circle-outline" size={24} color="#666" />
+              </TouchableOpacity>
+            )}
           </View>
-          {isSelecting && (
-            <TouchableOpacity onPress={() => setSelectingField(null)}>
-              <Icon name="close-circle-outline" size={24} color="#666" />
-            </TouchableOpacity>
+          {isSelecting ? (
+            <>
+              <View style={styles.selectionContainer}>
+                <Dropdown
+                  placeholder="Durak Ara"
+                  iconName="search-outline"
+                  isOpen={isOpenStops}
+                  setIsOpen={setIsOpenStops}
+                  dataType="stops"
+                  selectedCity={city}
+                  selectedItem={selectedStop}
+                  setSelectedItem={setSelectedStop}
+                  onSelect={handleStopSelect}
+                  setSelectedStop={setSelectedStop}
+                />
+                <View style={{ backgroundColor: 'white', borderRadius: 12, marginVertical: '2%', marginHorizontal: '4%', shadowColor: '#000', shadowOpacity: 0.1, shadowOffset: { width: 0, height: 2 }, shadowRadius: 6, elevation: 4, }}>
+                  <TouchableOpacity style={styles.optionButton} onPress={applyPropLocation}>
+                    <View style={styles.icon}>
+                      <Icon name="navigate-circle-outline" size={24} color='#fff' />
+                    </View>
+                    <Text style={styles.optionText}>Mevcut Konumum</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.optionButton} onPress={applyMapPick}>
+                    <View style={styles.icon}>
+                      <Icon name="map-outline" size={24} color='#fff' />
+                    </View>
+                    <Text style={styles.optionText}>Haritadan Seç</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </>
+          ) : (
+            <>
+              <View style={styles.innerContainer}>
+                <View style={{ marginHorizontal: 10 }}>
+                  <Icon name="location-outline" size={24} color="#555" />
+                  <Icon name="ellipsis-vertical" size={20} color="#777" style={{ marginVertical: 6 }} />
+                  <Icon name="location-sharp" size={24} color="#555" />
+                </View>
+                <View style={{ width: '95%' }}>
+                  <TouchableOpacity
+                    onPress={() => setSelectingField('from')}
+                    style={[styles.input, { paddingVertical: 12 }]}
+                  >
+                    <Text style={{ fontSize: 20, color: '#777' }}>
+                      {fromLocation?.address || 'Nereden'}
+                    </Text>
+                  </TouchableOpacity>
+                  <View style={styles.divider} />
+                  <TouchableOpacity
+                    onPress={() => setSelectingField('to')}
+                    style={[styles.input, { paddingVertical: 12 }]}
+                  >
+                    <Text style={{ fontSize: 20, color: '#777' }}>
+                      {toLocation?.address || 'Nereye'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View>
+                <TouchableOpacity onPress={() => setOpen(true)} style={styles.picker}>
+                  <Icon name={"calendar-number-outline"} size={20} />
+                  <Text style={{ fontSize: 18 }}>
+                    {format(date, 'dd MMM yyyy | HH:mm', { locale: tr })}
+                  </Text>
+                  <Icon name={"time-outline"} size={20} />
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity onPress={createRoute} style={styles.button}>
+                  <Text style={{ fontSize: 20, fontWeight: '500', color: '#555' }}>
+                    Rota Oluştur
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <DatePicker
+                modal
+                locale="tr"           // ay isimleri için Türkçe
+                open={open}
+                date={date}
+                title={null}
+                mode="datetime"
+                style={{ justifyContent: 'center' }}
+                confirmText="Tamam"
+                cancelText="İptal"
+                onConfirm={(d) => {
+                  setOpen(false);
+                  setDate(d);
+                }}
+                onCancel={() => {
+                  setOpen(false);
+
+                }}
+              />
+            </>
+
           )}
         </View>
-        {isSelecting ? (
-          <>
-            <View style={styles.selectionContainer}>
-              <Dropdown
-                placeholder="Durak Ara"
-                iconName="search-outline"
-                isOpen={isOpenStops}
-                setIsOpen={setIsOpenStops}
-                dataType="stops"
-                selectedCity={city}
-                selectedItem={selectedStop}
-                setSelectedItem={setSelectedStop}
-                onSelect={handleStopSelect}
-                setSelectedStop={setSelectedStop}
-              />
-              <View style={{ backgroundColor: 'white', borderRadius: 12, marginVertical: '2%', marginHorizontal: '4%', shadowColor: '#000', shadowOpacity: 0.1, shadowOffset: { width: 0, height: 2 }, shadowRadius: 6, elevation: 4, }}>
-                <TouchableOpacity style={styles.optionButton} onPress={applyPropLocation}>
-                  <View style={styles.icon}>
-                    <Icon name="navigate-circle-outline" size={24} color='#fff' />
-                  </View>
-                  <Text style={styles.optionText}>Mevcut Konumum</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.optionButton} onPress={applyMapPick}>
-                  <View style={styles.icon}>
-                    <Icon name="map-outline" size={24} color='#fff' />
-                  </View>
-                  <Text style={styles.optionText}>Haritadan Seç</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </>
-        ) : (
-          <>
-            <View style={styles.innerContainer}>
-              <View style={{ marginHorizontal: 10 }}>
-                <Icon name="location-outline" size={24} color="#555" />
-                <Icon name="ellipsis-vertical" size={20} color="#777" style={{ marginVertical: 6 }} />
-                <Icon name="location-sharp" size={24} color="#555" />
-              </View>
-              <View style={{ width: '95%' }}>
-                <TouchableOpacity
-                  onPress={() => setSelectingField('from')}
-                  style={[styles.input, { paddingVertical: 12 }]}
-                >
-                  <Text style={{ fontSize: 20, color: '#777' }}>
-                    {fromLocation?.address || 'Nereden'}
-                  </Text>
-                </TouchableOpacity>
-                <View style={styles.divider} />
-                <TouchableOpacity
-                  onPress={() => setSelectingField('to')}
-                  style={[styles.input, { paddingVertical: 12 }]}
-                >
-                  <Text style={{ fontSize: 20, color: '#777' }}>
-                    {toLocation?.address || 'Nereye'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-            <View>
-              <TouchableOpacity onPress={() => setOpen(true)} style={styles.picker}>
-                <Icon name={"calendar-number-outline"} size={20} />
-                <Text style={{ fontSize: 18 }}>
-                  {format(date, 'dd MMM yyyy | HH:mm', { locale: tr })}
-                </Text>
-                <Icon name={"time-outline"} size={20} />
-              </TouchableOpacity>
-            </View>
-            <View>
-              <TouchableOpacity onPress={createRoute} style={styles.button}>
-                <Text style={{ fontSize: 20, fontWeight: '500', color: '#555' }}>
-                  Rota Oluştur
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <DatePicker
-              modal
-              locale="tr"           // ay isimleri için Türkçe
-              open={open}
-              date={date}
-              title={null}
-              mode="datetime"
-              style={{ justifyContent: 'center' }}
-              confirmText="Tamam"
-              cancelText="İptal"
-              onConfirm={(d) => {
-                setOpen(false);
-                setDate(d);
-              }}
-              onCancel={() => {
-                setOpen(false);
+      </SafeAreaView>
 
-              }}
-            />
-          </>
-
-        )}
-      </View>
-      {routesByType && (
-        <View style={styles.bottomContainer}>
-
-          {/* Sekmeler */}
-          <View style={styles.tabBarContainer}>
-            {TABS.map(tab => (
-              <TouchableOpacity
-                key={tab.key}
-                style={[
-                  styles.tabItem,
-                  selectedTab === tab.key && styles.tabItemActive
-                ]}
-                onPress={() => setSelectedTab(tab.key)}
-              >
-                <Text style={[
-                  styles.tabText,
-                  selectedTab === tab.key && styles.tabTextActive
-                ]}>
-                  {tab.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-
-          {/* Rota Kartları */}
-          <FlatList
-            data={routesByType[selectedTab]}
-            keyExtractor={(_, i) => i.toString()}
-            ItemSeparatorComponent={() => <View style={styles.sep} />}
-            renderItem={renderRouteCard}
-            contentContainerStyle={{ paddingBottom: 24 }}
-          />
-
-        </View>
-      )}
-    </SafeAreaView>
+    </GestureHandlerRootView>
   )
 }
 
