@@ -6,7 +6,7 @@ import { UserContext } from "../../contexts/UserContext";
 import { getCityById } from "../../api/cityService";
 import styles from './Favourites.style';
 
-const Favourites = ({ route }) => {
+const Favourites = ({ route, navigation }) => {
   const selectedCity = route.params.city; // { id: 54, name: 'Sakarya' }
   const [busRoutes, setBusRoutes] = useState([]);
   const [busStations, setBusStations] = useState([]);
@@ -43,10 +43,11 @@ const Favourites = ({ route }) => {
   }, [selectedCity]);
 
   const filteredFavRoutes = favouriteRoutes.map(fav => ({
-    routeId: fav.routeId || fav.id,
+    id: fav.routeId || fav.id, // id burada olmalı
     name: fav.name,
     line: fav.line
   }));
+
 
   // Favori durakları filtrele
   const filteredFavStations = useMemo(() => {
@@ -97,9 +98,15 @@ const Favourites = ({ route }) => {
           filteredFavRoutes.length > 0 ? (
             <FlatList
               data={filteredFavRoutes}
-              keyExtractor={(item) => item.routeId.toString()}
+              keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
-                <View style={styles.card}>
+                <TouchableOpacity
+                  style={styles.card}
+                  onPress={() => navigation.navigate("RoutesDetail", {
+                    routes: item,
+                    city: selectedCity,
+                  })}
+                >
                   <Icon name="bus-outline" size={28} color="#666" style={styles.icon} />
                   <View style={styles.cardContent}>
                     <Text style={styles.routeName}>{item.name}</Text>
@@ -120,7 +127,8 @@ const Favourites = ({ route }) => {
                       }
                     />
                   </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
+
               )}
             />
           ) : (
@@ -131,7 +139,15 @@ const Favourites = ({ route }) => {
             data={filteredFavStations}
             keyExtractor={(item) => (item.stationId || item.id).toString()}
             renderItem={({ item }) => (
-              <View style={styles.card}>
+              <TouchableOpacity
+                style={styles.card}
+                onPress={() =>
+                  navigation.navigate("Map", {
+                    selectedStation: item, // Harita için gerekli durak bilgisi
+                    city: selectedCity
+                  })
+                }
+              >
                 <Icon name="location-outline" size={28} color="#666" style={styles.icon} />
                 <View style={styles.cardContent}>
                   <Text style={styles.routeName}>{item.stationsName}</Text>
@@ -152,7 +168,8 @@ const Favourites = ({ route }) => {
                     }
                   />
                 </TouchableOpacity>
-              </View>
+              </TouchableOpacity>
+
             )}
           />
 

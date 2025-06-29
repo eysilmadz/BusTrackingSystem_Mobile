@@ -98,7 +98,7 @@ const Login = () => {
     const handleModalClose = () => {
         setModalVisible(false);
         if (redirectAfterModal) {
-            navigation.navigate('Profile');
+            navigation.replace('Profile');
         }
     };
 
