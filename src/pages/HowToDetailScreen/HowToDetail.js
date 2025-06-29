@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { useRoute } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -7,7 +7,6 @@ import BottomSheet from "../../components/BottomSheet";
 import styles from "../../pages/HowToGetScreen/HowToGet.style";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { getStationByCity } from "../../api/StationService";
-import { Image } from "react-native"; // Eğer yoksa ekle en üstte
 
 const TABS = [
     { key: "TIME", label: "En kısa süre" },
@@ -43,7 +42,7 @@ export default function HowToDetail() {
         };
 
         fetchStations();
-    }, []); // sadece bir kere çalışır, component yüklendiğinde
+    }, []);
 
 
     useEffect(() => {
@@ -67,7 +66,6 @@ export default function HowToDetail() {
         }
     }, [selectedTab, routesByType, stationList]);
 
-
     const getStationCoords = (stationId) => {
         const station = stationList.find((s) => s.id === stationId);
         if (!station) {
@@ -79,14 +77,12 @@ export default function HowToDetail() {
             return null;
         }
 
-        // location stringini virgül veya boşluklara göre ayırıyoruz
         const parts = station.location.split(/[, ]+/);
         if (parts.length < 2) {
             console.warn("Location formatı yanlış, ID:", stationId, "Location:", station.location);
             return null;
         }
 
-        // İlk iki parçayı parse et
         const lat = parseFloat(parts[0].replace(",", "."));
         const lon = parseFloat(parts[1].replace(",", "."));
 
@@ -100,53 +96,69 @@ export default function HowToDetail() {
 
     const getStationName = (stationId) => {
         const station = stationList.find((s) => s.id === stationId);
-        return station ? station.name : stationId; // İstasyon yoksa id döner
+        return station ? station.name : stationId;
     };
 
     const routeData = routesByType[selectedTab];
     const { segments, totalDistance, totalDuration } = routeData;
 
-    const renderAllSegments = () => (
-        <View style={styles.card}>
-            <Text style={styles.summary}>
-                Süre: {totalDuration.toFixed(0)} dk | Mesafe: {totalDistance.toFixed(2)} km
-            </Text>
+    // Başlangıç zamanı: şu an olarak ayarlanabilir, dilersen kullanıcıdan alınabilir
+    const startDateTime = new Date();
 
-            {segments.map((segment, idx) => (
-                <View key={idx} style={styles.segment}>
-                    <Icon
-                        name={segment.mode === "WALK" ? "walk" : "bus"}
-                        size={24}
-                        color="#666"
-                    />
-                    <View style={styles.segmentInfo}>
-                        <Text style={styles.text}>
-                            {segment.mode === "WALK" ? (
-                                segment.fromStationId ? (
-                                    <>
-                                        {getStationName(segment.fromStationId)} durağından {getStationName(segment.toStationId)} durağına yürüyün.
-                                    </>
-                                ) : (
-                                    `Yürüyerek devam edin.`
-                                )
-                            ) : (
-                                <>
-                                    <Text style={{ fontWeight: "bold", color: "#222" }}>{segment.routeLine}</Text>
-                                    {'\n'}
-                                    {getStationName(segment.fromStationId)} durağından binin → {getStationName(segment.toStationId)} durağında inin.
-                                </>
-                            )}
-                            {'\n'}
-                            <Text style={{ fontWeight: "500", color: "#555", fontSize: 14, lineHeight: 20 }}>
-                                Süre: {segment.durationMin.toFixed(0)} dk | Mesafe: {segment.distanceKm.toFixed(2)} km
+    // Segmentlerin başlangıç saatlerini hesapla
+    let cumulativeMinutes = 0;
+    const segmentsWithTimes = segments.map(segment => {
+        const segmentStartTime = new Date(startDateTime.getTime() + cumulativeMinutes * 60000);
+        cumulativeMinutes += segment.durationMin;
+        return { ...segment, startTime: segmentStartTime };
+    });
+
+   const renderAllSegments = () => (
+    <View style={styles.card}>
+        <Text style={styles.summary}>
+            Süre: {totalDuration.toFixed(0)} dk | Mesafe: {totalDistance.toFixed(2)} km
+        </Text>
+
+        {segmentsWithTimes.map((segment, idx) => (
+            <View key={idx} style={styles.segment}>
+                <Icon
+                    name={segment.mode === "WALK" ? "walk" : "bus"}
+                    size={24}
+                    color="#666"
+                />
+                <View style={styles.segmentInfo}>
+                    <Text style={styles.text}>
+                        {segment.startTime && (
+                            <Text style={{ fontWeight: "600", color: "#333" }}>
+                                {segment.startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}’da {' '}
                             </Text>
+                        )}
+                        {segment.mode === "WALK" ? (
+                            segment.fromStationId ? (
+                                <>
+                                    {getStationName(segment.fromStationId)} durağından {getStationName(segment.toStationId)} durağına yürüyün.
+                                </>
+                            ) : (
+                                `Yürüyerek devam edin.`
+                            )
+                        ) : (
+                            <>
+                                <Text style={{ fontWeight: "bold", color: "#222" }}>{segment.routeLine}</Text>
+                                {'\n'}
+                                {getStationName(segment.fromStationId)} durağından binin → {getStationName(segment.toStationId)} durağında inin.
+                            </>
+                        )}
+                        {'\n'}
+                        <Text style={{ fontWeight: "500", color: "#555", fontSize: 14, lineHeight: 20 }}>
+                            Süre: {segment.durationMin.toFixed(0)} dk | Mesafe: {segment.distanceKm.toFixed(2)} km
                         </Text>
-                    </View>
+                    </Text>
                 </View>
-            ))}
+            </View>
+        ))}
+    </View>
+);
 
-        </View>
-    );
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
@@ -161,16 +173,13 @@ export default function HowToDetail() {
                         longitudeDelta: 0.02,
                     }}
                 >
-                    {/* Başlangıç ve Varış */}
                     <Marker coordinate={fromLocation.coords} title="Başlangıç" pinColor="orange" />
                     <Marker coordinate={toLocation.coords} title="Varış" pinColor="red" />
 
-                    {/* Tüm duraklar ve yollar */}
                     {segments.map((segment, idx) => {
                         const fromCoord = getStationCoords(segment.fromStationId);
                         const toCoord = getStationCoords(segment.toStationId);
 
-                        // Hatalı segmentleri atla
                         if (!fromCoord || !toCoord) return null;
 
                         return (
@@ -186,11 +195,11 @@ export default function HowToDetail() {
                                     }
                                     strokeWidth={4}
                                 />
-                                <Marker key={segment.fromStationId} coordinate={fromCoord} title={getStationName(segment.fromStationId)}>
+                                <Marker key={`from-${segment.fromStationId}`} coordinate={fromCoord} title={getStationName(segment.fromStationId)}>
                                     <Image source={require("../../assets/images/busStop.png")} style={{ width: 18, height: 18 }} />
                                 </Marker>
 
-                                <Marker key={segment.toStationId} coordinate={toCoord} title={getStationName(segment.fromStationId)}>
+                                <Marker key={`to-${segment.toStationId}`} coordinate={toCoord} title={getStationName(segment.toStationId)}>
                                     <Image source={require("../../assets/images/busStop.png")} style={{ width: 18, height: 18 }} />
                                 </Marker>
                             </React.Fragment>

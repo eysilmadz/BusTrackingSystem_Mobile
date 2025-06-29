@@ -18,6 +18,7 @@ const Login = () => {
     const [modalTitle, setModalTitle] = useState('');
     const [modalAlert, setModalAlert] = useState('');
     const [redirectAfterModal, setRedirectAfterModal] = useState(false);
+    const [isCheckingToken, setIsCheckingToken] = useState(true);
 
     useEffect(() => {
         const checkUser = async () => {
@@ -27,7 +28,8 @@ const Login = () => {
                     // Gerçekten geçerli mi diye backend'e soralım
                     const response = await apiClient.get('/auth/me');
                     if (response.status === 200) {
-                        navigation.navigate('Profile');
+                        navigation.replace('Profile');
+                        return;
                     }
                 } catch (error) {
                     console.log("Token geçersiz veya kullanıcı alınamadı:", error.response?.status);
@@ -35,40 +37,54 @@ const Login = () => {
                     await AsyncStorage.removeItem('token');
                 }
             }
+            setIsCheckingToken(false);
         }
-
-        const timeout = setTimeout(() => {
-            checkUser();
-        }, 100);
+        checkUser();
     }, [])
+
+    if (isCheckingToken) {
+        return (
+            <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text>Yükleniyor...</Text>
+            </SafeAreaView>
+        );
+    }
 
     const handleLogin = async (values) => {
         try {
+            // Giriş isteği gönder
             const response = await apiClient.post('/auth/login', {
                 email: values.email,
                 password: values.password,
             });
 
-            const { token, user } = response.data;
+            const { token } = response.data;
 
+            // Token'ı kaydet
             await AsyncStorage.setItem('token', token);
 
-            // BURAYA KOY: setItem işlemi tamamlandıktan sonra kontrol et
+            // Kaydedilen token'ı kontrol et
             const checkToken = await AsyncStorage.getItem('token');
             console.log("Token gerçekten kaydedilmiş mi:", checkToken);
 
-
             if (checkToken) {
-                // Authenticated request şimdi yapılabilir
+                // Giriş başarılıysa kullanıcı bilgilerini çek
                 const meResponse = await apiClient.get('/auth/me');
-                console.log("ME response:", meResponse.data);
-            }
+                const currentUser = meResponse.data;
+                console.log("ME response:", currentUser);
 
-            setUser(user);
-            setModalTitle('Başarılı');
-            setModalAlert(`Hoş geldiniz!`);
-            setModalVisible(true);
-            setRedirectAfterModal(true);
+                // Kullanıcıyı AsyncStorage'a kaydet
+                await AsyncStorage.setItem('user', JSON.stringify(currentUser));
+
+                // Context'e gönder
+                setUser(currentUser);
+
+                // Başarılı giriş bildirimi
+                setModalTitle('Başarılı');
+                setModalAlert(`Hoş geldiniz!`);
+                setModalVisible(true);
+                setRedirectAfterModal(true);
+            }
 
         } catch (error) {
             console.log(error);

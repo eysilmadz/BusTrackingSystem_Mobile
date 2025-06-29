@@ -8,8 +8,9 @@ import BottomSheet from "../../components/BottomSheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useGlobalContext } from "../../contexts/GlobalContext";
 import { useFavouriteContext } from "../../contexts/FavouriteContext";
-import { getRoutesByStation, getRouteStations, getRoutePath, simulateAllMovements, startSimulation, getMovementTimesByRoute } from "../../api/routeService";
-import { BusSocket } from "../../api/BusSocket";
+import { UserContext } from "../../contexts/UserContext";
+import { useContext } from "react";
+import { getRoutesByStation, getRouteStations, getRoutePath, startSimulation } from "../../api/routeService";
 import { connectWebSocket, disconnectedWebSocket } from "../../api/WebSocketService";
 
 
@@ -25,6 +26,7 @@ function RoutesDetail({ route }) {
   const [defaultLocation, setDefaultLocation] = useState(null);
   const { setLoading, setErrorWithCode, setError } = useGlobalContext();
   const { favouriteStations, toggleStationFavourite } = useFavouriteContext();
+  const { user } = useContext(UserContext);
 
   const polylineCoordinates = busStations.map(station => {
     const [latitude, longitude] = station.stationsLocation.split(",").map(coord => parseFloat(coord.trim()));
@@ -232,15 +234,27 @@ function RoutesDetail({ route }) {
                   <View key={station.stationId} style={styles.stationItem}>
                     <View style={styles.titleContainer}>
                       <Text style={styles.stationName}>{station.stationsName}</Text>
-                      <TouchableOpacity onPress={() => toggleStationFavourite(station.stationId)}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          console.log("Favorite butonuna tıklandı:", station);
+                          toggleStationFavourite(station, navigation); // Tüm station objesini gönder
+                        }}
+                      >
                         <Icon
-                          name={favouriteStations.includes(station.stationId) ? "heart" : "heart-outline"}
+                          name={
+                            favouriteStations.some(s => (s.stationId || s.id) === station.stationId)
+                              ? "heart"
+                              : "heart-outline"
+                          }
                           size={28}
-                          color={favouriteStations.includes(station.stationId) ? "#222" : "#666"}
+                          color={
+                            favouriteStations.some(s => (s.stationId || s.id) === station.stationId)
+                              ? "#222"
+                              : "#666"
+                          }
                         />
                       </TouchableOpacity>
                     </View>
-
                     <View style={styles.routeNumbersContainer}>
                       {bus
                         .filter(busRoute => busRoute.stationId === station.stationId)

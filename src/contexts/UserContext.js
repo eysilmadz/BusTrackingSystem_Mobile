@@ -7,19 +7,21 @@ export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        const loadUserFromStorage = async () => {
-            try {
-                const storedToken = await AsyncStorage.getItem('token');
-                const storedUser = await AsyncStorage.getItem('user');
-                if(storedToken && storedUser) {
-                    setUser(JSON.parse(storedUser));
-                }
-            } catch(error) {
-                console.log("Kullanıcı yüklenemedi: ", error);
-            }
-        };
-        loadUserFromStorage();
-    }, []);
+  const loadUserFromStorage = async () => {
+    try {
+      const storedToken = await AsyncStorage.getItem('token');
+      const storedUser = await AsyncStorage.getItem('user');
+      console.log("Context içinde gelen user:", storedUser); // BURAYA BAK
+
+      if (storedToken && storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    } catch (error) {
+      console.log("Kullanıcı yüklenemedi: ", error);
+    }
+  };
+  loadUserFromStorage();
+}, []);
 
     return (
         <UserContext.Provider value={{ user, setUser }}>

@@ -5,7 +5,8 @@ import { useNavigation } from "@react-navigation/native";
 import Icon from 'react-native-vector-icons/Ionicons';
 
 function PlacesDetail({ route }) {
-    const { location, place } = route.params;
+    const { location, place} = route.params;
+    console.log(place.city)
     const navigation = useNavigation();
 
     const goToPlanner = () => {
@@ -23,7 +24,8 @@ function PlacesDetail({ route }) {
                     latitude: lat,
                     longitude: lon
                 }
-            }
+            },
+            city: place.city 
         });
     }
 

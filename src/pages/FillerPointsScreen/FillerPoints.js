@@ -1,83 +1,81 @@
-import React, { useState, useEffect } from "react";
-import { SafeAreaView, View, Image } from "react-native";
-import { API_URL } from '@env';
-import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { SafeAreaView, View, Image, ActivityIndicator } from "react-native";
 import MapView, { Marker } from "react-native-maps";
+import { getReloadPointsByCityId } from "../../api/CardReloadPointService";
 import styles from './FillerPoints.style';
-import { useGlobalContext } from "../../contexts/GlobalContext";
 
 function FillerPoints({ route }) {
-    const { city } = route.params; //Seçilen şehir geliyor
-    const { setLoading, setErrorWithCode, setError } = useGlobalContext();
-    const [fillerPoints, setFillerPoints] = useState([]);
+  const { city, location } = route.params;
+  const [fillerPoints, setFillerPoints] = useState([]);
+  const [region, setRegion] = useState(null);
 
-    const fetchFillerPoints = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await axios.get(`${API_URL}/cities`); // API_URL'i kullan
-            const data = response.data;
-            console.log(data)
-            const findedCity = data.find((findedCity) => findedCity.cityName === city);
-            if (findedCity && findedCity.cardReloadPoints) {
-                const fillerPoints = findedCity.cardReloadPoints; //Tüm dolum noktaları
-
-                setFillerPoints(fillerPoints);
-            } else {
-                setFillerPoints([]);
-            }
-        } catch (error) {
-            console.error("Veriler alınırken hata oluştu(FillerPoints.js):", error);
-            if (error.response) {
-                // HTTP durum kodlarına göre özel hata mesajı
-                setErrorWithCode(error.response.status);
-              }
-        } finally {
-            setLoading(false);
-        }
+  const fetchFillerPoints = async () => {
+    try {
+      const data = await getReloadPointsByCityId(city.id);
+      setFillerPoints(data);
+    } catch (error) {
+      console.error("Veriler alınırken hata oluştu (FillerPoints.js):", error);
     }
+  };
 
-    useEffect(() => {
-        fetchFillerPoints();
-    }, [])
+  useEffect(() => {
+    fetchFillerPoints();
 
-    return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.mapContainer}>
-                {
-                    fillerPoints.length != 0 &&
-                    <MapView
-                        style={styles.map}
-                        initialRegion={{
-                            latitude: parseFloat(fillerPoints[0].location.split(",")[0]),
-                            longitude: parseFloat(fillerPoints[0].location.split(", ")[1]),
-                            latitudeDelta: 0.1,
-                            longitudeDelta: 0.1,
-                        }}
-                    >
-                        {fillerPoints.map((point, index) => {
-                            const [latitude, longitude] = point.location.split(", ").map(coord => parseFloat(coord));
-                            return (
-                                <Marker
-                                    key={index}
-                                    coordinate={{
-                                        latitude,
-                                        longitude,
-                                    }}
-                                    title={point.pointName}
-                                >
-                                    <Image
-                                        source={require('../../assets/images/fillerPoint.png')}
-                                        style={{ width: 16, height: 16, zIndex: 0 }} // Simgenin boyutlarını burada ayarlayın
-                                    />
-                                </Marker>
-                            );
-                        })}
-                    </MapView>
-                }
-            </View>
-        </SafeAreaView>
-    );
-};
+    if (location?.coords?.latitude && location?.coords?.longitude) {
+      setRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.05,
+        longitudeDelta: 0.05,
+      });
+    } else if (!isNaN(city?.latitude) && !isNaN(city?.longitude)) {
+      setRegion({
+        latitude: Number(city.latitude),
+        longitude: Number(city.longitude),
+        latitudeDelta: 0.05,
+        longitudeDelta: 0.05,
+      });
+    }
+  }, [city, location]);
+
+
+  return (
+
+    <SafeAreaView style={styles.container}>
+      <View style={styles.mapContainer}>
+        {region ? (
+          <MapView
+            style={styles.map}
+            region={region}
+            showsUserLocation={true}
+          >
+            {fillerPoints.map((point, index) => {
+              if (!point.location || !point.location.includes(",")) return null;
+              const [latitude, longitude] = point.location.split(",").map(p => parseFloat(p.trim()));
+              if (isNaN(latitude) || isNaN(longitude)) return null;
+
+              return (
+                <Marker
+                  key={index}
+                  coordinate={{ latitude, longitude }}
+                  title={point.name}
+                >
+                  <Image
+                    source={require("../../assets/images/fillerPoint.png")}
+                    style={{ width: 18, height: 18 }}
+                  />
+                </Marker>
+              );
+            })}
+          </MapView>
+        ) : (
+          <ActivityIndicator size="large" color="#666" />
+        )}
+      </View>
+    </SafeAreaView>
+  );
+
+
+}
 
 export default FillerPoints;

@@ -14,7 +14,6 @@ const BusRoutes = ({ route }) => {
   const [filteredRoutes, setFilteredRoutes] = useState([]);
   const [searchText, setSearchText] = useState("");
   const { favouriteRoutes, toggleRouteFavourite } = useFavouriteContext();
-  const { setLoading, setError, setErrorWithCode } = useGlobalContext();
   const navigation = useNavigation();
 
   function naturalSort(a, b) {
@@ -90,13 +89,25 @@ const BusRoutes = ({ route }) => {
         <Text style={styles.routeName}>{item.name}</Text>
         <Text style={styles.routeLine}>{item.line}</Text>
       </View>
-      <TouchableOpacity onPress={() => toggleRouteFavourite(item)} style={styles.favouriteIcon}>
+      <TouchableOpacity
+        onPress={() => toggleRouteFavourite(item, navigation)}
+        style={styles.favouriteIcon}
+      >
         <Icon
-          name={favouriteRoutes.some(r => r.routeId === item.routeId) ? "heart" : "heart-outline"}
+          name={
+            favouriteRoutes.some(r => (r.routeId || r.id) === (item.routeId || item.id))
+              ? "heart"
+              : "heart-outline"
+          }
           size={28}
-          color={favouriteRoutes.some(r => r.routeId === item.routeId) ? "#222" : "#666"}
+          color={
+            favouriteRoutes.some(r => (r.routeId || r.id) === (item.routeId || item.id))
+              ? "#222"
+              : "#666"
+          }
         />
       </TouchableOpacity>
+
     </TouchableOpacity>
   );
 
