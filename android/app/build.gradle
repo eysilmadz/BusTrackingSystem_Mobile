@@ -79,6 +79,19 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
+def getEnvVar = { key ->
+    def envFile = rootProject.file(".env")
+    if (!envFile.exists()) {
+        return ""
+    }
+    def line = envFile.readLines().find { it.startsWith(key + "=") }
+    if (line == null) {
+        return ""
+    }
+    def value = line.split("=")[1]
+    return value.replaceAll("\"", "").trim()
+}
+
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -91,6 +104,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        resValue "string", "google_maps_key", getEnvVar("GOOGLE_MAPS_API_KEY")
     }
     signingConfigs {
         debug {

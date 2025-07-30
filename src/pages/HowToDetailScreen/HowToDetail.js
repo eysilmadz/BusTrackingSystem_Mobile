@@ -69,17 +69,14 @@ export default function HowToDetail() {
     const getStationCoords = (stationId) => {
         const station = stationList.find((s) => s.id === stationId);
         if (!station) {
-            console.warn("İstasyon bulunamadı, ID:", stationId);
             return null;
         }
         if (!station.location) {
-            console.warn("Location bilgisi yok, ID:", stationId);
             return null;
         }
 
         const parts = station.location.split(/[, ]+/);
         if (parts.length < 2) {
-            console.warn("Location formatı yanlış, ID:", stationId, "Location:", station.location);
             return null;
         }
 
@@ -87,7 +84,6 @@ export default function HowToDetail() {
         const lon = parseFloat(parts[1].replace(",", "."));
 
         if (isNaN(lat) || isNaN(lon)) {
-            console.warn("Koordinat NaN. ID:", stationId, "Raw:", station.location);
             return null;
         }
 
