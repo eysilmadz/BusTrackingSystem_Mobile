@@ -255,14 +255,6 @@ Contributions are welcome!
 
 <br/>
 
-## Presentation
-
-You can view the project presentation below:
-
-📎 [Download Project Presentation (PPTX)](https://github.com/yourusername/rota-durak/blob/main/presentation/rota-durak-presentation.pptx)
-
-<br/>
-
 ## Screenshots
 
 <img src="https://i.imgur.com/h91cVar.png" width="270" alt="Splash Screen" /> &nbsp;
