@@ -72,12 +72,19 @@ const Login = () => {
                 const meResponse = await apiClient.get('/auth/me');
                 const currentUser = meResponse.data;
                 console.log("ME response:", currentUser);
+                const cleanUser = {
+                    id: currentUser.id,
+                    firstName: currentUser.firstName,
+                    lastName: currentUser.lastName,
+                    email: currentUser.email,
+                    phoneNumber: currentUser.phoneNumber,
+                };
 
                 // Kullanıcıyı AsyncStorage'a kaydet
-                await AsyncStorage.setItem('user', JSON.stringify(currentUser));
+                await AsyncStorage.setItem('user', JSON.stringify(cleanUser));
 
                 // Context'e gönder
-                setUser(currentUser);
+                setUser(cleanUser);
 
                 // Başarılı giriş bildirimi
                 setModalTitle('Başarılı');

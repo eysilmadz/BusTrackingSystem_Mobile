@@ -11,7 +11,7 @@ export const UserProvider = ({ children }) => {
     try {
       const storedToken = await AsyncStorage.getItem('token');
       const storedUser = await AsyncStorage.getItem('user');
-      console.log("Context içinde gelen user:", storedUser); // BURAYA BAK
+      console.log("Context içinde gelen user:", storedUser);
 
       if (storedToken && storedUser) {
         setUser(JSON.parse(storedUser));

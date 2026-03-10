@@ -32,7 +32,7 @@ const Profile = () => {
                 const response = await apiClient.get('/auth/me', {
                     headers: { Authorization: `Bearer ${token}` }
                 })
-
+                console.log("Kullanıcı verisi:", response.data);
                 setUserDetail(response.data);
 
             } catch (error) {
@@ -92,7 +92,7 @@ const Profile = () => {
                 </View>
                 {userDetail && (
                     <Text style={styles.userName}>
-                        {userDetail.firstName.toUpperCase()} {userDetail.lastName.toUpperCase()}
+                        {userDetail.firstName?.toUpperCase()} {userDetail.lastName?.toUpperCase()}
                     </Text>
                 )}
             </View>
