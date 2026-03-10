@@ -24,6 +24,7 @@ import apiClient from '../api/apiClient';
 import HowToGet from '../pages/HowToGetScreen';
 import MapPicker from '../pages/MapPicker';
 import HowToDetail from '../pages/HowToDetailScreen';
+import LoadBalance from '../pages/PaymentTransactions/LoadBalanceScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -78,6 +79,7 @@ function Router() {
           <Stack.Screen name="Register" component={Register} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="Profile" options={{ headerTitle: "Profil" }}>{(props) => <Profile {...props} user={user} />}</Stack.Screen>
           <Stack.Screen name="MyInfo" options={{ headerTitle: "Bilgilerim" }}>{(props) => <MyInfo {...props} user={user} />}</Stack.Screen>
+          <Stack.Screen name="LoadBalance" component={LoadBalance} options={{ header: (props) => <CustomHeader {...props} />, }} />
         </Stack.Navigator>
       </NavigationContainer>
       {loading && <Loading />}

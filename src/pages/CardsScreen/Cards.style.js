@@ -3,9 +3,12 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: "#f9f9f9"
+    },
+    scrollContent: {
         alignItems: "center",
         paddingTop: 20,
-        backgroundColor: "#f9f9f9"
+        paddingBottom: 32,
     },
     cards: {
         flexDirection: "row",
@@ -23,11 +26,11 @@ export default StyleSheet.create({
     },
     icon: {
         marginRight: 20,
-      },
-      text: {
+    },
+    text: {
         fontSize: 18,
         fontWeight: "500",
         color: "#333",
         marginLeft: 20
-      },
+    },
 });
