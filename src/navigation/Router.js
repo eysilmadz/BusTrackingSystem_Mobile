@@ -25,7 +25,9 @@ import HowToGet from '../pages/HowToGetScreen';
 import MapPicker from '../pages/MapPicker';
 import HowToDetail from '../pages/HowToDetailScreen';
 import LoadBalance from '../pages/PaymentTransactions/LoadBalanceScreen';
-
+import CreateQrCode from '../pages/PaymentTransactions/CreateQRCodeScreen';
+import CreateVirtualCard from '../pages/PaymentTransactions/CreateVirtualCardScreen';
+import AddCard from '../pages/PaymentTransactions/AddCardScreen';
 const Stack = createNativeStackNavigator();
 
 function Router() {
@@ -80,6 +82,9 @@ function Router() {
           <Stack.Screen name="Profile" options={{ headerTitle: "Profil" }}>{(props) => <Profile {...props} user={user} />}</Stack.Screen>
           <Stack.Screen name="MyInfo" options={{ headerTitle: "Bilgilerim" }}>{(props) => <MyInfo {...props} user={user} />}</Stack.Screen>
           <Stack.Screen name="LoadBalance" component={LoadBalance} options={{ header: (props) => <CustomHeader {...props} />, }} />
+          <Stack.Screen name="CreateQrCode" component={CreateQrCode} options={{ header: (props) => <CustomHeader {...props} />, }} />
+          {/* <Stack.Screen name="CreateVirtualCard" component={CreateVirtualCard} options={{ header: (props) => <CustomHeader {...props} />, }} />
+          <Stack.Screen name="AddCard" component={AddCard} options={{ header: (props) => <CustomHeader {...props} />, }} /> */}
         </Stack.Navigator>
       </NavigationContainer>
       {loading && <Loading />}

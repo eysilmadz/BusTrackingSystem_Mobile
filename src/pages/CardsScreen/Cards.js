@@ -19,7 +19,7 @@ function Cards() {
 
   const cards = [
     { id: "1", icon: "wallet-outline", text: "Bakiye Yükle", route: "LoadBalance" },
-    { id: "2", icon: "qr-code-outline", text: "QR Kod Oluştur", route: "Cards" },
+    { id: "2", icon: "qr-code-outline", text: "QR Kod Oluştur", route: "CreateQrCode" },
     { id: "3", icon: "card-outline", text: "Sanal Kart Oluştur", route: "Cards" },
     { id: "4", icon: "add-circle-outline", text: "Kart Ekle", route: "Cards" }
   ];
