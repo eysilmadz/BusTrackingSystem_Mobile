@@ -25,4 +25,32 @@ export default StyleSheet.create({
     formRow: {
         flexDirection: "row",
     },
+    saveCardRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 14,
+    },
+    checkbox: {
+        width: 22,
+        height: 22,
+        borderRadius: 6,
+        borderWidth: 2,
+        borderColor: '#666',
+        marginRight: "2%",
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    checkboxChecked: {
+        backgroundColor: '#4A4A4A',
+    },
+    checkmark: {
+        color: '#fff',
+        fontSize: 13,
+        fontWeight: 'bold',
+    },
+    saveCardText: {
+        fontSize: 14,
+        color: '#666',
+        flex: 1,
+    },
 });

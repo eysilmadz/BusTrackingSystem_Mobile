@@ -29,6 +29,7 @@ function LoadBalance() {
         expireMonth, setExpireMonth,
         expireYear, setExpireYear,
         cvc, setCvc,
+        saveCard, setSaveCard,
         modalVisible, setModalVisible,
         modalContent,
         QUICK_AMOUNTS,
@@ -89,6 +90,7 @@ function LoadBalance() {
                                 expireMonth={expireMonth} setExpireMonth={setExpireMonth}
                                 expireYear={expireYear} setExpireYear={setExpireYear}
                                 cvc={cvc} setCvc={setCvc}
+                                saveCard={saveCard} setSaveCard={setSaveCard}
                             />
                         </View>
                     )}
@@ -106,7 +108,11 @@ function LoadBalance() {
                             <>
                                 <Icon name="wallet-outline" size={20} color="#fff" />
                                 <Text style={styles.loadBtnText}>
-                                    {amount ? `₺${amount} Yükle` : "Yükle"}
+                                    {amount
+                                        ? (saveCard && selectedMethod === "saved"
+                                            ? `Kartı Kaydet ve ₺${amount} Öde`
+                                            : `₺${amount} Yükle`)
+                                        : "Yükle"}
                                 </Text>
                             </>
                         )}

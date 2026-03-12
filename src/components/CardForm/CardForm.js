@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TextInput } from "react-native";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import styles from "./CardForm.style";
 
@@ -9,6 +9,7 @@ const CardForm = ({
     expireMonth, setExpireMonth,
     expireYear, setExpireYear,
     cvc, setCvc,
+    saveCard, setSaveCard,
 }) => (
     <View style={{ marginTop: 8 }}>
         <Text style={styles.formLabel}>Kart Üzerindeki İsim</Text>
@@ -79,6 +80,19 @@ const CardForm = ({
                 </View>
             </View>
         </View>
+        {/* Kartı Kaydet checkbox */}
+        {setSaveCard && (
+            <TouchableOpacity
+                style={styles.saveCardRow}
+                onPress={() => setSaveCard(!saveCard)}
+                activeOpacity={0.7}
+            >
+                <View style={[styles.checkbox, saveCard && styles.checkboxChecked]}>
+                    {saveCard && <Text style={styles.checkmark}>✓</Text>}
+                </View>
+                <Text style={styles.saveCardText}>Kartı kaydet (sonraki ödemelerde kullan)</Text>
+            </TouchableOpacity>
+        )}
     </View>
 );
 

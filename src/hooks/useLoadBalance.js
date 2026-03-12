@@ -27,6 +27,8 @@ export const useLoadBalance = () => {
     const [expireMonth, setExpireMonth] = useState("");
     const [expireYear, setExpireYear] = useState("");
     const [cvc, setCvc] = useState("");
+    const [saveCard, setSaveCard] = useState(false);
+
 
     // Modal
     const [modalVisible, setModalVisible] = useState(false);
@@ -105,19 +107,25 @@ export const useLoadBalance = () => {
             setLoading(false);
         }
     };
-
     const handleCardPayment = async () => {
         const parsedAmount = parseFloat(amount);
         if (!validateAmount(parsedAmount)) return;
 
         let cardData;
-        if (selectedCard) {
+        if (selectedCard?.cardToken) { // ← sadece bu satır değişti
+            if (!cvc) {
+                showModal("Eksik Bilgi", "Lütfen CVC kodunu girin.");
+                return;
+            }
             cardData = {
-                cardHolderName: selectedCard.cardHolder ?? cardHolder,
-                cardNumber: selectedCard.cardNumber,
-                expireMonth: selectedCard.expireMonth ?? expireMonth,
-                expireYear: selectedCard.expireYear ?? expireYear,
+                cardHolderName: selectedCard.cardAlias ?? selectedCard.cardProvider,
+                cardNumber: null,
+                expireMonth: null,
+                expireYear: null,
                 cvc,
+                cardToken: selectedCard.cardToken,
+                cardUserKey: selectedCard.cardUserKey,
+                saveCard: false,
             };
         } else {
             if (!cardHolder || !cardNumber || !expireMonth || !expireYear || !cvc) {
@@ -130,6 +138,7 @@ export const useLoadBalance = () => {
                 expireMonth,
                 expireYear,
                 cvc,
+                saveCard,
             };
         }
 
@@ -141,7 +150,13 @@ export const useLoadBalance = () => {
                 ...cardData,
             });
             if (result.success) {
-                showModal("Başarılı!", `₺${parsedAmount.toFixed(2)} yüklendi.`, () => navigation.goBack());
+                showModal(
+                    "Başarılı!",
+                    saveCard
+                        ? `₺${parsedAmount.toFixed(2)} yüklendi ve kartınız kaydedildi.`
+                        : `₺${parsedAmount.toFixed(2)} yüklendi.`,
+                    () => navigation.goBack()
+                );
             } else {
                 showModal("Ödeme Başarısız", result.message ?? "Bir hata oluştu.");
             }
@@ -177,6 +192,7 @@ export const useLoadBalance = () => {
         expireMonth, setExpireMonth,
         expireYear, setExpireYear,
         cvc, setCvc,
+        saveCard, setSaveCard,
         modalVisible, setModalVisible,
         modalContent,
         // Sabitler

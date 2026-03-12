@@ -51,4 +51,48 @@ export default StyleSheet.create({
         color: "#aaa",
         fontStyle: "italic",
     },
+    cvcLabel: {
+        fontSize: 13,
+        color: '#666',
+        marginBottom: 6,
+        fontWeight: '500',
+    },
+    cvcInput: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#f5f5f5',
+        borderRadius: 10,
+        paddingHorizontal: 12,
+        borderWidth: 1,
+        borderColor: '#e0e0e0',
+    },
+    cvcInputText: {
+        flex: 1,
+        fontSize: 15,
+        color: '#222',
+    },
+    newCardToggle: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 14,
+        paddingVertical: 12,
+        paddingHorizontal: 16,
+        borderRadius: 12,
+        borderWidth: 1.5,
+        borderColor: '#4A4A4A',
+        borderStyle: 'dashed',
+        gap: 8,
+    },
+    newCardToggleActive: {
+        backgroundColor: '#4A4A4A',
+        borderStyle: 'solid',
+    },
+    newCardToggleText: {
+        fontSize: 14,
+        color: '#4A4A4A',
+        fontWeight: '500',
+    },
+    newCardToggleTextActive: {
+        color: '#fff',
+    },
 });
