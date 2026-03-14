@@ -37,3 +37,8 @@ export const initCheckoutForm = async (userId, amount) => {
   const response = await apiClient.post('/payment/checkout-form', { userId, amount });
   return response.data; // { status, token, paymentPageUrl, checkoutFormContent }
 };
+
+export const getVirtualCard = async (userId) => {
+    const res = await apiClient.get(`/bankcards/virtual/${userId}`);
+    return res.data && res.data.length > 0 ? res.data[0] : null;
+};

@@ -32,6 +32,9 @@ function LoadBalance() {
         saveCard, setSaveCard,
         modalVisible, setModalVisible,
         modalContent,
+        targetType, setTargetType,
+        virtualCard,
+        virtualCardLoading,
         QUICK_AMOUNTS,
         handleSelectMethod,
         handleSelectCard,
@@ -70,6 +73,39 @@ function LoadBalance() {
                             onChangeText={(v) => setAmount(v.replace(/[^0-9.]/g, ""))}
                         />
                     </View>
+
+                    {!virtualCardLoading && virtualCard && (
+                        <View style={styles.targetSelector}>
+                            <Text style={styles.targetLabel}>Yüklenecek Yer</Text>
+                            <View style={styles.targetOptions}>
+                                <TouchableOpacity
+                                    style={[styles.targetOption, targetType === "WALLET" && styles.targetOptionActive]}
+                                    onPress={() => setTargetType("WALLET")}
+                                    activeOpacity={0.8}
+                                >
+                                    <Icon name="wallet-outline" size={18}
+                                        color={targetType === "WALLET" ? "#fff" : "#555"} />
+                                    <Text style={[styles.targetOptionText,
+                                    targetType === "WALLET" && styles.targetOptionTextActive]}>
+                                        Cüzdan
+                                    </Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity
+                                    style={[styles.targetOption, targetType === "VIRTUAL_CARD" && styles.targetOptionActive]}
+                                    onPress={() => setTargetType("VIRTUAL_CARD")}
+                                    activeOpacity={0.8}
+                                >
+                                    <Icon name="card-outline" size={18}
+                                        color={targetType === "VIRTUAL_CARD" ? "#fff" : "#555"} />
+                                    <Text style={[styles.targetOptionText,
+                                    targetType === "VIRTUAL_CARD" && styles.targetOptionTextActive]}>
+                                        Sanal Kart
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    )}
 
                     {/* Ödeme Yöntemi */}
                     <PaymentMethodSelector
@@ -111,7 +147,7 @@ function LoadBalance() {
                                     {amount
                                         ? (saveCard && selectedMethod === "saved"
                                             ? `Kartı Kaydet ve ₺${amount} Öde`
-                                            : `₺${amount} Yükle`)
+                                            : `₺${amount} ${targetType === "VIRTUAL_CARD" ? "Karta Yükle" : "Cüzdana Yükle"}`)
                                         : "Yükle"}
                                 </Text>
                             </>

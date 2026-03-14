@@ -83,8 +83,8 @@ function Router() {
           <Stack.Screen name="MyInfo" options={{ headerTitle: "Bilgilerim" }}>{(props) => <MyInfo {...props} user={user} />}</Stack.Screen>
           <Stack.Screen name="LoadBalance" component={LoadBalance} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="CreateQrCode" component={CreateQrCode} options={{ header: (props) => <CustomHeader {...props} />, }} />
-          {/* <Stack.Screen name="CreateVirtualCard" component={CreateVirtualCard} options={{ header: (props) => <CustomHeader {...props} />, }} />
-          <Stack.Screen name="AddCard" component={AddCard} options={{ header: (props) => <CustomHeader {...props} />, }} /> */}
+          <Stack.Screen name="CreateVirtualCard" component={CreateVirtualCard} options={{ header: (props) => <CustomHeader {...props} />, }} />
+          {/* <Stack.Screen name="AddCard" component={AddCard} options={{ header: (props) => <CustomHeader {...props} />, }} /> */}
         </Stack.Navigator>
       </NavigationContainer>
       {loading && <Loading />}

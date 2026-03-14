@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { UserContext } from "../contexts/UserContext";
-import { loadBalance, getUserBankCards, initCheckoutForm } from "../api/walletService";
+import { loadBalance, getUserBankCards, initCheckoutForm, getVirtualCard } from "../api/walletService";
 
 const QUICK_AMOUNTS = [10, 20, 50, 100, 150, 200];
 
@@ -29,6 +29,11 @@ export const useLoadBalance = () => {
     const [cvc, setCvc] = useState("");
     const [saveCard, setSaveCard] = useState(false);
 
+    //Sanal kart
+    const [targetType, setTargetType] = useState("WALLET"); // "WALLET" | "VIRTUAL_CARD"
+    const [virtualCard, setVirtualCard] = useState(null);
+    const [virtualCardLoading, setVirtualCardLoading] = useState(true);
+
 
     // Modal
     const [modalVisible, setModalVisible] = useState(false);
@@ -50,6 +55,20 @@ export const useLoadBalance = () => {
             }
         };
         fetchCards();
+    }, [user?.id]);
+
+    useEffect(() => {
+        const fetchVirtualCard = async () => {
+            try {
+                const card = await getVirtualCard(user?.id);
+                setVirtualCard(card);
+            } catch (e) {
+                console.error("Sanal kart alınamadı:", e);
+            } finally {
+                setVirtualCardLoading(false);
+            }
+        };
+        if (user?.id) fetchVirtualCard();
     }, [user?.id]);
 
     const showModal = (title, alert, onOk) => {
@@ -147,14 +166,18 @@ export const useLoadBalance = () => {
             const result = await loadBalance({
                 userId: user?.id,
                 amount: parsedAmount,
+                targetType,
+                cardId: targetType === "VIRTUAL_CARD" ? virtualCard?.id : null,
                 ...cardData,
             });
             if (result.success) {
                 showModal(
                     "Başarılı!",
-                    saveCard
-                        ? `₺${parsedAmount.toFixed(2)} yüklendi ve kartınız kaydedildi.`
-                        : `₺${parsedAmount.toFixed(2)} yüklendi.`,
+                    targetType === "VIRTUAL_CARD"
+                        ? `₺${parsedAmount.toFixed(2)} sanal kartınıza yüklendi.`
+                        : saveCard
+                            ? `₺${parsedAmount.toFixed(2)} yüklendi ve kartınız kaydedildi.`
+                            : `₺${parsedAmount.toFixed(2)} cüzdanınıza yüklendi.`,
                     () => navigation.goBack()
                 );
             } else {
@@ -195,6 +218,9 @@ export const useLoadBalance = () => {
         saveCard, setSaveCard,
         modalVisible, setModalVisible,
         modalContent,
+        targetType, setTargetType,
+        virtualCard,
+        virtualCardLoading,
         // Sabitler
         QUICK_AMOUNTS,
         // Fonksiyonlar

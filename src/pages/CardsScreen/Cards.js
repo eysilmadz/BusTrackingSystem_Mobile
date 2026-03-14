@@ -8,6 +8,7 @@ import { getWalletBalance } from "../../api/walletService";
 import WalletCard from "../../components/Wallet";
 import { useGlobalContext } from "../../contexts/GlobalContext";
 import { UserContext } from "../../contexts/UserContext";
+import VirtualCard from "../../components/VirtualCardDisplay";
 import styles from './Cards.style';
 
 function Cards() {
@@ -16,11 +17,12 @@ function Cards() {
   const [balance, setBalance] = useState(null);
   const [balanceLoading, setBalanceLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [virtualCard, setVirtualCard] = useState(null);
 
   const cards = [
     { id: "1", icon: "wallet-outline", text: "Bakiye Yükle", route: "LoadBalance" },
     { id: "2", icon: "qr-code-outline", text: "QR Kod Oluştur", route: "CreateQrCode" },
-    { id: "3", icon: "card-outline", text: "Sanal Kart Oluştur", route: "Cards" },
+    { id: "3", icon: "card-outline", text: "Sanal Kart Oluştur", route: "CreateVirtualCard" },
     { id: "4", icon: "add-circle-outline", text: "Kart Ekle", route: "Cards" }
   ];
 
@@ -37,14 +39,26 @@ function Cards() {
     }
   };
 
+  const fetchVirtualCard = async () => {
+    if (!user?.id) return;
+    try {
+      const res = await apiClient.get(`/bankcards/virtual/${user.id}`);
+      const cards = res.data;
+      setVirtualCard(cards && cards.length > 0 ? cards[0] : null);
+    } catch (e) {
+      setVirtualCard(null);
+    }
+  };
+
   // Her odaklanmada bakiyeyi tazele
-   useFocusEffect(
+  useFocusEffect(
     useCallback(() => {
       fetchBalance();
+      fetchVirtualCard();
     }, [user?.id]) // userId yerine user.id
   );
 
-   const onRefresh = async () => {
+  const onRefresh = async () => {
     setRefreshing(true);
     await fetchBalance();
     setRefreshing(false);
@@ -63,27 +77,31 @@ function Cards() {
         }
         showsVerticalScrollIndicator={false}
       >
-       <WalletCard
+        <WalletCard
           balance={balance}
           balanceLoading={balanceLoading}
           onRefresh={onRefresh}
         />
+        
+        {virtualCard && (
+          <VirtualCard virtualCard={virtualCard} user={user} />
+        )}
         {/*Menü Kartları*/}
         <View style={styles.cardsContainer}>
           {cards.map(item => (
-        <TouchableOpacity
-          key={item.id}
-          onPress={() => handleNavigation(item.route, {balance})}
-          style={styles.cards}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.text}>{item.text}</Text>
-          <Icon name={item.icon} size={30} color="#666" style={styles.icon} />
-        </TouchableOpacity>
-      ))}
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => handleNavigation(item.route, { balance })}
+              style={styles.cards}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.text}>{item.text}</Text>
+              <Icon name={item.icon} size={30} color="#666" style={styles.icon} />
+            </TouchableOpacity>
+          ))}
         </View>
       </ScrollView>
-      
+
     </SafeAreaView>
   )
 }
