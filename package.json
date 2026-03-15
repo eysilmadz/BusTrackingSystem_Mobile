@@ -34,6 +34,7 @@
     "react-native-keyboard-controller": "^1.14.5",
     "react-native-map-clustering": "^3.3.1",
     "react-native-maps": "^1.20.1",
+    "react-native-nfc-manager": "^3.17.2",
     "react-native-permissions": "^5.0.0",
     "react-native-qrcode-svg": "^6.3.21",
     "react-native-reanimated": "^3.16.1",

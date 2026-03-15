@@ -154,7 +154,7 @@ export default StyleSheet.create({
         flexDirection: "row",
         alignItems: "flex-end",
         gap: 12,
-        marginBottom:'4%',
+        marginBottom: '4%',
     },
     cardLabel: {
         color: "#666",
@@ -177,5 +177,146 @@ export default StyleSheet.create({
         fontSize: 10,
         color: "#bbb",
         fontStyle: "italic",
+    },
+
+    // NFC Butonu
+    nfcBtn: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 8,
+        backgroundColor: "#fff",
+        borderRadius: 16,
+        paddingVertical: 14,
+        marginTop: -16, // karta yapışık görünsün
+        marginBottom: 8,
+        width: width - 40,
+        alignSelf: "center",
+        elevation: 4,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 6,
+    },
+    nfcBtnText: {
+        color: "#333",
+        fontSize: 16,
+        fontWeight: "600",
+    },
+
+    // NFC Modal
+    nfcModal: {
+        flex: 1,
+        backgroundColor: "#f9f9f9",
+    },
+    nfcModalContent: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "space-between",
+        paddingVertical: 50,
+        paddingHorizontal: 30,
+    },
+    nfcModalTitle: {
+        fontSize: 24,
+        fontWeight: "800",
+        color: "#2d2d2d",
+    },
+    nfcModalSubtitle: {
+        fontSize: 14,
+        color: "#888",
+        textAlign: "center",
+        marginTop: 8,
+    },
+
+    // Pulse
+    nfcIconWrapper: {
+        alignItems: "center",
+        justifyContent: "center",
+        width: 220,
+        height: 220,
+    },
+    nfcPulse3: {
+        position: "absolute",
+        width: 210,
+        height: 210,
+        borderRadius: 105,
+        backgroundColor: "rgba(45,45,45,0.06)",
+    },
+    nfcPulse2: {
+        position: "absolute",
+        width: 170,
+        height: 170,
+        borderRadius: 85,
+        backgroundColor: "rgba(45,45,45,0.1)",
+    },
+    nfcPulse1: {
+        position: "absolute",
+        width: 130,
+        height: 130,
+        borderRadius: 65,
+        backgroundColor: "rgba(45,45,45,0.15)",
+    },
+    nfcIconCircle: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        backgroundColor: "#2d2d2d",
+        alignItems: "center",
+        justifyContent: "center",
+        elevation: 8,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 8,
+    },
+
+    // Kart bilgisi
+    nfcCardInfo: {
+        alignItems: "center",
+        backgroundColor: "#fff",
+        borderRadius: 20,
+        padding: 24,
+        width: "100%",
+        elevation: 4,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        gap: 6,
+    },
+    nfcCardInfoLabel: {
+        fontSize: 13,
+        color: "#444",
+        letterSpacing: 1.5,
+        fontWeight: "600",
+    },
+    nfcCardInfoBalance: {
+        fontSize: 32,
+        fontWeight: "800",
+        color: "#2d2d2d",
+    },
+    nfcCardInfoNumber: {
+        fontSize: 13,
+        color: "#888",
+        fontWeight: "500",
+    },
+
+    // İptal butonu
+    nfcCancelBtn: {
+        width: "100%",
+        paddingVertical: 16,
+        borderRadius: 16,
+         elevation: 4,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        alignItems: "center",
+        backgroundColor: "#fff",
+    },
+    nfcCancelBtnText: {
+        fontSize: 15,
+        fontWeight: "600",
+        color: "#444",
     },
 });
