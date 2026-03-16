@@ -12,7 +12,7 @@ const apiClient = axios.create({
 // Sadece korunan endpoint’ler için token ekledim
 apiClient.interceptors.request.use(
     async (config) => {
-        const protectedEndpoints = ['/auth/me', '/wallet', '/transactions', 'payment', 'banlcards']; // Korunan API’ler
+        const protectedEndpoints = ['/auth/me', '/wallet', '/transactions', 'payment', 'bankcards']; // Korunan API’ler
         const needsAuth = protectedEndpoints.some((endpoint) => config.url?.includes(endpoint));
         if (needsAuth) {
             const token = await AsyncStorage.getItem('token');

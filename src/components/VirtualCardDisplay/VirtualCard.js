@@ -3,16 +3,50 @@ import { View, Text, Image, TouchableOpacity, Animated, Modal, SafeAreaView, Lin
 import Icon from "react-native-vector-icons/Ionicons";
 import ModalAlert from '../../components/ModalAlert';
 import nfcManager from "react-native-nfc-manager";
+import { useNavigation } from "@react-navigation/native";
+import { busPaymentNfc, getVirtualCard } from "../../api/walletService";
 import styles from "./VirtualCard.style";
 
 const logoImg = require("../../assets/images/logoSlogansiz.png");
 
-const VirtualCardDisplay = ({ virtualCard, user }) => {
+const VirtualCardDisplay = ({ virtualCard, user, onPaymentSuccess }) => {
     const [flipped, setFlipped] = useState(false);
     const [nfcModalVisible, setNfcModalVisible] = useState(false);
     const [nfcAlertVisible, setNfcAlertVisible] = useState(false);
+    const [balanceAlertVisible, setBalanceAlertVisible] = useState(false);
+    const [nfcPaymentSuccess, setNfcPaymentSuccess] = useState(false);
+    const [nfcPaymentError, setNfcPaymentError] = useState(null);
+
+    const navigation = useNavigation();
     const animatedValue = useRef(new Animated.Value(0)).current;
     const pulseAnim = useRef(new Animated.Value(1)).current;
+    const pollingRef = useRef(null);
+
+
+    const startPolling = () => {
+        pollingRef.current = setInterval(async () => {
+            try {
+                const updatedCard = await getVirtualCard(user?.id);
+                console.log(">>> Polling - yeni bakiye:", updatedCard?.balance, "eski bakiye:", virtualCard?.balance);
+                if (updatedCard?.balance < virtualCard?.balance) {
+                    // Bakiye düştü → ödeme yapıldı
+                    stopPolling();
+                    closeNfcModal();
+                    setNfcPaymentSuccess(true);
+                    onPaymentSuccess?.();
+                }
+            } catch (e) {
+                console.log(">>> Polling hatası:", e?.message);
+            }
+        }, 3000);
+    };
+
+    const stopPolling = () => {
+        if (pollingRef.current) {
+            clearInterval(pollingRef.current);
+            pollingRef.current = null;
+        }
+    };
 
     const flipCard = () => {
         if (flipped) {
@@ -46,6 +80,37 @@ const VirtualCardDisplay = ({ virtualCard, user }) => {
     const frontAnimatedStyle = { transform: [{ rotateY: frontInterpolate }] };
     const backAnimatedStyle = { transform: [{ rotateY: backInterpolate }] };
 
+    const handleNfcPayment = async () => {
+        console.log(">>> handleNfcPayment başladı");
+        console.log(">>> userId:", user?.id);
+        console.log(">>> nfcToken:", virtualCard?.nfcToken);
+        console.log(">>> balance:", virtualCard?.balance);
+
+        try {
+            console.log(">>> busPaymentNfc çağrılıyor...");
+            const result = await busPaymentNfc(user?.id, virtualCard.nfcToken);
+            console.log(">>> busPaymentNfc sonucu:", JSON.stringify(result));
+
+            closeNfcModal();
+
+            if (result.success) {
+                console.log(">>> Ödeme başarılı!");
+                setNfcPaymentSuccess(true);
+                onPaymentSuccess?.();
+            } else {
+                console.log(">>> Ödeme başarısız:", result.message);
+                setNfcPaymentError(result.message);
+            }
+        } catch (e) {
+            console.log(">>> HATA:", e?.message);
+            console.log(">>> HATA response:", JSON.stringify(e?.response?.data));
+            console.log(">>> HATA status:", e?.response?.status);
+            closeNfcModal();
+            const msg = e?.response?.data?.message ?? "Ödeme gerçekleştirilemedi.";
+            setNfcPaymentError(msg);
+        }
+    };
+
     // Pulse animasyonu
     const startPulse = () => {
         Animated.loop(
@@ -69,27 +134,39 @@ const VirtualCardDisplay = ({ virtualCard, user }) => {
     }, []);
 
     const openNfcModal = async () => {
+        console.log(">>> openNfcModal başladı");
+        console.log(">>> virtualCard:", JSON.stringify(virtualCard));
+
+        if (virtualCard?.balance == null || virtualCard.balance <= 0) {
+            console.log(">>> Yetersiz bakiye, balanceAlert açılıyor");
+            setBalanceAlertVisible(true);
+            return;
+        }
         try {
             const isSupported = await nfcManager.isSupported();
+            console.log(">>> NFC isSupported:", isSupported);
             if (!isSupported) {
                 setNfcAlertVisible(true);
                 return;
             }
             const isEnabled = await nfcManager.isEnabled();
-            console.log("NFC isEnabled:", isEnabled); // log ekle, ne döndüğünü gör
+            console.log(">>> NFC isEnabled:", isEnabled);
             if (isEnabled) {
+                console.log(">>> NFC modal açılıyor, handleNfcPayment çağrılıyor");
                 setNfcModalVisible(true);
                 startPulse();
+                startPolling();
             } else {
                 setNfcAlertVisible(true);
             }
         } catch (e) {
-            console.log("NFC kontrol hatası:", e);
+            console.log(">>> openNfcModal HATA:", e?.message);
             setNfcAlertVisible(true);
         }
     };
 
     const closeNfcModal = () => {
+        stopPolling();
         setNfcModalVisible(false);
         pulseAnim.stopAnimation();
         pulseAnim.setValue(1);
@@ -226,7 +303,6 @@ const VirtualCardDisplay = ({ virtualCard, user }) => {
                                 **** {virtualCard.cardNumber?.slice(-4)}
                             </Text>
                         </View>
-
                         {/* İptal */}
                         <TouchableOpacity style={styles.nfcCancelBtn} onPress={closeNfcModal}>
                             <Text style={styles.nfcCancelBtnText}>İptal</Text>
@@ -255,6 +331,46 @@ const VirtualCardDisplay = ({ virtualCard, user }) => {
                         },
                     },
                 ]}
+            />
+            <ModalAlert
+                modalVisible={balanceAlertVisible}
+                setModalVisible={setBalanceAlertVisible}
+                title="Yetersiz Bakiye"
+                alert="Sanal kartınızda yeterli bakiye bulunmuyor. Bakiye yüklemek ister misiniz?"
+                buttons={[
+                    {
+                        text: "İptal",
+                        onPress: () => setBalanceAlertVisible(false),
+                    },
+                    {
+                        text: "Bakiye Yükle",
+                        onPress: () => {
+                            setBalanceAlertVisible(false);
+                            navigation.navigate("LoadBalance");
+                        },
+                    },
+                ]}
+            />
+            <ModalAlert
+                modalVisible={nfcPaymentSuccess}
+                setModalVisible={setNfcPaymentSuccess}
+                title="Ödeme Başarılı! 🎉"
+                alert="İyi yolculuklar!"
+                buttons={[{
+                    text: "Tamam",
+                    onPress: () => setNfcPaymentSuccess(false),
+                }]}
+            />
+
+            <ModalAlert
+                modalVisible={!!nfcPaymentError}
+                setModalVisible={() => setNfcPaymentError(null)}
+                title="Ödeme Başarısız"
+                alert={nfcPaymentError ?? "Bir hata oluştu."}
+                buttons={[{
+                    text: "Tamam",
+                    onPress: () => setNfcPaymentError(null),
+                }]}
             />
         </View>
     );

@@ -42,3 +42,13 @@ export const getVirtualCard = async (userId) => {
     const res = await apiClient.get(`/bankcards/virtual/${userId}`);
     return res.data && res.data.length > 0 ? res.data[0] : null;
 };
+
+export const busPaymentNfc = async (userId, nfcToken, amount) => {
+    const response = await apiClient.post("/payment/bus-payment", {
+        userId,
+        busLine: "Rota Durak",
+        paymentMethod: "NFC",
+        token: nfcToken,
+    });
+    return response.data;
+};

@@ -120,7 +120,7 @@ function CreateVirtualCard({ navigation }) {
                 ) : (
                     <>
                         {/* Boş Kart Placeholder */}
-                        <VirtualCard virtualCard={virtualCard} user={user} />
+                        <VirtualCard virtualCard={virtualCard} user={user} onPaymentSuccess={fetchVirtualCard} />
 
                         <View style={styles.emptyBox}>
                             <Icon name="card-outline" size={40} color="#ccc" />

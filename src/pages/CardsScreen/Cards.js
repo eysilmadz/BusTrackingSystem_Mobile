@@ -23,7 +23,7 @@ function Cards() {
     { id: "1", icon: "wallet-outline", text: "Bakiye Yükle", route: "LoadBalance" },
     { id: "2", icon: "qr-code-outline", text: "QR Kod Oluştur", route: "CreateQrCode" },
     { id: "3", icon: "card-outline", text: "Sanal Kart Oluştur", route: "CreateVirtualCard" },
-    { id: "4", icon: "add-circle-outline", text: "Kart Ekle", route: "Cards" }
+    // { id: "4", icon: "add-circle-outline", text: "Kart Ekle", route: "Cards" }
   ];
 
   const fetchBalance = async () => {
@@ -82,9 +82,12 @@ function Cards() {
           balanceLoading={balanceLoading}
           onRefresh={onRefresh}
         />
-        
+
         {virtualCard && (
-          <VirtualCard virtualCard={virtualCard} user={user} />
+          <VirtualCard virtualCard={virtualCard} user={user} onPaymentSuccess={() => {
+            fetchBalance();
+            fetchVirtualCard();
+          }} />
         )}
         {/*Menü Kartları*/}
         <View style={styles.cardsContainer}>
