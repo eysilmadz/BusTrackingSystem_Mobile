@@ -28,6 +28,8 @@ import LoadBalance from '../pages/PaymentTransactions/LoadBalanceScreen';
 import CreateQrCode from '../pages/PaymentTransactions/CreateQRCodeScreen';
 import CreateVirtualCard from '../pages/PaymentTransactions/CreateVirtualCardScreen';
 import AddCard from '../pages/PaymentTransactions/AddCardScreen';
+import TransactionHistory from '../pages/Auth/Profile/TransactionHistory';
+import MyCards from '../pages/Auth/Profile/MyCards';
 const Stack = createNativeStackNavigator();
 
 function Router() {
@@ -84,6 +86,8 @@ function Router() {
           <Stack.Screen name="LoadBalance" component={LoadBalance} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="CreateQrCode" component={CreateQrCode} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="CreateVirtualCard" component={CreateVirtualCard} options={{ header: (props) => <CustomHeader {...props} />, }} />
+          <Stack.Screen name="TransactionHistory" component={TransactionHistory} options={{ header: (props) => <CustomHeader {...props} />, }} />
+          <Stack.Screen name="MyCards" component={MyCards} options={{ header: (props) => <CustomHeader {...props} />, }} />
           {/* <Stack.Screen name="AddCard" component={AddCard} options={{ header: (props) => <CustomHeader {...props} />, }} /> */}
         </Stack.Navigator>
       </NavigationContainer>

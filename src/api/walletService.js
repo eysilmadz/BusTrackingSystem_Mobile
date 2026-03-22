@@ -52,3 +52,8 @@ export const busPaymentNfc = async (userId, nfcToken, amount) => {
     });
     return response.data;
 };
+
+export const getTransactionHistory = async (userId) => {
+    const res = await apiClient.get(`/transactions/user/${userId}`);
+    return res.data;
+};
