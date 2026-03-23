@@ -1,182 +1,218 @@
 import React, { useContext, useEffect, useState } from "react";
-import { SafeAreaView, View, Text, Button, Alert, TouchableOpacity } from "react-native";
+import {
+    SafeAreaView, View, Text, TouchableOpacity,
+    TextInput, ActivityIndicator, ScrollView, KeyboardAvoidingView, Platform
+} from "react-native";
 import { UserContext } from "../../../../contexts/UserContext";
-import { getAuth, sendEmailVerification } from "firebase/auth";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
-import { db } from "../../../../firebase.config";
-import styles from './MyInfo.style';
 import ModalAlert from "../../../../components/ModalAlert";
+import { getUserById, updateUser } from "../../../../api/userService";
+import styles from './MyInfo.style';
 
 const MyInfo = () => {
     const { user } = useContext(UserContext);
     const [userDetail, setUserDetail] = useState(null);
-    const [isVerified, setIsVerified] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [editing, setEditing] = useState(false);
+    const [saving, setSaving] = useState(false);
+
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+
     const [modalVisible, setModalVisible] = useState(false);
     const [modalContent, setModalContent] = useState({ title: "", alert: "", buttons: [] });
-    const [isSendingEmail, setIsSendingEmail] = useState(false);
-    const [cooldown, setCooldown] = useState(0);
-    const auth = getAuth();
+
+    const showModal = (title, alert) => {
+        setModalContent({
+            title,
+            alert,
+            buttons: [{ text: "Tamam", onPress: () => setModalVisible(false) }]
+        });
+        setModalVisible(true);
+    };
 
     useEffect(() => {
-        const fetchUserDetails = async () => {
-            if (user) {
-                try {
-                    const docRef = doc(db, "users", user.uid);
-                    const docSnap = await getDoc(docRef);
-
-                    if (docSnap.exists()) {
-                        setUserDetail(docSnap.data());
-                        setIsVerified(auth.currentUser.emailVerified);
-                    } else {
-                        console.log("Kullanıcı bilgileri bulunamadı.");
-                    }
-                } catch (error) {
-                    console.error("Kullanıcı bilgilerini alırken hata:", error);
-                }
+        const fetchUser = async () => {
+            try {
+                const data = await getUserById(user?.id);
+                setUserDetail(data);
+                setFirstName(data.firstName);
+                setLastName(data.lastName);
+                setEmail(data.email);
+                setPhoneNumber(data.phoneNumber);
+            } catch (e) {
+                console.error("Kullanıcı bilgileri alınamadı:", e);
+            } finally {
+                setLoading(false);
             }
         };
+        if (user?.id) fetchUser();
+    }, [user?.id]);
 
-        fetchUserDetails();
-    }, [user, auth.currentUser]);
-
-    useEffect(() => {
-        let timer;
-        if (cooldown > 0) {
-            timer = setTimeout(() => {
-                setCooldown((prev) => prev - 1);
-            }, 1000); // Her saniye geri sayımı bir azalt
+    const handleSave = async () => {
+        if (!firstName || !lastName || !email || !phoneNumber) {
+            showModal("Hata", "Tüm alanları doldurunuz.");
+            return;
         }
-        return () => clearTimeout(timer); // Temizleme işlemi
-    }, [cooldown]);
-
-    const sendVerificationEmail = async () => {
-        if (isSendingEmail || cooldown > 0) return;
-
+        setSaving(true);
         try {
-            setIsSendingEmail(true);
-            setCooldown(60);
-
-            if (auth.currentUser) {
-                await sendEmailVerification(auth.currentUser);
-                setModalContent({
-                    title: "Doğrulama E-postası Gönderildi!",
-                    alert: "Lütfen e-postanızı kontrol edin.",
-                    buttons: [
-                        {
-                            text: "Tamam",
-                            onPress: () => setModalVisible(false),
-                        },
-                    ],
-                });
-            }
-        } catch (error) {
-            console.error("Doğrulama e-postası gönderilirken hata:", error);
-            if (error.code === "auth/too-many-requests") {
-                setModalContent({
-                    title: "Hata",
-                    alert: "Çok fazla istek gönderildi. Lütfen birkaç dakika bekleyin ve tekrar deneyin.",
-                    buttons: [
-                        {
-                            text: "Tamam",
-                            onPress: () => setModalVisible(false),
-                        },
-                    ],
-                });
-            } else {
-                setModalContent({
-                    title: "Hata",
-                    alert: "E-posta gönderilemedi. Lütfen tekrar deneyin.",
-                    buttons: [
-                        {
-                            text: "Tamam",
-                            onPress: () => setModalVisible(false),
-                        },
-                    ],
-                });
-            }
+            const data = await updateUser(user?.id, { firstName, lastName, email, phoneNumber });
+            setUserDetail(data);
+            setEditing(false);
+            showModal("Başarılı", "Bilgileriniz güncellendi.");
+        } catch (e) {
+            console.error("Güncelleme hatası:", e);
+            showModal("Hata", "Bilgiler güncellenemedi.");
         } finally {
-            setIsSendingEmail(false);
-            setModalVisible(true);
+            setSaving(false);
         }
     };
 
-    const checkVerificationStatus = async () => {
-        try {
-            await auth.currentUser.reload();
-            setIsVerified(auth.currentUser.emailVerified);
-            if (auth.currentUser.emailVerified) {
-                setModalContent({
-                    title: "E-posta Doğrulandı!",
-                    alert: "E-posta adresiniz başarıyla doğrulandı.",
-                    buttons: [
-                        {
-                            text: "Tamam",
-                            onPress: () => setModalVisible(false),
-                        },
-                    ],
-                });
-            } else {
-                setModalContent({
-                    title: "E-posta Doğrulanmadı!",
-                    alert: "Lütfen e-postanızı kontrol edin ve bağlantıya tıklayın.",
-                    buttons: [
-                        {
-                            text: "Tamam",
-                            onPress: () => setModalVisible(false),
-                        },
-                    ],
-                });
-            }
-            setModalVisible(true);
-        } catch (error) {
-            console.error("Doğrulama durumu kontrol edilirken hata:", error);
-        }
+    const handleCancel = () => {
+        setFirstName(userDetail.firstName);
+        setLastName(userDetail.lastName);
+        setEmail(userDetail.email);
+        setPhoneNumber(userDetail.phoneNumber);
+        setEditing(false);
     };
+
+    if (loading) {
+        return (
+            <SafeAreaView style={styles.container}>
+                <ActivityIndicator size="large" color="#4A4A4A" style={{ marginTop: 40 }} />
+            </SafeAreaView>
+        );
+    }
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.content}>
-                {userDetail ? (
-                    <>
-                        <Text style={styles.label}>Ad Soyad:</Text>
-                        <View style={styles.valueContainer}>
-                            <Text style={styles.value}>{userDetail.firstName} {userDetail.lastName}</Text>
-                        </View>
-                        <Text style={styles.label}>Telefon Numarası:</Text>
-                        <View style={styles.valueContainer}>
-                            <Text style={styles.value}>{userDetail.phoneNumber || "Belirtilmemiş"}</Text>
-                        </View>
-                        <Text style={styles.label}>Email:</Text>
-                        <View style={styles.valueContainer}>
-                            <Text style={styles.value}>{userDetail.email}</Text>
-                        </View>
-                        {isVerified ? (
-                            <Text style={styles.verified}>E-posta doğrulandı.</Text>
-                        ) : (
-                            <>
-                                <Text style={styles.mailLabel}>E-posta doğrulaması yapılmadı.</Text>
-                                <View style={styles.buttonContainer}>
-                                    <TouchableOpacity
-                                        onPress={sendVerificationEmail}
-                                        style={[styles.button, (isSendingEmail || cooldown > 0) && styles.disabledButton]}
-                                        disabled={isSendingEmail || cooldown > 0} // E-posta gönderiliyor veya geri sayım devam ediyorsa devre dışı
-                                    >
-                                        <Text style={styles.buttontext}>
-                                            {cooldown > 0 ? `Tekrar Dene (${cooldown})` : "Doğrulama E-postası Gönder"}
-                                        </Text>
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity onPress={checkVerificationStatus} style={styles.button}>
-                                        <Text style={styles.buttontext}>Doğrulama Durumunu Kontrol Et</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </>
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === "ios" ? "padding" : undefined}
+            >
+                <ScrollView
+                    contentContainerStyle={styles.scrollContent}
+                    showsVerticalScrollIndicator={false}
+                >
+                    {/* Başlık + Düzenle butonu */}
+                    <View style={styles.headerRow}>
+                        <Text style={styles.sectionTitle}>Kişisel Bilgiler</Text>
+                        {!editing && (
+                            <TouchableOpacity onPress={() => setEditing(true)} style={styles.editBtn}>
+                                <Text style={styles.editBtnText}>Düzenle</Text>
+                            </TouchableOpacity>
                         )}
-                    </>
-                ) : (
-                    <Text style={styles.loading}>Bilgiler yükleniyor...</Text>
-                )}
-            </View>
+                    </View>
+
+                    {/* Ad */}
+                    <View style={styles.fieldGroup}>
+                        <Text style={styles.label}>Ad</Text>
+                        {editing ? (
+                            <TextInput
+                                style={styles.input}
+                                value={firstName}
+                                onChangeText={setFirstName}
+                                placeholder="Adınız"
+                            />
+                        ) : (
+                            <View style={styles.valueBox}>
+                                <Text style={styles.value}>{userDetail?.firstName}</Text>
+                            </View>
+                        )}
+                    </View>
+
+                    {/* Soyad */}
+                    <View style={styles.fieldGroup}>
+                        <Text style={styles.label}>Soyad</Text>
+                        {editing ? (
+                            <TextInput
+                                style={styles.input}
+                                value={lastName}
+                                onChangeText={setLastName}
+                                placeholder="Soyadınız"
+                            />
+                        ) : (
+                            <View style={styles.valueBox}>
+                                <Text style={styles.value}>{userDetail?.lastName}</Text>
+                            </View>
+                        )}
+                    </View>
+
+                    {/* E-posta */}
+                    <View style={styles.fieldGroup}>
+                        <Text style={styles.label}>E-posta</Text>
+                        {editing ? (
+                            <TextInput
+                                style={styles.input}
+                                value={email}
+                                onChangeText={setEmail}
+                                placeholder="E-posta"
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                            />
+                        ) : (
+                            <View style={styles.valueBox}>
+                                <Text style={styles.value}>{userDetail?.email}</Text>
+                            </View>
+                        )}
+                    </View>
+
+                    {/* Telefon */}
+                    <View style={styles.fieldGroup}>
+                        <Text style={styles.label}>Telefon</Text>
+                        {editing ? (
+                            <TextInput
+                                style={styles.input}
+                                value={phoneNumber}
+                                onChangeText={setPhoneNumber}
+                                placeholder="Telefon numarası"
+                                keyboardType="phone-pad"
+                            />
+                        ) : (
+                            <View style={styles.valueBox}>
+                                <Text style={styles.value}>{userDetail?.phoneNumber}</Text>
+                            </View>
+                        )}
+                    </View>
+
+                    {/* Üye olma tarihi */}
+                    <View style={styles.fieldGroup}>
+                        <Text style={styles.label}>Üyelik Tarihi</Text>
+                        <View style={styles.valueBox}>
+                            <Text style={styles.value}>
+                                {userDetail?.createdAt
+                                    ? new Date(userDetail.createdAt).toLocaleDateString("tr-TR", {
+                                        day: "numeric", month: "long", year: "numeric"
+                                    })
+                                    : "-"}
+                            </Text>
+                        </View>
+                    </View>
+
+                    {/* Butonlar */}
+                    {editing && (
+                        <View style={styles.btnRow}>
+                            <TouchableOpacity style={styles.cancelBtn} onPress={handleCancel} activeOpacity={0.85}>
+                                <Text style={styles.cancelBtnText}>İptal</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[styles.saveBtn, saving && styles.saveBtnDisabled]}
+                                onPress={handleSave}
+                                disabled={saving}
+                                activeOpacity={0.85}
+                            >
+                                {saving ? (
+                                    <ActivityIndicator color="#fff" size="small" />
+                                ) : (
+                                    <Text style={styles.saveBtnText}>Kaydet</Text>
+                                )}
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                </ScrollView>
+            </KeyboardAvoidingView>
+
             <ModalAlert
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}

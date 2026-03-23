@@ -100,7 +100,7 @@ const Profile = () => {
                 <MenuItem iconName="person-outline" title="Bilgilerim" onPress={() => navigation.navigate('MyInfo')} />
                 <MenuItem iconName="repeat-outline" title="Geçmiş Banka İşlemlerim" onPress={() => navigation.navigate('TransactionHistory')} />
                 <MenuItem iconName="card-outline" title="Banka/Kredi Kartlarım" onPress={() =>  navigation.navigate('MyCards')} />
-                <MenuItem iconName="lock-closed-outline" title="Şifre Değiştir" onPress={() => console.log('Şifre Değiştir')} />
+                <MenuItem iconName="lock-closed-outline" title="Şifre Değiştir" onPress={() => navigation.navigate('ChangePassword')} />
                 <MenuItem iconName="exit-outline" title="Çıkış Yap" onPress={handleLogout} />
             </View>
         </SafeAreaView>

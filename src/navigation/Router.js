@@ -30,6 +30,7 @@ import CreateVirtualCard from '../pages/PaymentTransactions/CreateVirtualCardScr
 import AddCard from '../pages/PaymentTransactions/AddCardScreen';
 import TransactionHistory from '../pages/Auth/Profile/TransactionHistory';
 import MyCards from '../pages/Auth/Profile/MyCards';
+import ChangePassword from '../pages/Auth/Profile/ChangePassword';
 const Stack = createNativeStackNavigator();
 
 function Router() {
@@ -88,6 +89,7 @@ function Router() {
           <Stack.Screen name="CreateVirtualCard" component={CreateVirtualCard} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="TransactionHistory" component={TransactionHistory} options={{ header: (props) => <CustomHeader {...props} />, }} />
           <Stack.Screen name="MyCards" component={MyCards} options={{ header: (props) => <CustomHeader {...props} />, }} />
+          <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ header: (props) => <CustomHeader {...props} />, }} />
           {/* <Stack.Screen name="AddCard" component={AddCard} options={{ header: (props) => <CustomHeader {...props} />, }} /> */}
         </Stack.Navigator>
       </NavigationContainer>

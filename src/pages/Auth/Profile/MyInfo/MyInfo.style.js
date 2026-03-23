@@ -3,58 +3,112 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff'
+        backgroundColor: "#f9f9f9",
     },
-    content: {
-        flex: 1,
-        padding:20
+    scrollContent: {
+        padding: 20,
+        paddingBottom: 40,
+    },
+    headerRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: 20,
+    },
+    sectionTitle: {
+        fontSize: 16,
+        fontWeight: "700",
+        color: "#2d2d2d",
+    },
+    editBtn: {
+        paddingVertical: 6,
+        paddingHorizontal: 16,
+        borderRadius: 20,
+        backgroundColor: "#2d2d2d",
+    },
+    editBtnText: {
+        color: "#fff",
+        fontSize: 13,
+        fontWeight: "600",
+    },
+    fieldGroup: {
+        marginBottom: 16,
     },
     label: {
-        fontWeight: 'bold',
-        fontSize: 16,
-        marginTop: 10,
-        marginBottom:3,
-        marginLeft: 10
+        fontSize: 12,
+        color: "#888",
+        fontWeight: "600",
+        letterSpacing: 0.5,
+        marginBottom: 6,
     },
-    valueContainer: {
-        width: '100%',
-        backgroundColor: '#f5f5f5',
-        borderRadius: 20,
-        padding: 15,
+    valueBox: {
+        backgroundColor: "#fff",
+        borderRadius: 12,
+        paddingVertical: 14,
+        paddingHorizontal: 16,
+        elevation: 2,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.06,
+        shadowRadius: 3,
     },
     value: {
-        fontSize: 16,
-    },
-    loading: {
-        fontSize: 16,
-        fontStyle: 'italic'
-    },
-    verified:{
-        marginLeft: 15,
-        marginTop: 3
-    },
-    mailLabel:{
-        color: '#222',
-        marginVertical:8,
-        marginLeft: 15
-    },
-    buttonContainer:{
-        alignItems: "center",
-    },
-    button: {
-        backgroundColor: "#666",
-        width: "80%",
-        padding: 15,
-        marginVertical:10,
-        borderRadius: 20,
-        alignItems:"center"
-    },
-    disabledButton:{
-        backgroundColor: '#d3d3d3',
-    },
-    buttontext: {
-        color: "#fff",
+        fontSize: 15,
+        color: "#2d2d2d",
         fontWeight: "500",
-        fontSize:16
-    }
+    },
+    input: {
+        backgroundColor: "#fff",
+        borderRadius: 12,
+        paddingVertical: 14,
+        paddingHorizontal: 16,
+        fontSize: 15,
+        color: "#2d2d2d",
+        borderWidth: 1.5,
+        borderColor: "#4A4A4A",
+        elevation: 2,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.06,
+        shadowRadius: 3,
+    },
+    btnRow: {
+        flexDirection: "row",
+        gap: 12,
+        marginTop: 8,
+    },
+    cancelBtn: {
+        flex: 1,
+        paddingVertical: 14,
+        borderRadius: 14,
+        borderWidth: 1.5,
+        borderColor: "#e0e0e0",
+        alignItems: "center",
+        backgroundColor: "#fff",
+    },
+    cancelBtnText: {
+        fontSize: 14,
+        fontWeight: "600",
+        color: "#888",
+    },
+    saveBtn: {
+        flex: 2,
+        paddingVertical: 14,
+        borderRadius: 14,
+        alignItems: "center",
+        backgroundColor: "#2d2d2d",
+        elevation: 3,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.12,
+        shadowRadius: 4,
+    },
+    saveBtnDisabled: {
+        opacity: 0.6,
+    },
+    saveBtnText: {
+        fontSize: 14,
+        fontWeight: "700",
+        color: "#fff",
+    },
 });
